@@ -5,6 +5,5 @@ require('nez').realize 'Must', (Must, test, context, should) ->
         to 'define object.must()', (done) -> 
 
             Object.prototype.must.should.equal Must.necessity
-
             test done
 
