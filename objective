@@ -1,0 +1,23 @@
+#!/usr/bin/env coffee
+
+require('nez').objective 'Ipso', 
+
+    nimbal: 'https://localhost:10101/'
+
+    class: 'Root Module'
+
+    classification: 'Realization Framework'
+
+    description: """
+
+        A Nez plugin to extend the scaffold to enable the
+        configuration of requirements or expectations and 
+        the corresponding realization/validation mechanics.
+
+    """, (requirement) -> 
+
+
+        requirement.link 'requirement/expectation'
+        requirement.link 'requirement/validation'
+        requirement.link 'requirement/expiration'
+        requirement.link 'requirement/notification'  
