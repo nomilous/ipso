@@ -1,7 +1,7 @@
 ipso
 ====
 
-Realization plugins for [nez](https://github.com/nomilous/nez)
+Realization plugins [for](https://github.com/nomilous/eo) [nez](https://github.com/nomilous/nez)
 
 ### Development Environment 
 
