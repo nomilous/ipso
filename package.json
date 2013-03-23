@@ -1,5 +1,5 @@
 {
-  "name": "nez",
+  "name": "ipso",
   "description": "Realization plugins for nez",
   "version": "0.0.1",
   "author": "nomilous <nomilous@gmail.com>",
@@ -12,5 +12,7 @@
   "main": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "nez": "0.0.2"
+  }
 }
