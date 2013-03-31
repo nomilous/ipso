@@ -13,7 +13,7 @@
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {},
   "devDependencies": {
-    "nez": "0.0.2",
+    "nez": "0.0.7",
     "should": "~1.2.2"
   }
 }
