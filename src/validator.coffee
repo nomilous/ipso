@@ -2,11 +2,11 @@ module.exports = class Validator
 
     configure: (scaffold, opts) -> 
 
-        console.log 'Validator.configure', arguments
+        # console.log 'Validator.configure', arguments
 
     edge: (placeholder, nodes) -> 
 
-        console.log 'Validator.edge', arguments
+        # console.log 'Validator.edge', arguments
 
     hup: ->
 
