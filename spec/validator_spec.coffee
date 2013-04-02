@@ -1,7 +1,7 @@
-require('nez').realize 'Validator', (Validator, test, context) -> 
+require('nez').realize 'Validator', (Validator, test, it) -> 
+    
+    it 'defines validate()', (done) -> 
 
-    context 'in CONTEXT', (does) ->
+        (new Validator).validate.should.be.an.instanceof Function
 
-        does 'an EXPECTATION', (done) ->
-
-            test done
+        test done

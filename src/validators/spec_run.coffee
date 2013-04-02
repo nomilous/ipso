@@ -2,6 +2,10 @@ Validator = require '../validator'
 
 class SpecRun extends Validator
 
+    validate: -> 
+
+        console.log 'VALIDATE'
+
     instance: -> 
 
         class: 'ipso:SpecRun'

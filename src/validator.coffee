@@ -1,5 +1,7 @@
 module.exports = class Validator
 
+    validate: -> 
+
     configure: (scaffold, opts) -> 
 
         # console.log 'Validator.configure', arguments
