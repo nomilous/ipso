@@ -2,7 +2,7 @@ require('nez').realize 'Ipso', (Ipso, test, it, should) ->
 
     it 'exports Validator', (done) -> 
 
-        Ipso.Validator.should.equal require '../lib/Validator'
+        Ipso.Validator.should.equal require '../lib/validator'
         test done
 
     it 'exports SpecRun', (done) -> 

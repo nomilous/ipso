@@ -12,7 +12,6 @@
   "main": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {
-    "plex": "0.0.7"
   },
   "devDependencies": {
     "nez": "0.0.7",
