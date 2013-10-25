@@ -1,11 +1,21 @@
 ipso = require '../lib/ipso'
 should  = require 'should'
+{defer} = require 'when'
 
-describe 'facto', -> 
+describe 'ipso', -> 
+
+    before -> 
+
+        @resolvingPromise = ->
+            action = defer()
+            action.resolve 'RESULT'
+            action.promsise
 
     context 'for mocha tests', ->
 
-        it 'goes in front of your test function like this:', ipso -> 
+        it 'goes in front of a test function like this:', ipso -> 
+
+            # console.log @resolvingPromise
 
 
         it 'still fails as it should', ipso -> 
@@ -16,3 +26,10 @@ describe 'facto', ->
             # dunno how to test that a test fails
             # this failing is therefore passing
             #
+
+
+        it 'preserves the mocha context', ipso (done) ->
+
+            should.exist @resolvingPromise
+            done()
+

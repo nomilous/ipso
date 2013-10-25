@@ -11,7 +11,9 @@
   ],
   "main": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
-  "dependencies": {},
+  "dependencies": {
+    "also": "0.0.12"
+  },
   "devDependencies": {
     "hound": "~1.0.4",
     "should": "~2.0.2",

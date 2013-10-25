@@ -24,7 +24,7 @@ These (↓) tests do not fail... Instead they timeout.
 
 ```coffee
 
-it 'should ...', (done) -> 
+it 'does something ...', (done) -> 
 
     functionThatReturnsAPromise().then -> 
 
@@ -39,7 +39,7 @@ One possible solution is to chain in the test...
 
 ```coffee
 
-it 'should ...', (done) -> 
+it 'does something ...', (done) -> 
 
     functionThatReturnsAPromise().then -> 
 
@@ -62,7 +62,7 @@ it 'should ...', (done) ->
 
 ipso = require 'ipso'
 
-it 'should ...', ipso (done) -> 
+it 'does something ...', ipso (done) -> 
 
     functionThatReturnsAPromise().then -> 
 
@@ -84,7 +84,7 @@ You might be inclined, for amuzement sake, to do this:
 
 ```coffee
 
-it 'should ...', ipso (facto) -> 
+it 'does something ...', ipso (facto) -> 
 
     #
     # ... me too :)
