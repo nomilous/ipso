@@ -11,10 +11,11 @@
   ],
   "main": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "nez": "0.0.7",
-    "should": "~1.2.2"
+    "hound": "~1.0.4",
+    "should": "~2.0.2",
+    "coffee-script": "~1.6.3",
+    "mocha": "~1.13.0"
   }
 }
