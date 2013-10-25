@@ -1,5 +1,12 @@
+`npm install ipso` 0.0.2 [license](./license)
+
+**unstable** api changes will occur (without deprecation warnings)
+
+No description.
+
 ipso
 ====
+
 
 For testing with mocha 
 ----------------------
