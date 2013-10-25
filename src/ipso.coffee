@@ -20,12 +20,14 @@ module.exports = (fn) ->
     # * return a function to it() that accepts the test resolver
     # 
     
-    (done) -> 
+    (done, args...) -> 
 
         #
         # * when mocha calls this function 'to run the test', this function 
         #   calls the original test function, passing in the done 
         #
+
+
 
         if fnArgs[0] is 'facto' then promise = fn.call @, -> console.log facto done()
         else promise = fn.call @, done

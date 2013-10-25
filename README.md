@@ -1,24 +1,47 @@
 `npm install ipso` 0.0.2 [license](./license)
 
-**unstable** api changes will occur (without deprecation warnings)
+**experimental/unstable** api changes will still occur (without deprecation warnings)
 
-No description.
+A test decorator. (for [mocha](https://github.com/visionmedia/mocha))
+
 
 ipso
 ====
 
+```coffee
+ipso = require 'ipso'
 
-For testing with mocha 
-----------------------
+it 'does something', ipso (done) -> 
 
-### not using promises
+    #
+    # as usual
+    #
+    
+    done()
 
-later... 
+```
+
+### node module injection
+
+# thing = require 'thing'
+
+it 'does something and needs the thing', ipso (done, thing) -> 
+
+    #
+    # then, as usual...
+    #
+
+    thing with: 'stuff', (err) -> 
+
+        err.message.should.equal 'incorrect stuff'
+        done()
+
+```
 
 
 ### using promises
 
-#### there's a problem
+#### it solves the chain problem
 
 These (↓) tests do not fail... Instead they timeout.
 
@@ -56,26 +79,34 @@ it 'does something ...', (done) ->
 
 ```
 
-...but i don't like that, and it occurred to me a function decorator could be used to ""proxy"" the `done()` into the second `then()`
+ipso internally ""proxies"" the `done()` into a second `then()` if the test returns a promise.
 
 ```coffee
 
-ipso = require 'ipso'
-
-it 'does something ...', ipso (done) -> 
+it 'fails without timeout', ipso (done) -> 
 
     functionThatReturnsAPromise().then -> 
 
         true.should.equal false
         done()
 
+        #
+        # Note: this will still timeout if functionThatReturnsAPromise() rejects 
+        # 
+        #
+
 ```
 
-
-### spy injection
+### local ModuleInjection 
 
 later...
 
+
+### active stubs / spy injection
+
+later...
+
+* set function and property expectations (rspec style)
 
 
 ### p.s. 
@@ -91,8 +122,4 @@ it 'does something ...', ipso (facto) ->
     #
 
 ```
-
-BUT! It is possible that in some future version of ipso the `done()` function will only be passed into the test function if the argument's name is literally 'done'.  Facto would be something else entirely. 
-
-
 
