@@ -3,14 +3,18 @@
 module.exports = (fn) -> 
     
     fnArgs = util.argsOf fn
+    if fnArgs.length == 0 
 
-    if fnArgs.length == 0 then return -> fn.call @
+        #
+        # * no args defined on test function signature
+        # * return a function that calls the test function
+        # * preseve existing self (context)
+        #
+
+        return -> fn.call @
     
-    (done) -> fn.call @, done
+    (done) -> 
 
+        promise = fn.call @, done
+        if promise? and promise.then? then promise.then (->), done
 
-
-
-
-
-# module.exports.facto = require './facto'

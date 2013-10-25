@@ -1,15 +1,16 @@
 ipso = require '../lib/ipso'
 should  = require 'should'
-{defer} = require 'when'
+{deferred} = require 'also'
+
+
 
 describe 'ipso', -> 
 
     before -> 
 
-        @resolvingPromise = ->
-            action = defer()
+        @resolvingPromise = deferred (action) -> 
             action.resolve 'RESULT'
-            action.promsise
+
 
     context 'for mocha tests', ->
 
@@ -20,7 +21,7 @@ describe 'ipso', ->
 
         it 'still fails as it should', ipso -> 
 
-            1000.should.equal -1000
+            true.should.equal 'this is expected to fail'
 
             #
             # dunno how to test that a test fails
@@ -33,3 +34,19 @@ describe 'ipso', ->
             should.exist @resolvingPromise
             done()
 
+
+        it 'passes from within the promise resolution / fullfillment handler', (done) -> 
+
+            @resolvingPromise().then (result) -> 
+
+                result.should.equal 'RESULT'
+                done()
+
+
+
+        it 'fails from within the promise resolution / fullfillment handler', ipso (done) -> 
+
+            @resolvingPromise().then (result) -> 
+
+                true.should.equal 'this is expected to fail'
+                
