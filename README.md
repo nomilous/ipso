@@ -99,12 +99,12 @@ it 'fails without timeout', ipso (done) ->
 
 ```
 
-### local ModuleInjection 
+### `LocalModule` injection 
 
 later...
 
 
-### active stubs / spy injection
+### active stubs / spy decorated injectables
 
 later...
 
@@ -122,5 +122,7 @@ it 'does do something ...', ipso (facto) ->
     #
     # ... me too :)
     # 
+
+    facto()
 
 ```
