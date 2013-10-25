@@ -23,7 +23,7 @@ it 'does something', ipso (done) ->
 
 ### node module injection
 
-```
+```coffee
 # thing = require 'thing'
 
 it 'does something and needs the thing', ipso (done, thing) -> 
@@ -120,7 +120,10 @@ it 'does something ...', ipso (facto) ->
 
     #
     # ... me too :)
+    # 
+
+    # 
+    # Note: facto() isn't exactly done()
     #
 
 ```
-
