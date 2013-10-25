@@ -116,14 +116,10 @@ You might be inclined, for amuzement sake, to do this:
 
 ```coffee
 
-it 'does something ...', ipso (facto) -> 
+it 'does do something ...', ipso (facto) -> 
 
     #
     # ... me too :)
     # 
-
-    # 
-    # Note: facto() isn't exactly done()
-    #
 
 ```
