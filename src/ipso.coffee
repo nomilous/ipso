@@ -1,1 +1,5 @@
-module.exports.facto = require './facto'
+module.exports = (fn) -> -> fn()
+
+
+
+# module.exports.facto = require './facto'

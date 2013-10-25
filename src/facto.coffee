@@ -1,1 +1,1 @@
-module.exports = (fn) -> -> fn()
+# module.exports = (fn) -> -> fn()

@@ -53,9 +53,9 @@ it 'should ...', (done) ->
 
 ```coffee
 
-{facto} = require 'ipso'
+ipso = require 'ipso'
 
-it 'should ...', facto (done) -> 
+it 'should ...', ipso (done) -> 
 
     functionThatReturnsAPromise().then -> 
 
@@ -68,4 +68,24 @@ it 'should ...', facto (done) ->
 ### spy injection
 
 later...
+
+
+
+### p.s. 
+
+You might be inclined, for amuzement sake, to do this: 
+
+```coffee
+
+it 'should ...', ipso (facto) -> 
+
+    #
+    # ... me too :)
+    #
+
+```
+
+BUT! It is possible that in some future version of ipso the `done()` function will only be passed into the test function if the argument's name is literally 'done'.  Facto would be something else entirely. 
+
+
 
