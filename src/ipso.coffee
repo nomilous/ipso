@@ -1,4 +1,5 @@
 {util} = require 'also'
+facto  = require 'facto'
 
 module.exports = (fn) -> 
     
@@ -26,7 +27,8 @@ module.exports = (fn) ->
         #   calls the original test function, passing in the done 
         #
 
-        promise = fn.call @, done
+        if fnArgs[0] is 'facto' then promise = fn.call @, -> console.log facto done()
+        else promise = fn.call @, done
 
         #
         # * if the test returned a promise, chain to catch possible 

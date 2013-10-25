@@ -49,4 +49,29 @@ describe 'ipso', ->
             @resolvingPromise().then (result) -> 
 
                 true.should.equal 'this is expected to fail'
-                
+
+
+
+        it 'metadatas', ipso (facto) -> 
+
+            facto """
+
+
+
+
+
+
+
+                               this meta-data intentionally left page-like
+
+
+
+
+
+
+
+
+
+
+            """
+
