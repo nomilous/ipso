@@ -80,7 +80,8 @@ it 'does something ...', (done) ->
 
 ```
 
-ipso internally ""proxies"" the `done()` into a second `then()` if the test returns a promise.
+ipso does the chain internally if the test returns a promise
+
 
 ```coffee
 
