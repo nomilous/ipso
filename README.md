@@ -23,6 +23,7 @@ it 'does something', ipso (done) ->
 
 ### node module injection
 
+```
 # thing = require 'thing'
 
 it 'does something and needs the thing', ipso (done, thing) -> 
