@@ -26,7 +26,7 @@ it 'should ...', (done) ->
 
 ```
 
-The problem is that `should` is throwing an `[AssertionError](http://nodejs.org/api/assert.html)` that is being caught by the promise handler. This catch is a necessary component of the promise API - enabling `then()` chains to reject as designed.
+The problem is that `should` is throwing an [`AssertionError`](http://nodejs.org/api/assert.html) that is being caught by the promise handler. This catch is a necessary component of the promise API - enabling `then()` chains to reject as designed.
 
 One possible solution is to chain in the test...
 
