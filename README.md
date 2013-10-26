@@ -39,6 +39,11 @@ it 'does something and needs the thing', ipso (done, thing) ->
 
 ```
 
+* `done` can only be injected at position1
+* it must literally be called ""done""
+* there is currently no way to inject node modules with-dashes.or dots in their names.
+* injecting a module that is not already installed will not automatically install it in the 'background' and conveniently update the package file, yet.
+
 
 ### using promises
 
