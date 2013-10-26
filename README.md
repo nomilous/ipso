@@ -1,4 +1,4 @@
-`npm install ipso` 0.0.2 [license](./license)
+`npm install ipso` 0.0.1 [license](./license)
 
 **experimental/unstable** api changes will still occur (without deprecation warnings)
 
