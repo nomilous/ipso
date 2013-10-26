@@ -14,9 +14,11 @@ describe 'ipso', ->
 
     context 'for mocha tests', ->
 
+
         it 'goes in front of a test function like this:', ipso -> 
 
             # console.log @resolvingPromise
+
 
 
         it 'still fails as it should', ipso -> 
@@ -33,6 +35,7 @@ describe 'ipso', ->
 
             should.exist @resolvingPromise
             done()
+
 
 
         it 'passes from within the promise resolution / fullfillment handler', (done) -> 
@@ -52,8 +55,22 @@ describe 'ipso', ->
 
 
 
-        it 'metadatas', ipso (facto) -> 
+        it 'injects mode nodules', ipso (done, mocha) -> 
 
+            mocha.should.equal require 'mocha'
+            done()
+
+
+        it 'can inject into synchronous test', ipso (zlib, net) -> 
+
+            net.should.equal require 'net'
+            zlib.should.equal require 'zlib'
+
+
+
+        it 'metadatas', ipso (facto, should) -> 
+
+            should.should.equal require 'should'
             facto """
 
 

@@ -20,17 +20,49 @@ module.exports = (fn) ->
     # * return a function to it() that accepts the test resolver
     # 
     
-    (done, args...) -> 
+    (done) -> 
 
         #
         # * when mocha calls this function 'to run the test', this function 
-        #   calls the original test function, passing in the done 
+        #   calls the original test function
         #
 
+        inject  = []
+
+        if fnArgs[0] is 'done' 
+
+            inject.push done
+            fnArgs.shift()
 
 
-        if fnArgs[0] is 'facto' then promise = fn.call @, -> console.log facto done()
-        else promise = fn.call @, done
+        else 
+
+            #
+            # * test has not ""asked"" for 'done'
+            # * call it here  on the nextTick, but only if not facto at arg1
+            # 
+
+            done() unless fnArgs[0] is 'facto'
+
+
+        if fnArgs[0] is 'facto' 
+
+            #
+            # * facto calls done
+            #
+
+            #inject.push (meta) -> facto done, meta
+            inject.push (meta) -> facto done(), meta
+            fnArgs.shift()
+            inject.push require nodule for nodule in fnArgs
+            promise = fn.apply @, inject
+        
+
+        else 
+
+            inject.push require nodule for nodule in fnArgs
+            promise = fn.apply @, inject
+
 
         #
         # * if the test returned a promise, chain to catch possible 
