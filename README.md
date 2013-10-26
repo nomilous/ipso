@@ -1,4 +1,4 @@
-`npm install ipso` 0.0.1 [license](./license)
+`npm install ipso` 0.0.2 [license](./license)
 
 **experimental/unstable** api changes will still occur (without deprecation warnings)
 
@@ -104,7 +104,7 @@ it 'fails without timeout', ipso (done) ->
 
 ```
 
-### `LocalModule` injection 
+### `LocalNodule` injection
 
 later...
 
@@ -116,18 +116,16 @@ later...
 * set function and property expectations (rspec style)
 
 
-### p.s. 
-
-You might be inclined, for amuzement sake, to do this: 
+### incidentally 
 
 ```coffee
 
-it 'does do something ...', ipso (facto) -> 
+it 'does something ...', ipso (facto) -> 
+
+    facto meta: 'data'
 
     #
-    # ... me too :)
-    # 
-
-    facto()
+    # also resolves the test
+    #
 
 ```
