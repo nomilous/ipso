@@ -26,7 +26,7 @@ it 'does something', ipso (done) ->
 ```coffee
 # thing = require 'thing'
 
-it 'does something and needs the thing', ipso (done, thing) -> 
+it 'does something for which it needs the thing', ipso (done, thing) -> 
 
     #
     # then, as usual...
