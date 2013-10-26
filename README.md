@@ -21,7 +21,7 @@ it 'does something', ipso (done) ->
 
 ```
 
-### node module injection
+### mode nodule injection
 
 ```coffee
 # thing = require 'thing'
