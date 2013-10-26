@@ -42,7 +42,7 @@ module.exports = (fn) ->
             # * call it here  on the nextTick, but only if not facto at arg1
             # 
 
-            done() unless fnArgs[0] is 'facto'
+            done() if done? unless fnArgs[0] is 'facto'
 
 
         if fnArgs[0] is 'facto' 

@@ -4,7 +4,7 @@ should  = require 'should'
 
 
 
-describe 'ipso', -> 
+describe 'ipso', ipso (http) -> 
 
     before -> 
 
