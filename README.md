@@ -99,7 +99,7 @@ it 'fails without timeout', ipso (done) ->
 
         #
         # Note: this will still timeout if functionThatReturnsAPromise() rejects 
-        # 
+        # TODO: it still times out on longer chains! grrr
         #
 
 ```
