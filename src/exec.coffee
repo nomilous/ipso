@@ -64,7 +64,8 @@ shutdown = (code) ->
 doAction = -> 
     
     [act, args...] = input.split ' '
-    console.log action: act, args: args unless input is ''
+    trimmed = args.filter (arg) -> arg isnt ''
+    console.log action: act, args: trimmed unless input is ''
     input = ''
 
 run = -> 
