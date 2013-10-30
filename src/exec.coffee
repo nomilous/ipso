@@ -24,9 +24,7 @@ if inspector
 
     bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
     kids.push kid = spawn bin, [
-
         "--web-port=#{ (try parseInt webPort) || 8080}"
-
     ]
 
     kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
@@ -37,6 +35,13 @@ if inspector
 
 prompt = '> '
 input  = ''
+hint   = ''
+
+actions = 
+
+    'node-debug':   args: '<port> <script>'
+    'coffee-debug': args: '<port> <script>'
+
 
 refresh = (output, stream) ->
 
@@ -46,8 +51,9 @@ refresh = (output, stream) ->
             else process.stdout.write output
 
     process.stdout.clearLine()
-    process.stdout.cursorTo(0)
-    process.stdout.write prompt + input
+    process.stdout.cursorTo 0
+    process.stdout.write prompt + input + hint
+    process.stdout.cursorTo (prompt + input).length
 
 
 shutdown = (code) -> 
@@ -55,9 +61,10 @@ shutdown = (code) ->
     kid.kill() for kid in kids
     process.exit code
 
-action = -> 
+doAction = -> 
     
-    console.log action: input unless input is ''
+    [act, args...] = input.split ' '
+    console.log action: act, args: args unless input is ''
     input = ''
 
 run = -> 
@@ -67,17 +74,39 @@ run = ->
     refresh()
     process.stdin.on 'keypress', (chunk, key) -> 
 
-        try {name, ctrl, meta, shift, sequence} = key
+        hint = ''
 
-        return shutdown 0 if ctrl and name is 'c'
+        try {name, ctrl, meta, shift, sequence} = key
+        if ctrl 
+            switch name
+                when 'd' then shutdown 0
+                when 'c' 
+                    input = ''
+                    refresh()
+
+            return
 
         if name is 'backspace' 
             input = input[0..-2]
             return refresh()
 
+        if name is 'tab'
+            matches = []
+            for action of actions
+                matches.push action if action.match new RegExp "^#{input}"
+            if matches.length == 1
+                input = matches[0]
+                hint  = ' ' + actions[matches[0]].args.grey
+                return refresh()
+            else
+                console.log()
+                console.log action, actions[action].args.grey for action in matches
+                return refresh()
+
+
         if name is 'return'
             process.stdout.write '\n'
-            action()
+            doAction()
             process.stdout.write prompt + input
             return
 
