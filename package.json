@@ -10,7 +10,7 @@
     }
   ],
   "main": "./lib/index",
-  "bin": "./lib/ipso",
+  "bin": "./bin/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {
     "also": "0.0.12",
