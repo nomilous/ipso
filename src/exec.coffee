@@ -1,4 +1,7 @@
 {readFileSync} = require 'fs'
+{normalize}    = require 'path'
+{spawn}        = require 'child_process'
+colors         = require 'colors'
 program        = require 'commander'
 keypress       = require 'keypress'
 keypress process.stdin
@@ -8,25 +11,48 @@ program.version JSON.parse(
     'utf8'
 ).version
 
-program.parse process.argv
+program.option '-i, --inspector',           'Start node-inspector.'
+program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
+
+
+
+{inspector, webPort} = program.parse process.argv
+
+kids = []
+
+if inspector
+
+    bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
+    kids.push kid = spawn bin, [
+
+        "--web-port=#{ (try parseInt webPort) || 8080}"
+
+    ]
+
+    kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
 
 
 
 
-
-
-#rompt = 'ipso://'
 prompt = '> '
 input  = ''
 
-refresh = ->
+refresh = (output, stream) ->
+
+    if output?
+        switch stream
+            when 'stderr' then process.stdout.write output.red
+            else process.stdout.write output
 
     process.stdout.clearLine()
     process.stdout.cursorTo(0)
     process.stdout.write prompt + input
 
+
 shutdown = (code) -> 
-    
+
+    kid.kill() for kid in kids
     process.exit code
 
 action = -> 
