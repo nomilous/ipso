@@ -39,11 +39,46 @@ hint   = ''
 
 actions = 
 
-    'node-debug':   args: '<port> <script>'
-    'coffee-debug': args: '<port> <script>'
+    'node-debug':   args: '[<port>] <script>'
+    'coffee-debug': args: '[<port>] <script>'
+
+primaryTabComplete = ->
+
+    #
+    # produce list of actions according to partial input without whitespace
+    # 
+    #
+
+    matches = []
+    for action of actions
+        matches.push action if action.match new RegExp "^#{input}"
+    if matches.length == 0
+
+        #
+        # no matches, reset and recurse for whole action list
+        #
+
+        input = ''
+        return primaryTabComplete()
+
+    return matches
+
+
+secondaryTabComplete = (act) ->
+
+    #
+    # partial input has white space (ie command is present)
+    #
+
+    []
 
 
 refresh = (output, stream) ->
+
+    #
+    # write stream chunks to console but preserve prompt and partial input
+    # stderr in red
+    #
 
     if output?
         switch stream
@@ -65,7 +100,7 @@ doAction = ->
     
     [act, args...] = input.split ' '
     trimmed = args.filter (arg) -> arg isnt ''
-    console.log action: act, args: trimmed unless input is ''
+    console.log action: act, args: trimmed if act?
     input = ''
 
 run = -> 
@@ -92,9 +127,14 @@ run = ->
             return refresh()
 
         if name is 'tab'
-            matches = []
-            for action of actions
-                matches.push action if action.match new RegExp "^#{input}"
+
+            try [m,act] = input.match /^(.*)\s/
+
+            if act?
+                matches = secondaryTabComplete act
+            else
+                matches = primaryTabComplete()
+                
             if matches.length == 1
                 input = matches[0]
                 hint  = ' ' + actions[matches[0]].args.grey
