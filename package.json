@@ -13,7 +13,11 @@
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {
     "also": "0.0.12",
-    "facto": "0.0.1"
+    "facto": "0.0.1",
+    "node-inspector": "~0.5.0",
+    "coffee-script": "~1.6.3",
+    "mocha": "~1.13.0",
+    "hound": "~1.0.4"
   },
   "devDependencies": {
     "hound": "~1.0.4",

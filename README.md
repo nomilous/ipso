@@ -1,12 +1,23 @@
 `npm install ipso` 0.0.2 [license](./license)
-
 **experimental/unstable** api changes will still occur (without deprecation warnings)
+
+Bits and bobs. For testing. 
+
+ipso
+====
+
+Cli 
+---
+
+
+
+
+Spec integrations
+-----------------
 
 A test decorator. (for [mocha](https://github.com/visionmedia/mocha))
 
 
-ipso
-====
 
 ```coffee
 ipso = require 'ipso'
