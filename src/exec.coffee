@@ -1,11 +1,26 @@
-keypress = require 'keypress'
+{readFileSync} = require 'fs'
+program        = require 'commander'
+keypress       = require 'keypress'
 keypress process.stdin
+
+program.version JSON.parse( 
+    readFileSync __dirname + '/../package.json'
+    'utf8'
+).version
+
+program.parse process.argv
+
+
+
+
+
 
 #rompt = 'ipso://'
 prompt = '> '
 input  = ''
 
 refresh = ->
+
     process.stdout.clearLine()
     process.stdout.cursorTo(0)
     process.stdout.write prompt + input
