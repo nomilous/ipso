@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+/* 
+ * This cli is not mentioned in the readme because 
+ * several leaps...
+ * 
+ */
+
+require('../lib/exec');
+
+/*
+ * ...in interface and functionality are anticipated along
+ * the path to where this is headed.
+ *
+ */ 

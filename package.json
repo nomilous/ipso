@@ -1,7 +1,7 @@
 {
   "name": "ipso",
-  "description": "A test decorator.",
-  "version": "0.0.2",
+  "description": "Testing bits",
+  "version": "0.0.3",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
@@ -9,7 +9,8 @@
       "email": "nomilous@gmail.com"
     }
   ],
-  "main": "./lib/ipso",
+  "main": "./lib/index",
+  "bin": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {
     "also": "0.0.12",
@@ -20,9 +21,5 @@
     "hound": "~1.0.4"
   },
   "devDependencies": {
-    "hound": "~1.0.4",
-    "should": "~2.0.2",
-    "coffee-script": "~1.6.3",
-    "mocha": "~1.13.0"
   }
 }
