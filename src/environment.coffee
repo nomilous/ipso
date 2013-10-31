@@ -15,6 +15,15 @@ module.exports.environment = (altEnv) ->
     content = readFileSync envFile, 'utf8'
     for line in content.split EOL
 
+        if line is ''
+            console.log 'ipso:', "warning: empty line in #{envFile}".yellow
+            continue
+
+        if line.match /^#/
+            console.log 'ipso:', "warning: commented line in #{envFile}".yellow
+            continue
+
+
         [m,key,value] = line.match /^(.*?)\=(.*)$/
         value = value.replace /^\'/, ''
         value = value.replace /\'$/, ''
