@@ -1,6 +1,7 @@
 {deferred}     = require 'also'
 {watcher}      = require './watcher'
 {environment}  = require './environment'
+{inspector}    = require './inspector'
 {readFileSync, readdirSync, lstatSync} = require 'fs'
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
@@ -16,8 +17,6 @@ program.version JSON.parse(
     'utf8'
 ).version
 
-# program.option '-i, --inspector',           'Start node-inspector.'
-# program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
 program.option '-w, --no-watch',         'Dont watch spec and src dirs.'
 program.option '-e, --env',              'Loads .env.user'
 program.option '-a, --alt-env [name]',   'Loads .env.name'
@@ -30,17 +29,6 @@ program.option '    --lib     [dir]',    'Specify alternate compile target.', 'l
 
 
 kids = []
-
-# if inspector
-
-#     bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
-#     kids.push kid = spawn bin, [
-#         "--web-port=#{ (try parseInt webPort) || 8080}"
-#     ]
-
-#     kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
-#     kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
-
 
 test = deferred ({resolve}, file) -> 
     
@@ -96,12 +84,19 @@ argsHint  = ''
 
 actions = 
 
-    'node-debug':   
-        args: ' [<port>] <script>'
-        secondary: 'pathWalker'
+    # 'node-debug':   
+    #     args: ' [<port>] <script>'
+    #     secondary: 'pathWalker'
 
-    'coffee-debug': 
-        args: ' [<port>] <script>'
+    # 'coffee-debug': 
+    #     args: ' [<port>] <script>'
+    #     secondary: 'pathWalker'
+
+    inspect: 
+        # 
+        # can't seem to get the --debugger_port option into v8, so only one at a time...
+        # 
+        args: '  [<web-port>, <debug-port>] <script>'
         secondary: 'pathWalker'
 
 primaryTabComplete = ->
@@ -195,8 +190,13 @@ doAction = ->
     return if input == ''
     [act, args...] = input.split ' '
     trimmed = args.filter (arg) -> arg isnt ''
-    console.log action: act, args: trimmed if act?
     input = ''
+
+    switch act 
+        when 'inspect'
+            inspector args: args, kids, refresh
+        else console.log action: act, args: trimmed if act?
+
 
 run = -> 
 
