@@ -1,4 +1,6 @@
+{deferred}     = require 'also'
 {watcher}      = require './watcher'
+{environment}  = require './environment'
 {readFileSync, readdirSync, lstatSync} = require 'fs'
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
@@ -16,26 +18,56 @@ program.version JSON.parse(
 
 # program.option '-i, --inspector',           'Start node-inspector.'
 # program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
-program.option '-w, --no-watch',      'Dont watch spec and src dirs.'
-program.option '    --spec [dir]',    'Specify alternate spec dir.'
-program.option '    --src  [dir]',    'Specify alternate src dir.', 'src'
-program.option '    --lib  [dir]',    'Specify alternate compile target.', 'lib'
+program.option '-w, --no-watch',         'Dont watch spec and src dirs.'
+program.option '-e, --env',              'Loads .env.user'
+program.option '-a, --alt-env [name]',   'Loads .env.name'
+program.option '    --spec    [dir]',    'Specify alternate spec dir.',       'spec'
+program.option '    --src     [dir]',    'Specify alternate src dir.',        'src'
+program.option '    --lib     [dir]',    'Specify alternate compile target.', 'lib'
 
 
-{inspector, webPort, watch, spec, src, lib} = program.parse process.argv
+{env, altEnv, watch, spec, src, lib, env} = program.parse process.argv
+
 
 kids = []
 
-if inspector
+# if inspector
 
-    bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
-    kids.push kid = spawn bin, [
-        "--web-port=#{ (try parseInt webPort) || 8080}"
-    ]
+#     bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
+#     kids.push kid = spawn bin, [
+#         "--web-port=#{ (try parseInt webPort) || 8080}"
+#     ]
 
-    kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
-    kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+#     kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
+#     kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
 
+
+test = deferred ({resolve}, file) -> 
+    
+    bin    = normalize __dirname + '/../node_modules/.bin/mocha'
+    args   = [ '--colors','--compilers', 'coffee:coffee-script', file ]
+    console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    running = spawn bin, args, stdio: 'inherit'
+    # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    running.on 'exit', resolve
+
+compile = deferred ({resolve}) ->
+
+    #
+    # TODO: optional compile per file, (and not spawned)
+    #
+
+    bin    = normalize __dirname + '/../node_modules/.bin/coffee'
+    args   = [ '-c', '-b', '-o', lib, src ]
+    console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
+    running = spawn bin, args, stdio: 'inherit'
+    # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    running.on 'exit', resolve
+
+
+if env? or typeof altEnv is 'string' then environment altEnv
 
 if watch
 
@@ -43,24 +75,20 @@ if watch
         path: program.spec || 'spec'
         handler: 
             change: (file, stats) -> 
+                test( file ).then -> refresh()
     
     watcher 
         path: program.src || 'src'
         handler: 
             change: (file, stats) -> 
-
-                #
-                # TODO: optional compile per file, (and not spawned)
-                #
-
-                bin    = normalize __dirname + '/../node_modules/.bin/coffee'
-                args   = [ '-c', '-b', '-o', lib, src ]
-                console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
-                running = spawn bin, args
-                running.stdout.on 'data', (chunk) -> refresh chunk.toString()
-                running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
-                running.on 'exit', -> refresh()
-                
+                return unless file.match /\.coffee/
+                compile().then ->
+                    refresh()
+                    specFile = file.replace /\.coffee$/, '_spec.coffee' 
+                    specFile = specFile.replace process.cwd() + sep + src, spec
+                    test specFile
+                .then -> refresh()
+            
 
 prompt    = '> '
 input     = ''
