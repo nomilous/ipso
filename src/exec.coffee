@@ -3,6 +3,7 @@
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
 {sep}          = require 'path'
+{compile}      = require 'coffee-script'
 colors         = require 'colors'
 program        = require 'commander'
 keypress       = require 'keypress'
@@ -17,10 +18,11 @@ program.version JSON.parse(
 # program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
 program.option '-w, --no-watch',      'Dont watch spec and src dirs.'
 program.option '    --spec [dir]',    'Specify alternate spec dir.'
-program.option '    --src  [dir]',    'Specify alternate src dir.'
+program.option '    --src  [dir]',    'Specify alternate src dir.', 'src'
+program.option '    --lib  [dir]',    'Specify alternate compile target.', 'lib'
 
 
-{inspector, webPort, watch} = program.parse process.argv
+{inspector, webPort, watch, spec, src, lib} = program.parse process.argv
 
 kids = []
 
@@ -46,7 +48,19 @@ if watch
         path: program.src || 'src'
         handler: 
             change: (file, stats) -> 
-    
+
+                #
+                # TODO: optional compile per file, (and not spawned)
+                #
+
+                bin    = normalize __dirname + '/../node_modules/.bin/coffee'
+                args   = [ '-c', '-b', '-o', lib, src ]
+                console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
+                running = spawn bin, args
+                running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+                running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+                running.on 'exit', -> refresh()
+                
 
 prompt    = '> '
 input     = ''
