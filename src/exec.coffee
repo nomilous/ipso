@@ -168,11 +168,8 @@ run = ->
         if name is 'tab'
 
             try [m,act] = input.match /^(.*?)\s/
-
-            if act?
-                matches = secondaryTabComplete act
-            else
-                matches = primaryTabComplete()
+            if act? then matches = secondaryTabComplete act
+            else matches = primaryTabComplete()
                 
             if matches.length == 1
                 input = matches[0]
