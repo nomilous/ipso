@@ -83,16 +83,7 @@ input     = ''
 argsHint  = ''
 
 actions = 
-
-    # 'node-debug':   
-    #     args: ' [<port>] <script>'
-    #     secondary: 'pathWalker'
-
-    # 'coffee-debug': 
-    #     args: ' [<port>] <script>'
-    #     secondary: 'pathWalker'
-
-    'node-inspect': 
+    'inspect': 
         args: '  [<web-port>, <debug-port>] <script>'
         secondary: 'pathWalker'
 
@@ -191,8 +182,8 @@ doAction = ->
     input = ''
 
     switch act 
-        when 'node-inspect'
-            inspector args: args, bin: 'node', kids, refresh
+        when 'inspect'
+            inspector args: args, kids, refresh
         else console.log action: act, args: trimmed if act?
 
 

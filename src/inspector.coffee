@@ -38,8 +38,8 @@ module.exports.inspector = (opts, kids, refresh) ->
         str = str.replace /5858/, debugPort
         refresh str
 
-
-    kids.push kid2 = spawn opts.bin, [
+    bin = normalize __dirname + '/../node_modules/.bin/node-dev'
+    kids.push kid2 = spawn bin, [
         "--debug=#{debugPort}"
         script
     ]

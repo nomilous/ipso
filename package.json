@@ -21,7 +21,8 @@
     "hound": "~1.0.4",
     "keypress": "~0.2.1",
     "commander": "~2.0.0",
-    "colors": "~0.6.2"
+    "colors": "~0.6.2",
+    "node-dev": "~2.0.2"
   },
   "devDependencies": {
     "should": "~2.0.2"
