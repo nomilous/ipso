@@ -92,10 +92,7 @@ actions =
     #     args: ' [<port>] <script>'
     #     secondary: 'pathWalker'
 
-    inspect: 
-        # 
-        # can't seem to get the --debugger_port option into v8, so only one at a time...
-        # 
+    'node-inspect': 
         args: '  [<web-port>, <debug-port>] <script>'
         secondary: 'pathWalker'
 
@@ -174,6 +171,7 @@ refresh = (output, stream) ->
             when 'stderr' then process.stdout.write output.red
             else process.stdout.write output
 
+    input = input.replace '  ', ' '
     process.stdout.clearLine()
     process.stdout.cursorTo 0
     process.stdout.write prompt + input + argsHint
@@ -193,8 +191,8 @@ doAction = ->
     input = ''
 
     switch act 
-        when 'inspect'
-            inspector args: args, kids, refresh
+        when 'node-inspect'
+            inspector args: args, bin: 'node', kids, refresh
         else console.log action: act, args: trimmed if act?
 
 
