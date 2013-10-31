@@ -23,5 +23,7 @@
     "commander": "~2.0.0",
     "colors": "~0.6.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "should": "~2.0.2"
+  }
 }

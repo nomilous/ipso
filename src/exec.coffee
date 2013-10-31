@@ -1,3 +1,4 @@
+{watcher}      = require './watcher'
 {readFileSync, readdirSync, lstatSync} = require 'fs'
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
@@ -12,12 +13,14 @@ program.version JSON.parse(
     'utf8'
 ).version
 
-program.option '-i, --inspector',           'Start node-inspector.'
-program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
+# program.option '-i, --inspector',           'Start node-inspector.'
+# program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
+program.option '-w, --no-watch',      'Dont watch spec and src dirs.'
+program.option '    --spec [dir]',    'Specify alternate spec dir.'
+program.option '    --src  [dir]',    'Specify alternate src dir.'
 
 
-
-{inspector, webPort} = program.parse process.argv
+{inspector, webPort, watch} = program.parse process.argv
 
 kids = []
 
@@ -32,7 +35,18 @@ if inspector
     kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
 
 
+if watch
 
+    watcher 
+        path: program.spec || 'spec'
+        handler: 
+            change: (file, stats) -> 
+    
+    watcher 
+        path: program.src || 'src'
+        handler: 
+            change: (file, stats) -> 
+    
 
 prompt    = '> '
 input     = ''
@@ -41,11 +55,11 @@ argsHint  = ''
 actions = 
 
     'node-debug':   
-        args: '[<port>] <script>'
+        args: ' [<port>] <script>'
         secondary: 'pathWalker'
 
     'coffee-debug': 
-        args: '[<port>] <script>'
+        args: ' [<port>] <script>'
         secondary: 'pathWalker'
 
 primaryTabComplete = ->
