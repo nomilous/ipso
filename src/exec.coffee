@@ -1,6 +1,7 @@
-{readFileSync} = require 'fs'
+{readFileSync, readdirSync, lstatSync} = require 'fs'
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
+{sep}          = require 'path'
 colors         = require 'colors'
 program        = require 'commander'
 keypress       = require 'keypress'
@@ -33,20 +34,24 @@ if inspector
 
 
 
-prompt = '> '
-input  = ''
-hint   = ''
+prompt    = '> '
+input     = ''
+argsHint  = ''
 
 actions = 
 
-    'node-debug':   args: '[<port>] <script>'
-    'coffee-debug': args: '[<port>] <script>'
+    'node-debug':   
+        args: '[<port>] <script>'
+        secondary: 'pathWalker'
+
+    'coffee-debug': 
+        args: '[<port>] <script>'
+        secondary: 'pathWalker'
 
 primaryTabComplete = ->
 
     #
     # produce list of actions according to partial input without whitespace
-    # 
     #
 
     matches = []
@@ -70,7 +75,40 @@ secondaryTabComplete = (act) ->
     # partial input has white space (ie command is present)
     #
 
-    []
+    try secondaryType = actions[act].secondary
+    return [] unless secondaryType
+
+    if secondaryType == 'pathWalker'
+
+        #
+        # pathWalker - secondary tab completion walks the file tree (up or down)
+        #
+
+        try all  = input.split(' ').pop() # whitespace in path not supported in path...
+        parts    = all.split sep
+        last     = parts.pop()
+        path     = process.cwd() + sep + parts.join( sep ) + sep
+        files    = readdirSync path
+        select   = files.filter (file) -> file.match new RegExp "^#{last}"
+        
+        if select.length == 1 
+
+            input += select[0][last.length..]
+            file = input.split(' ').pop()
+            stat = lstatSync process.cwd() + sep + file
+            if stat.isDirectory() then input += sep
+            
+
+        else 
+
+            console.log()
+            for part in select
+                stat = lstatSync path + part
+                if stat.isDirectory() then console.log part + sep
+                else console.log part
+
+        return []
+
 
 
 refresh = (output, stream) ->
@@ -87,7 +125,7 @@ refresh = (output, stream) ->
 
     process.stdout.clearLine()
     process.stdout.cursorTo 0
-    process.stdout.write prompt + input + hint
+    process.stdout.write prompt + input + argsHint
     process.stdout.cursorTo (prompt + input).length
 
 
@@ -98,6 +136,7 @@ shutdown = (code) ->
 
 doAction = -> 
     
+    return if input == ''
     [act, args...] = input.split ' '
     trimmed = args.filter (arg) -> arg isnt ''
     console.log action: act, args: trimmed if act?
@@ -110,7 +149,7 @@ run = ->
     refresh()
     process.stdin.on 'keypress', (chunk, key) -> 
 
-        hint = ''
+        argsHint = ''
 
         try {name, ctrl, meta, shift, sequence} = key
         if ctrl 
@@ -128,7 +167,7 @@ run = ->
 
         if name is 'tab'
 
-            try [m,act] = input.match /^(.*)\s/
+            try [m,act] = input.match /^(.*?)\s/
 
             if act?
                 matches = secondaryTabComplete act
@@ -137,7 +176,7 @@ run = ->
                 
             if matches.length == 1
                 input = matches[0]
-                hint  = ' ' + actions[matches[0]].args.grey
+                argsHint  = ' ' + actions[matches[0]].args.grey
                 return refresh()
             else
                 console.log()
