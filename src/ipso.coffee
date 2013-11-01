@@ -1,6 +1,6 @@
 {util, parallel} = require 'also'
 facto            = require 'facto'
-{does}           = require('does')
+does             = require 'does'
 {spectate}       = does mode: 'spec'
 
 module.exports = (fn) -> 
