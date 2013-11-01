@@ -1,7 +1,7 @@
 {
   "name": "ipso",
   "description": "Testing bits",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
@@ -9,7 +9,7 @@
       "email": "nomilous@gmail.com"
     }
   ],
-  "main": "./lib/index",
+  "main": "./lib/ipso",
   "bin": "./bin/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {

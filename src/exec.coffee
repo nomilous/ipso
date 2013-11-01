@@ -40,7 +40,7 @@ test = deferred ({resolve}, file) ->
         '--require',   'should'
         file 
     ]
-    console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    console.log '\nipso: ' + "./node_modules/.bin/mocha #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
@@ -54,7 +54,7 @@ compile = deferred ({resolve}) ->
 
     bin    = normalize __dirname + '/../node_modules/.bin/coffee'
     args   = [ '-c', '-b', '-o', lib, src ]
-    console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
+    console.log '\nipso: ' + "./node_modules/.bin/coffee #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
