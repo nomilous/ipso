@@ -21,7 +21,7 @@ describe 'ipso', ipso (http) ->
 
 
 
-        it 'still fails as it should', ipso -> 
+        it '[FAILING IS PASSING] still fails as it should', ipso -> 
 
             true.should.equal 'this is expected to fail'
 
@@ -42,12 +42,13 @@ describe 'ipso', ipso (http) ->
 
             @resolvingPromise().then (result) -> 
 
+
                 result.should.equal 'RESULT'
                 done()
 
 
 
-        it 'fails from within the promise resolution / fullfillment handler', ipso (done) -> 
+        it '[FAILING IS PASSING] fails from within the promise resolution / fullfillment handler', ipso (done) -> 
 
             @resolvingPromise().then (result) -> 
 
@@ -67,11 +68,13 @@ describe 'ipso', ipso (http) ->
             zlib.should.equal require 'zlib'
 
 
+        it '[FAILING IS PASSING] fail when injecting undefined module', ipso (facto, i) -> 
+
 
         it 'metadatas', ipso (facto, should) -> 
 
             should.should.equal require 'should'
-            facto """
+            facto meta: data = """
 
 
 
@@ -91,4 +94,11 @@ describe 'ipso', ipso (http) ->
 
 
             """
+
+
+        it 'injects spectatable modules when called with ipso (facto, mod, ule, names) ->', ipso (facto, should) -> 
+
+            should.does.should.be.an.instanceof Function
+            facto()
+
 

@@ -1,5 +1,7 @@
-{util} = require 'also'
-facto  = require 'facto'
+{util, parallel} = require 'also'
+facto            = require 'facto'
+{does}           = require('does')
+{spectate}       = does mode: 'spec'
 
 module.exports = (fn) -> 
     
@@ -48,17 +50,41 @@ module.exports = (fn) ->
         if fnArgs[0] is 'facto' 
 
             #
-            # * facto calls done
+            # Tests created with facto at arg1 receive spectatable modules
+            # ------------------------------------------------------------
             #
+            # eg
+            # 
+            #     it 'does something', ipso (facto, something) -> 
+            #  
+            #         something.does ...
+            # 
+            # 
 
             #inject.push (meta) -> facto done, meta
             inject.push (meta) -> facto done(), meta
             fnArgs.shift()
-            inject.push require nodule for nodule in fnArgs
-            promise = fn.apply @, inject
-        
+
+            return parallel( for nodule in fnArgs
+
+                -> spectate require nodule
+
+            ).then(
+
+                (nodules) => 
+
+                    inject.push nodule for nodule in nodules
+                    promise = fn.apply @, inject
+                    if promise? and promise.then? then promise.then (->), done
+
+                done
+
+            )
+
 
         else 
+
+            console.log moo:1
 
             inject.push require nodule for nodule in fnArgs
             promise = fn.apply @, inject
