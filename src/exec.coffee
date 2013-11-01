@@ -1,7 +1,12 @@
+{deferred}     = require 'also'
+{watcher}      = require './watcher'
+{environment}  = require './environment'
+{inspector}    = require './inspector'
 {readFileSync, readdirSync, lstatSync} = require 'fs'
 {normalize}    = require 'path'
 {spawn}        = require 'child_process'
 {sep}          = require 'path'
+{compile}      = require 'coffee-script'
 colors         = require 'colors'
 program        = require 'commander'
 keypress       = require 'keypress'
@@ -12,40 +17,74 @@ program.version JSON.parse(
     'utf8'
 ).version
 
-program.option '-i, --inspector',           'Start node-inspector.'
-program.option '-w, --web-port [webPort]',  'Node inspector @ alternate port.'
+program.option '-w, --no-watch',         'Dont watch spec and src dirs.'
+program.option '-e, --env',              'Loads .env.user'
+program.option '-a, --alt-env [name]',   'Loads .env.name'
+program.option '    --spec    [dir]',    'Specify alternate spec dir.',       'spec'
+program.option '    --src     [dir]',    'Specify alternate src dir.',        'src'
+program.option '    --lib     [dir]',    'Specify alternate compile target.', 'lib'
 
 
+{env, altEnv, watch, spec, src, lib, env} = program.parse process.argv
 
-{inspector, webPort} = program.parse process.argv
 
 kids = []
 
-if inspector
+test = deferred ({resolve}, file) -> 
+    
+    bin    = normalize __dirname + '/../node_modules/.bin/mocha'
+    args   = [ '--colors','--compilers', 'coffee:coffee-script', file ]
+    console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    running = spawn bin, args, stdio: 'inherit'
+    # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    running.on 'exit', resolve
 
-    bin = normalize __dirname + '/../node_modules/.bin/node-inspector'
-    kids.push kid = spawn bin, [
-        "--web-port=#{ (try parseInt webPort) || 8080}"
-    ]
+compile = deferred ({resolve}) ->
 
-    kid.stdout.on 'data', (chunk) -> refresh chunk.toString()
-    kid.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    #
+    # TODO: optional compile per file, (and not spawned)
+    #
+
+    bin    = normalize __dirname + '/../node_modules/.bin/coffee'
+    args   = [ '-c', '-b', '-o', lib, src ]
+    console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
+    running = spawn bin, args, stdio: 'inherit'
+    # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    running.on 'exit', resolve
 
 
+if env? or typeof altEnv is 'string' then environment altEnv
 
+if watch
+
+    watcher 
+        path: program.spec || 'spec'
+        handler: 
+            change: (file, stats) -> 
+                test( file ).then -> refresh()
+    
+    watcher 
+        path: program.src || 'src'
+        handler: 
+            change: (file, stats) -> 
+                return unless file.match /\.coffee/
+                compile().then ->
+                    refresh()
+                    specFile = file.replace /\.coffee$/, '_spec.coffee' 
+                    specFile = specFile.replace process.cwd() + sep + src, spec
+                    test specFile
+                .then -> refresh()
+            
 
 prompt    = '> '
 input     = ''
 argsHint  = ''
 
 actions = 
-
-    'node-debug':   
-        args: '[<port>] <script>'
-        secondary: 'pathWalker'
-
-    'coffee-debug': 
-        args: '[<port>] <script>'
+    'inspect': 
+        args: '  [<web-port>, <debug-port>] <script>'
         secondary: 'pathWalker'
 
 primaryTabComplete = ->
@@ -123,6 +162,7 @@ refresh = (output, stream) ->
             when 'stderr' then process.stdout.write output.red
             else process.stdout.write output
 
+    input = input.replace '  ', ' '
     process.stdout.clearLine()
     process.stdout.cursorTo 0
     process.stdout.write prompt + input + argsHint
@@ -139,8 +179,13 @@ doAction = ->
     return if input == ''
     [act, args...] = input.split ' '
     trimmed = args.filter (arg) -> arg isnt ''
-    console.log action: act, args: trimmed if act?
     input = ''
+
+    switch act 
+        when 'inspect'
+            inspector args: args, kids, refresh
+        else console.log action: act, args: trimmed if act?
+
 
 run = -> 
 
