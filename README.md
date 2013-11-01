@@ -1,5 +1,5 @@
 **experimental/unstable** api changes will still occur (without deprecation warnings) <br\>
-`npm install ipso` 0.0.8 [license](./license)
+`npm install ipso` 0.0.9 [license](./license)
 
 
 Bits and bobs. For testing. 
