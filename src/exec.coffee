@@ -32,8 +32,14 @@ kids = []
 
 test = deferred ({resolve}, file) -> 
     
-    bin    = normalize __dirname + '/../node_modules/.bin/mocha'
-    args   = [ '--colors','--compilers', 'coffee:coffee-script', file ]
+    ipsoPath = normalize __dirname + '/ipso'
+    bin      = normalize __dirname + '/../node_modules/.bin/mocha'
+    args     = [ 
+        '--colors'
+        '--compilers', 'coffee:coffee-script'
+        '--require',   'should'
+        file 
+    ]
     console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
