@@ -51,6 +51,42 @@ it 'does something for which it needs the thing', ipso (done, thing) ->
 * injecting a module that is not already installed will not automatically install it in the 'background' and conveniently update the package file, yet.
 
 
+### spectateable mode nodule injection
+
+```coffee
+
+it 'starts http listening at config.api.port', ipso (facto, http) -> 
+
+    http.does 
+
+        #
+        # create active stub(s) on http object
+        #
+
+        createServer: ->
+
+            #
+            # stubbed function returns "mock" server that defines listen()
+            #
+
+            listen: (port) -> 
+
+                #
+                # test is resolved if **something** calls listen
+                #
+
+                port.should.equal 2999
+                facto()
+
+
+    server api: port: process.env.API_PORT
+
+```
+
+* test arg1 must literally be called ""facto""
+
+
+
 ### using promises
 
 #### it solves the chain problem
@@ -112,26 +148,8 @@ it 'fails without timeout', ipso (done) ->
 
 ### `LocalNodule` injection
 
-later...
-
-
-### active stubs / spy decorated injectables
-
-later...
-
-* set function and property expectations (rspec style)
-
-
-### incidentally 
-
 ```coffee
 
-it 'does something ...', ipso (facto) -> 
-
-    facto meta: 'data'
-
-    #
-    # also resolves the test
-    #
 
 ```
+
