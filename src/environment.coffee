@@ -4,8 +4,8 @@ colors = require 'colors'
 
 module.exports.environment = (altEnv) -> 
 
-    envFile = ".env.#{ altEnv || process.env.USER }"
-
+    ext      = altEnv || 'test'
+    envFile  = ".env.#{ ext }"
     try stat = lstatSync envFile
     catch error
         if error.errno == 34 
@@ -15,14 +15,13 @@ module.exports.environment = (altEnv) ->
     content = readFileSync envFile, 'utf8'
     for line in content.split EOL
 
-        # if line is ''
-        #     console.log 'ipso:', "warning: empty line in #{envFile}".yellow
-        #     continue
+        if line is ''
+            #console.log 'ipso:', "warning: empty line in #{envFile}".yellow
+            continue
 
         if line.match /^#/
             console.log 'ipso:', "warning: commented line in #{envFile}".yellow
             continue
-
 
         [m,key,value] = line.match /^(.*?)\=(.*)$/
         value = value.replace /^\'/, ''

@@ -18,8 +18,8 @@ program.version JSON.parse(
 ).version
 
 program.option '-w, --no-watch',         'Dont watch spec and src dirs.'
-program.option '-e, --env',              'Loads .env.user'
-program.option '-a, --alt-env [name]',   'Loads .env.name'
+program.option '-n, --no-env',           'Dont load .env.test'
+program.option '-e, --alt-env [name]',   'Loads .env.name'
 program.option '    --spec    [dir]',    'Specify alternate spec dir.',       'spec'
 program.option '    --src     [dir]',    'Specify alternate src dir.',        'src'
 program.option '    --lib     [dir]',    'Specify alternate compile target.', 'lib'
@@ -61,7 +61,7 @@ compile = deferred ({resolve}) ->
     running.on 'exit', resolve
 
 
-if env? or typeof altEnv is 'string' then environment altEnv
+if env or typeof altEnv is 'string' then environment altEnv
 
 if watch
 
