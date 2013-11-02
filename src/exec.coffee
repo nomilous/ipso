@@ -1,13 +1,3 @@
-{deferred}     = require 'also'
-{watcher}      = require './watcher'
-{environment}  = require './environment'
-{inspector}    = require './inspector'
-{readFileSync, readdirSync, lstatSync} = require 'fs'
-{normalize}    = require 'path'
-{spawn}        = require 'child_process'
-{sep}          = require 'path'
-{compile}      = require 'coffee-script'
-colors         = require 'colors'
 #
 # PRE-RELEASE - ALPHA - CLI
 # =========================
@@ -18,6 +8,17 @@ colors         = require 'colors'
 # * Care **has already been taken** to minimize changes
 # 
 
+
+{deferred}     = require 'also'
+{watcher}      = require './watcher'
+{environment}  = require './environment'
+{inspector}    = require './inspector'
+{readFileSync, readdirSync, lstatSync} = require 'fs'
+{normalize}    = require 'path'
+{spawn}        = require 'child_process'
+{sep}          = require 'path'
+{compile}      = require 'coffee-script'
+colors         = require 'colors'
 program        = require 'commander'
 keypress       = require 'keypress'
 keypress process.stdin
