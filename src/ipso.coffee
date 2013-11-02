@@ -67,7 +67,7 @@ module.exports = (fn) ->
 
             return parallel( for nodule in fnArgs
 
-                -> spectate require nodule
+                do (nodule) -> -> spectate require nodule
 
             ).then(
 
