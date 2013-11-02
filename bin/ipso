@@ -9,7 +9,6 @@
 require('../lib/exec');
 
 /*
- * ...in interface and functionality are anticipated along
- * the path to where this is headed.
+ * ...in function of the interface and behaviour are anticipated.
  *
  */ 

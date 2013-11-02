@@ -8,6 +8,16 @@
 {sep}          = require 'path'
 {compile}      = require 'coffee-script'
 colors         = require 'colors'
+#
+# PRE-RELEASE - ALPHA - CLI
+# =========================
+# 
+# ipso -h
+# 
+# * Expect no consistency between versions (worst case)
+# * Care **has already been taken** to minimize changes
+# 
+
 program        = require 'commander'
 keypress       = require 'keypress'
 keypress process.stdin
@@ -34,7 +44,8 @@ kids = []
 test = deferred ({resolve}, file) -> 
 
     unless mocha 
-        console.log '\nipso: ' + "Unspecified spec scaffold. Use: ipso --mocha".red
+        console.log '\nipso: ' + "Unspecified spec scaffold.".red, "ipso --mocha"
+        refresh()
         return
 
         #
