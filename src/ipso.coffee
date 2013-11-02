@@ -79,20 +79,28 @@ module.exports = (fn) ->
                 #   any necessary raisins
                 #
 
-                assert done
+                assert( done ).then( 
 
-                #
-                # TODO: async facto().then  #?# -> done()
-                # COMPLEXITY: test timeout (if it needs to wait)
-                #
+                    (result) -> 
 
-                facto metadata
+                        #
+                        # * assert does not call done if nothing failed
+                        #
 
-                #
-                # call original done (mocha)
-                #
+                        facto metadata
+                        done()
 
-                done()
+                    (error) -> 
+
+                        #
+                        # * assert already called done - to fail the mocha test
+                        #
+
+                        facto metadata
+
+                    (notify) -> 
+                    
+                )
             
 
             promise = parallel( for nodule in fnArgs
