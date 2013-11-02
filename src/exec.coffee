@@ -62,10 +62,17 @@ test = deferred ({resolve}, file) ->
         '--require',   'should'
         file 
     ]
+
+    #
+    # TODO: consider posibilities behind source diffs to facto
+    #       * related notes below
+    #
+
     console.log '\nipso: ' + "./node_modules/.bin/mocha #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+
     running.on 'exit', resolve
 
 compile = deferred ({resolve}) ->
@@ -76,6 +83,14 @@ compile = deferred ({resolve}) ->
 
     bin    = normalize __dirname + '/../node_modules/.bin/coffee'
     args   = [ '-c', '-b', '-o', lib, src ]
+
+    #
+    # TODO: consider posibilities behind source diffs to facto
+    #       * team's view of each developer progress / attempt
+    #       * others can observe / assist a stuck team member
+    #       * detecting stuck
+    #
+
     console.log '\nipso: ' + "./node_modules/.bin/coffee #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
