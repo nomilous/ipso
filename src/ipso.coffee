@@ -84,8 +84,6 @@ module.exports = (fn) ->
 
         else 
 
-            console.log moo:1
-
             inject.push require nodule for nodule in fnArgs
             promise = fn.apply @, inject
 
