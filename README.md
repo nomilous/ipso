@@ -84,6 +84,7 @@ it 'starts http listening at config.api.port', ipso (facto, http) ->
 ```
 
 * test arg1 must literally be called ""facto""
+* `thing.does _function: ->` creates as spy on `thing.function`
 
 
 
