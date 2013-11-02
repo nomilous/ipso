@@ -19,18 +19,28 @@ program.version JSON.parse(
 
 program.option '-w, --no-watch',         'Dont watch spec and src dirs.'
 program.option '-n, --no-env',           'Dont load .env.test'
+program.option '-m, --mocha',            'Use mocha.'
 program.option '-e, --alt-env [name]',   'Loads .env.name'
 program.option '    --spec    [dir]',    'Specify alternate spec dir.',       'spec'
 program.option '    --src     [dir]',    'Specify alternate src dir.',        'src'
 program.option '    --lib     [dir]',    'Specify alternate compile target.', 'lib'
 
 
-{env, altEnv, watch, spec, src, lib, env} = program.parse process.argv
+{env, altEnv, mocha, watch, spec, src, lib, env} = program.parse process.argv
 
 
 kids = []
 
 test = deferred ({resolve}, file) -> 
+
+    unless mocha 
+        console.log '\nipso: ' + "Unspecified spec scaffold. Use: ipso --mocha".red
+        return
+
+        #
+        # mocha is not the default
+        # there is no default yet
+        #
     
     ipsoPath = normalize __dirname + '/ipso'
     bin      = normalize __dirname + '/../node_modules/.bin/mocha'

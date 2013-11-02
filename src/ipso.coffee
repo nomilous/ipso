@@ -1,7 +1,7 @@
-{util, parallel} = require 'also'
-facto            = require 'facto'
-does             = require 'does'
-{spectate}       = does mode: 'spec'
+{util, parallel}   = require 'also'
+facto              = require 'facto'
+does               = require 'does'
+{spectate, verify} = does does: mode: 'spec'
 
 module.exports = (fn) -> 
     
@@ -61,9 +61,12 @@ module.exports = (fn) ->
             # 
             # 
 
-            #inject.push (meta) -> facto done, meta
-            inject.push (meta) -> facto done(), meta
             fnArgs.shift()
+            inject.push (meta) -> 
+
+                verify()
+                facto done(), meta
+            
 
             return parallel( for nodule in fnArgs
 
