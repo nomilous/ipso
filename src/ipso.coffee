@@ -1,7 +1,7 @@
 {util, parallel}   = require 'also'
 facto              = require 'facto'
 does               = require 'does'
-{spectate, verify} = does does: mode: 'spec'
+{spectate, assert} = does does: mode: 'spec'
 
 module.exports = (fn) -> 
     
@@ -62,10 +62,32 @@ module.exports = (fn) ->
             # 
 
             fnArgs.shift()
-            inject.push (meta) -> 
 
-                verify()
-                facto done(), meta
+            #
+            # * first injected argument is the test resolver
+            # 
+
+            inject.push (metadata) -> 
+
+                #
+                # TODO: consider posibilities of assert output also being
+                #       directed into facto()
+                #
+
+                assert()
+
+                #
+                # TODO: async facto().then  #?# -> done()
+                # COMPLEXITY: test timeout (if it needs to wait)
+                #
+
+                facto metadata
+
+                #
+                # call original done (mocha)
+                #
+
+                done()
             
 
             return parallel( for nodule in fnArgs
