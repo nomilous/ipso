@@ -74,7 +74,12 @@ module.exports = (fn) ->
                 #       directed into facto()
                 #
 
-                assert()
+                #
+                # * hand the mocha test resolver into does.assert to perform 
+                #   any necessary raisins
+                #
+
+                assert done
 
                 #
                 # TODO: async facto().then  #?# -> done()
@@ -90,7 +95,7 @@ module.exports = (fn) ->
                 done()
             
 
-            return parallel( for nodule in fnArgs
+            promise = parallel( for nodule in fnArgs
 
                 do (nodule) -> -> spectate require nodule
 
@@ -99,12 +104,15 @@ module.exports = (fn) ->
                 (nodules) => 
 
                     inject.push nodule for nodule in nodules
-                    promise = fn.apply @, inject
-                    if promise? and promise.then? then promise.then (->), done
+                    fn.apply @, inject
+                    
 
                 done
 
             )
+
+            if promise? and promise.then? then promise.then (->), done
+            return
 
 
         else 

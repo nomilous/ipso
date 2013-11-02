@@ -64,11 +64,11 @@ test = deferred ({resolve}, file) ->
     ]
 
     #
-    # TODO: consider posibilities behind source diffs to facto
+    # TODO: consider posibilities behind spec report to facto
     #       * related notes below
     #
 
-    console.log '\nipso: ' + "./node_modules/.bin/mocha #{args.join ' '}".grey
+    console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
@@ -91,7 +91,7 @@ compile = deferred ({resolve}) ->
     #       * detecting stuck
     #
 
-    console.log '\nipso: ' + "./node_modules/.bin/coffee #{args.join ' '}".grey
+    console.log '\nipso: ' + "node_modules/.bin/coffee #{args.join ' '}".grey
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
