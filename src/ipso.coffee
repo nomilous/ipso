@@ -14,7 +14,7 @@ require('./mocha_runner').on 'spec_event', (payload) ->   # subscribe
     # is mocha spawning children?
     # ---------------------------
     # 
-    #          ?..find the socket
+    # ## THIS IN A RUNNING TEST 
     # 
 
     console.log HUH: payload

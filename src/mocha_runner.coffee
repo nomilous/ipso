@@ -44,7 +44,9 @@ module.exports.create = (opts) ->
 
             do (event) -> runner.on event, (data...) -> 
 
-                emitter.emit 'spec_event',
+                ## THIS IN THE TEST RUNNER
+
+                emitter.emit 'spec_event', 
 
                     source: 'mocha'
                     event: event
