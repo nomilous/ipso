@@ -85,8 +85,10 @@ it 'starts http listening at config.api.port', ipso (facto, http) ->
 
 * test arg1 must literally be called ""facto""
 * `thing.does _function: ->` creates as spy on `thing.function`
-* BUG: stubbed module functions are not cleaned up in cases where tests timeout
-* SHORTCOMING: function expectations only work correctly when created in `it()`s
+* some difficulties integrating with mocha
+    * [BUG](https://github.com/nomilous/ipso/issues/1): stubbed module functions are not cleaned up in cases where tests timeout
+    * SHORTCOMING: function expectations only work correctly when created in `it()`s
+    * if anybody knows how to add a Reporter to an **already running** instance of mocha from within the running context
 
 
 ### using promises
