@@ -8,6 +8,9 @@ describe 'MochaRunner', ->
 
         mocha = new MochaRunner (runner) -> 
 
-            runner.on 'start', -> facto()
+            runner.on 'test', (test) -> 
 
-        mocha.run [], ->
+                test.title.should.equal 'Test 1 Title'
+                facto()
+
+        mocha.run ['./spec/test_spec.coffee'], ->
