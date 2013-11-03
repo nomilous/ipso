@@ -70,6 +70,7 @@ test = deferred ({resolve}, file) ->
     # * TODO: inline mocha 
     #       * no respawn on each test run
     #       * tests become debuggable (ipso --debug-port --web-port --mocha)
+    #       * ipso --mocha --silent --all  (runs all tests, silently, exits with failCount)
     #       * accesss to runner.on '...' test events 
     #           * can then cleanup stubs properly
     #               * not that their should be any objects required onto global for
