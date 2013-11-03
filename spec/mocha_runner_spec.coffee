@@ -6,5 +6,8 @@ describe 'MochaRunner', ->
 
     it 'runs mocha tests', ipso (facto) -> 
 
-        new MochaRunner (runner) -> facto()
+        mocha = new MochaRunner (runner) -> 
 
+            runner.on 'start', -> facto()
+
+        mocha.run [], ->
