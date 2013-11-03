@@ -1,7 +1,7 @@
 {
   "name": "ipso",
   "description": "Testing bits",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
@@ -24,7 +24,7 @@
     "colors": "~0.6.2",
     "node-dev": "~2.0.2",
     "should": "~2.0.2",
-    "does": "0.0.1"
+    "does": "0.0.2"
   },
   "devDependencies": {}
 }
