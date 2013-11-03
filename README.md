@@ -85,7 +85,8 @@ it 'starts http listening at config.api.port', ipso (facto, http) ->
 
 * test arg1 must literally be called ""facto""
 * `thing.does _function: ->` creates as spy on `thing.function`
-
+* BUG: stubbed module functions are not cleaned up in cases where tests timeout
+* SHORTCOMING: function expectations only work correctly when created in `it()`s
 
 
 ### using promises

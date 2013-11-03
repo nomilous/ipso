@@ -99,7 +99,7 @@ module.exports = (fn) ->
                         facto metadata
 
                     (notify) -> 
-                    
+
                 )
             
 
