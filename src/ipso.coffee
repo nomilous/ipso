@@ -1,9 +1,27 @@
 {util, parallel}   = require 'also'
 facto              = require 'facto'
 does               = require 'does'
-{spectate, assert} = does does: mode: 'spec'
+{subscribe, spectate, assert} = does does: mode: 'spec'
 
-module.exports = (fn) -> 
+#
+# spec events into does()
+# -----------------------
+# 
+
+require('./mocha_runner').on 'spec_event', (payload) ->   # subscribe
+
+    #
+    # is mocha spawning children?
+    # ---------------------------
+    # 
+    #          ?..find the socket
+    # 
+
+    console.log HUH: payload
+
+
+
+module.exports = ipso = (fn) -> 
     
     fnArgs = util.argsOf fn
     if fnArgs.length == 0 
@@ -138,4 +156,16 @@ module.exports = (fn) ->
         #
 
         if promise? and promise.then? then promise.then (->), done
+
+
+module.exports.once = (fn) -> do (done = false) -> ->
+    
+    #
+    # TODO: make this can inject
+    #
+
+    return if done
+    done = true
+    fn.apply @, arguments
+    
 

@@ -4,13 +4,24 @@ MochaRunner = require '../lib/mocha_runner'
 
 describe 'MochaRunner', -> 
 
+    it 'defines a global event emitter', (done) -> 
+
+        MochaRunner.on.should.be.an.instanceof Function
+        done()
+
+
+
     it 'runs mocha tests', ipso (facto) -> 
 
-        mocha = new MochaRunner (runner) -> 
+        MochaRunner.on 'spec_event', ipso.once (payload) -> 
 
-            runner.on 'test', (test) -> 
+            # console.log payload
 
-                test.title.should.equal 'Test 1 Title'
-                facto()
+            payload.source.should.equal 'mocha'
+            should.exist payload.event
+            should.exist payload.data
+            facto()
+            
 
-        mocha.run ['./spec/test_spec.coffee'], ->
+        MochaRunner.create()
+        .run ['./spec/test_spec.coffee'], -> 
