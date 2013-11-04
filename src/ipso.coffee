@@ -1,23 +1,20 @@
 {util, parallel}   = require 'also'
 facto              = require 'facto'
 does               = require 'does'
-{subscribe, spectate, assert} = does does: mode: 'spec'
+{spectate, assert} = does does: mode: 'spec'
 
-#
-# spec events into does()
-# -----------------------
-# 
-
-require('./mocha_runner').on 'spec_event', (payload) ->   # subscribe
-
-    #
-    # is mocha spawning children?
-    # ---------------------------
-    # 
-    # ## THIS IN A RUNNING TEST 
-    # 
-
-    console.log HUH: payload
+# #
+# # spec events into does()
+# # -----------------------
+# # 
+# require('./mocha_runner').on 'spec_event', (payload) ->   # subscribe
+#     #
+#     # is mocha spawning children?
+#     # ---------------------------
+#     # 
+#     # ## THIS IN A RUNNING TEST 
+#     # 
+#     console.log HUH: payload
 
 
 
@@ -47,37 +44,27 @@ module.exports = ipso = (fn) ->
         #   calls the original test function
         #
 
+        #
+        # Tests created with 'done' or 'facto' at arg1 receive spectatable modules
+        # ------------------------------------------------------------------------
+        #
+        # eg
+        # 
+        #     it 'does something', ipso (facto, something) -> 
+        #  
+        #         something.does 
+        # 
+        #             functionStub: -> 
+        #                 # replaces original (optionally return mock)
+        # 
+        #             _functionSpy: -> 
+        #                 # called ahead of original
+        # 
+        # 
+
         inject  = []
 
-        if fnArgs[0] is 'done' 
-
-            inject.push done
-            fnArgs.shift()
-
-
-        else 
-
-            #
-            # * test has not ""asked"" for 'done'
-            # * call it here  on the nextTick, but only if not facto at arg1
-            # 
-
-            done() if done? unless fnArgs[0] is 'facto'
-
-
-        if fnArgs[0] is 'facto' 
-
-            #
-            # Tests created with facto at arg1 receive spectatable modules
-            # ------------------------------------------------------------
-            #
-            # eg
-            # 
-            #     it 'does something', ipso (facto, something) -> 
-            #  
-            #         something.does ...
-            # 
-            # 
+        if fnArgs[0] is 'done' or fnArgs[0] is 'facto' 
 
             fnArgs.shift()
 
@@ -105,7 +92,7 @@ module.exports = ipso = (fn) ->
                         # * assert does not call done if nothing failed
                         #
 
-                        facto metadata
+                        if fnArgs[0] is 'facto' then facto metadata
                         done()
 
                     (error) -> 
@@ -114,7 +101,7 @@ module.exports = ipso = (fn) ->
                         # * assert already called done - to fail the mocha test
                         #
 
-                        facto metadata
+                        if fnArgs[0] is 'facto' then facto metadata
 
                     (notify) -> 
 
@@ -146,6 +133,14 @@ module.exports = ipso = (fn) ->
             inject.push require nodule for nodule in fnArgs
             promise = fn.apply @, inject
 
+            #
+            # * test has not ""asked"" for 'done' but mocha has injected because
+            #   arguments (modules to be injected) are present - call it on next
+            #   tick to mimick synchronous test
+            # 
+
+            process.nextTick -> done() if done? #  unless fnArgs[0] is 'facto'
+
 
         #
         # * if the test returned a promise, chain to catch possible 
@@ -160,10 +155,6 @@ module.exports = ipso = (fn) ->
 
 module.exports.once = (fn) -> do (done = false) -> ->
     
-    #
-    # TODO: make this can inject
-    #
-
     return if done
     done = true
     fn.apply @, arguments

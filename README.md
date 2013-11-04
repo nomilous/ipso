@@ -2,30 +2,164 @@
 `npm install ipso` 0.0.10 [license](./license)
 
 
-Bits and bobs. For testing. 
+Injection decorator, for tests, with [Mocha](https://github.com/visionmedia/mocha). (others unknown)
+
+All examples in [coffee-script](http://coffeescript.org/).
+
 
 ipso
 ====
 
-Spec integrations
------------------
+Injection Decorator
+-------------------
 
-A test decorator. (for [mocha](https://github.com/visionmedia/mocha))
-
-
+It is placed in front of the test function.
 
 ```coffee
 ipso = require 'ipso'
 
 it 'does something', ipso (done) -> 
 
-    #
-    # as usual
-    #
-    
-    done()
+    done() # as usual
 
 ```
+
+
+
+
+cli
+---
+
+There is a cli. 
+
+```
+
+  Usage: ipso [options]
+
+  Options:
+
+    -h, --help            output usage information
+    -V, --version         output the version number
+    -w, --no-watch        Dont watch spec and src dirs.
+    -n, --no-env          Dont load .env.test
+    -m, --mocha           Use mocha.
+    -e, --alt-env [name]  Loads .env.name
+        --spec    [dir]   Specify alternate spec dir.
+        --src     [dir]   Specify alternate src dir.
+        --lib     [dir]   Specify alternate compile target.
+
+```
+
+### Highlight
+
+* It can quickly start up a node-inspector session on a v8 debugger socket.
+
+```
+$ ipso --mocha -e name
+ipso: warning: .env.name is PRODUCTION
+ipso: loaded .env.name
+ipso: watching directory: ./spec
+ipso: watching directory: ./src
+>
+>
+> inspect 3001 5860 lib/examples/basic.js
+> 
+> debugger listening on port 5860    <----------------------------
+> { TODO: { address: '0.0.0.0', family: 'IPv4', port: 3000 } }
+> Node Inspector v0.5.0
+> info: socket.io started
+> Visit http://127.0.0.1:3001/debug?port=5860 to start debugging.
+>       =====================================
+```
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
 
 ### mode nodule injection
 
