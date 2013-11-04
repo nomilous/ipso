@@ -99,23 +99,13 @@ It can create multiple function expectation stubs (and spies).
 
 ```coffee
 
-it 'can create multiple expectation stubs', ipso (done, Periscope) -> 
+it 'can create multiple expectation stubs', ipso (done, Server) -> 
 
-    Periscope.does 
-                            #
-        $prototype: true    # PENDING FUNCTIONALITY * specifies to create stubs
-                            # =====================   on the prototype (future instance).
-                            #                       * otherwise classmethod stubs
-                            #                         would be created.
-                            # 
+    Server.does 
 
-        measureDepth: -> return 30
+        _listen: ->
 
-        riseToSurface: (distance, finishedRising) -> 
-            distance.should.equal 30
-            finishedRising()
-
-        _openLens: ->
+            # console.log arguments 
 
             console.log """
 
@@ -133,11 +123,38 @@ it 'can create multiple expectation stubs', ipso (done, Periscope) ->
 
             """
 
-    periscope = new Periscope()
+        otherThing: -> 
+
+    Server.start()
+
+
+```
+
+
+**PENDING** It can create future instance stubs (on the prototype)
+
+```coffee
+
+it 'can create multiple expectation stubs', ipso (done, Periscope, events, should) -> 
+    
+    # Periscope.$prototype.does  (dunno yet)
+    Periscope.prototype.does 
+
+        measureDepth: -> return 30
+
+        riseToSurface: (distance, finishedRising) -> 
+            distance.should.equal 30
+            finishedRising()
+
+        _openLens: (videoStream) -> 
+            videoStream.codec.should.equal πr²
+
+
+    periscope = new Periscope codec: πr²
     periscope.up (error, eyehole) -> 
 
         should.not.exist error
-        eyehole.should.be.an.instanceof EventEmitter
+        eyehole.should.be.an.instanceof events.EventEmitter
         done()
 
 ```
@@ -247,7 +264,7 @@ Ipso Facto
 
 ```coffee
 
-it 'will do many things to come', ipso (facto, ...) -> 
+it 'does many things to come', ipso (facto, ...) -> 
 
     facto[metathings]()
 
