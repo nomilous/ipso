@@ -193,7 +193,7 @@ ipso.configure
 
 ### Complex Usage / Current Caveats
 
-For cases where the call chain being tested has an asynchronous step the `done()` can be put into the mock.
+To test in cases where the call chain being tested has an asynchronous step the `done()` can be put into the mock.
 
 ```coffee
 it 'can stop the http server', (done, http, Server) -> 
@@ -240,14 +240,21 @@ The successful approach is to set up ONLY the mocks in the hooks.
     
     before -> 
         @mockServer = 
-            listen: ->
+            _listen: (@port) => # have not tried this (@) => trick 
+                                # in this particualt context yet...
             address: ->
             close: ->
 
-    it 'should only ever stub inside the tests', ipso (facto, http) -> 
+    it 'should only ever stub inside the tests', ipso (facto, http, MyServer) -> 
 
         http.does createServer => @mockServer
 
+        (new MyServer).start => 
+
+            @port.should.equal something
+            #
+            # ... but i suspect it works
+            # 
 
 ```
 
