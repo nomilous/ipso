@@ -252,9 +252,12 @@ The successful approach is to set up ONLY the mocks in the hooks.
         (new MyServer).start => 
 
             @port.should.equal something
+
             #
             # ... but i suspect it works
             # 
+
+            facto()
 
 ```
 
