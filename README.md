@@ -23,6 +23,15 @@ it 'does something', ipso (done) ->
 
 ```
 
+It can inject node modules.
+
+```coffee
+
+it 'does something', ipso, (done, http) -> 
+
+    http.should.equal require 'http'
+
+```
 
 
 
