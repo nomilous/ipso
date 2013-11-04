@@ -318,8 +318,8 @@ It watches for ./src and ./spec changes and runs the changed.
 * ./src changes will be compiled into ./lib/...
 * the corresponding test will then be run from ./spec/...
 * the followingly illustrated "path echo" **is assumed to ALWAYS be the case**
+
 ```
  lib/same/dirname/source_name.coffee
 spec/same/dirname/source_name_spec.coffee
-                             =====
 ```
