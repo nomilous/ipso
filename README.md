@@ -72,6 +72,13 @@ class MyServer
 
 ```coffee
 it 'creates an http server and listens at opts.port', ipso (done, http, MyServer) -> 
+                                                                            #
+                                                                            #
+                                                                            # PENDING FUNCTIONALITY
+                                                                            # =====================
+                                                                            # 
+                                                                            # - local module injection
+                                                                            # 
 
     http.does 
         createServer: -> 
@@ -90,6 +97,111 @@ You may have noticed that `MyServer` was also injected in the previous example.
 * It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
 * It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
 * Local module injections can also be stubbed.
+
+
+It can create multiple function expectation stubs.
+
+```coffee
+
+it 'can create multiple expectation stubs', ipso (done, Periscope) -> 
+
+    Periscope.does 
+                            #
+        $prototype: true    # PENDING FUNCTIONALITY * specifies to create stubs
+                            # =====================   on the prototype (future instance).
+                            #                       * otherwise classmethod stubs
+                            #                         would be created.
+                            # 
+
+        measureDepth: -> return 30
+
+        riseToSurface: (distance, finishedRising) -> 
+            distance.should.equal 30
+            finishedRising()
+
+        _openLens: ->
+
+            console.log """
+
+                * underscore denotes a spy function
+                * the original will be called after this
+                * both will receive the same arguments
+                    * reference args can probably be `tweaked`
+                        * just occurred to me now
+                            * have not verified...
+                                * could be useful
+                                    * could also confuze
+
+                * for the case of class instances, `@` a.k.a. `this` will 
+                  refer to the instance context and not this test context.
+
+            """
+
+    periscope = new Periscope()
+    periscope.up (error, eyehole) -> 
+
+        should.not.exist error
+        eyehole.should.be.an.instanceof EventEmitter
+        done()
+
+```
+
+### Complex Usage / Current Caveats
+
+For cases where the call chain being tested has an asynchronous step the `done()` can be put into the mock.
+
+```coffee
+it 'can stop the http server', (done, http, Server) -> 
+    
+    http.does 
+        createServer: ->
+            listen: (args...) -> args.pop()() # run last arg (blind callback)
+            close: -> done()
+
+    Server.create (server) -> server.stop()
+
+```
+
+* IMPORTANT 
+    * In these cases the test will timeout if the stub was not called as expected. 
+    * There will be no report of `http.createServer()` having not been called. 
+    * `ipso` currently has no way to learn of the timeout.
+    * Therefore it cannot reset the module (remove the stubs).
+    * This is only a problem if the module is used in other tests without injection (ie. per having also been 'required' onto the global scope)
+
+Previous stubs are flushed from **ALL** modules at **EVERY** injection
+
+```coffee
+    
+    beforeEach ipso (done, http) -> 
+
+        http.does createServer: -> 'mock server'
+        done()
+
+    it 'no longer has the stub in this test', (done, http) -> 
+
+        http.createServer().should.equal 'mock server' # fails
+
+```
+
+The successful approach is to set up ONLY the mocks in the hooks.
+
+```coffee
+    
+    before -> 
+        @mockServer = 
+            listen: ->
+            address: ->
+            close: ->
+
+    it 'should only ever stub inside the tests', ipso (facto, http) -> 
+
+        http.does createServer => @mockServer
+
+
+```
+
+
 
 
 
