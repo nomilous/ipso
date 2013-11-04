@@ -26,7 +26,7 @@ It can inject node modules.
 
 ```coffee
 
-it 'does something', ipso, (done, http) -> 
+it 'does something', ipso (done, http) -> 
 
     http.should.equal require 'http'
 
@@ -36,14 +36,14 @@ It creates a capacity to stub functions on injected modules.
 
 ```coffee
 
-it 'creates an http server', ipso, (done, http) -> 
+it 'creates an http server', ipso (done, http) -> 
 
     http.does createServer: -> 
     done()
 
 ```
 
-It uses mocha's JSON diff to display failure
+It uses mocha's JSON diff to display failure.
 
 ```json
 
@@ -60,6 +60,25 @@ It uses mocha's JSON diff to display failure
       9 | }
 
 ```
+
+The stub can return a mock.
+
+```coffee
+
+MyServer = require '../lib/my_server'
+
+it 'creates an http server and listens at opts.port', ipso (done, http) -> 
+
+    http.does 
+        createServer: -> 
+            listen: (port) -> 
+                port.should.equal 3000
+
+    MyServer.listen port: 3000
+    done()
+
+```
+
 
 
 
