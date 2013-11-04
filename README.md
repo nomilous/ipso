@@ -200,7 +200,9 @@ it 'can stop the http server', (done, http, Server) ->
     
     http.does 
         createServer: ->
-            listen: (args...) -> args.pop()() # run last arg (blind callback)
+            listen: (args...) -> 
+                process.nextTick args.pop() # blind callback lastarg(), 
+                                            # mimics async listen step
             close: -> done()
 
     Server.create (server) -> server.stop()
@@ -208,7 +210,7 @@ it 'can stop the http server', (done, http, Server) ->
 ```
 
 * IMPORTANT 
-    * In these cases the test will timeout if the stub was not called as expected. 
+    * In these cases the test will timeout if the stub or mock was not called as expected. 
     * (pending tighter integration with mocha)
         * There will be no report of `http.createServer()` having not been called. 
         * `ipso` currently has no way to learn of the timeout.
