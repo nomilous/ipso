@@ -20,7 +20,7 @@
 {compile}      = require 'coffee-script'
 colors         = require 'colors'
 program        = require 'commander'
-MochaRunner    = require './mocha_runner'
+# MochaRunner    = require './mocha_runner'
 keypress       = require 'keypress'
 keypress process.stdin
 
@@ -43,9 +43,8 @@ program.option '    --lib     [dir]',    'Specify alternate compile target.', 'l
 
 kids = []
 
-if mocha then testRunner = MochaRunner.create reporter: 'Dot'
-
-MochaRunner.on 'spec_event', (payload) -> console.log payload
+# if mocha then testRunner = MochaRunner.create reporter: 'Dot'
+# MochaRunner.on 'spec_event', (payload) -> console.log payload
 
 test = deferred ({resolve}, file) -> 
 
@@ -59,32 +58,31 @@ test = deferred ({resolve}, file) ->
         # there is no default yet
         #
 
-    console.log run: file
-
-    testRunner.run [file], resolve 
+    # console.log run: file
+    # testRunner.run [file], resolve 
 
 
     
-    # ipsoPath = normalize __dirname + '/ipso'
-    # bin      = normalize __dirname + '/../node_modules/.bin/mocha'
-    # args     = [ 
-    #     '--colors'
-    #     '--compilers', 'coffee:coffee-script'
-    #     '--require',   'should'
-    #     file 
-    # ]
+    ipsoPath = normalize __dirname + '/ipso'
+    bin      = normalize __dirname + '/../node_modules/.bin/mocha'
+    args     = [ 
+        '--colors'
+        '--compilers', 'coffee:coffee-script'
+        '--require',   'should'
+        file 
+    ]
 
-    # #
-    # # * TODO: consider posibilities behind spec report to facto
-    # #       * related notes below
-    # # 
+    #
+    # * TODO: consider posibilities behind spec report to facto
+    #       * related notes below
+    # 
 
-    # console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
-    # running = spawn bin, args, stdio: 'inherit'
-    # # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
-    # # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
+    console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    running = spawn bin, args, stdio: 'inherit'
+    # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
+    # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
 
-    # running.on 'exit', resolve
+    running.on 'exit', resolve
 
 compile = deferred ({resolve}) ->
 

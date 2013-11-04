@@ -5,8 +5,6 @@ colors = require 'colors'
 module.exports.watcher = (opts) -> 
 
     return unless opts.path? and opts.handler?
-    
-
     watchdir = process.cwd() + sep + opts.path
     
     try 
