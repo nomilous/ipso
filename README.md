@@ -292,7 +292,7 @@ it 'does many things to come', ipso (facto, ...) ->
 
 What metathings? 
 
-* well, ... (( a brief brainstorm suggested a Planet-sized Plethora of Possibility avidly awaits a plunge into **that** rabbit hole.
+* well, ... (( the brief brainstorm suggested a Planet-sized Plethora of Particularly Peachy Possibilities Perch Patiently Poised Pending a Plunge into **That** rabbit hole.
 
 
 cli
