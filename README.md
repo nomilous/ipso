@@ -32,7 +32,7 @@ it 'does something', ipso (done, http) ->
 
 ```
 
-It creates a capacity to stub functions on injected modules.
+It defines `.does()` on each injected module to stub with function expectations.
 
 ```coffee
 
@@ -43,17 +43,17 @@ it 'creates an http server', ipso (done, http) ->
 
 ```
 
-It uses mocha's JSON diff to display failure.
+It uses mocha's JSON diff to display failure to call the function.
 
 ```json
 
-      actual expected <----- with colours
+      actual expected
       
       1 | {
       2 |   "1": {
       3 |     "FuctionExpectations": {
       4 |       "Object.createServer()": {
-      5 |         "was called": truefalse , <----- with colours
+      5 |         "was called": truefalse ,
       6 |       }
       7 |     }
       8 |   }
@@ -61,23 +61,35 @@ It uses mocha's JSON diff to display failure.
 
 ```
 
-The stub can return a mock.
+The stub replaces the actual function on the module and can therefore return a suitable mock. 
 
 ```coffee
+http = require 'http'
+class MyServer
+    listen: (opts, handler) -> 
+        http.createServer(handler).listen opts.port
+```
 
-MyServer = require '../lib/my_server'
-
-it 'creates an http server and listens at opts.port', ipso (done, http) -> 
+```coffee
+it 'creates an http server and listens at opts.port', ipso (done, http, MyServer) -> 
 
     http.does 
         createServer: -> 
             listen: (port) -> 
                 port.should.equal 3000
 
-    MyServer.listen port: 3000
+    MyServer.listen port: 3000, (req, res) -> 
     done()
 
 ```
+
+You may have noticed that `MyServer` was also injected in the previous example.
+
+* The injector recurses `./lib` for the specified module.
+    * TODO: opts here
+* It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
+* It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
+* Local module injections can also be stubbed.
 
 
 
@@ -124,6 +136,21 @@ ipso: watching directory: ./src
 > info: socket.io started
 > Visit http://127.0.0.1:3001/debug?port=5860 to start debugging.
 >       =====================================
+```
+
+### Specific!ness
+
+It watches for ./src and ./spec changes and runs the changed.
+
+`ipso --mocha --src [dir] --spec [dir] --lib [dir]`
+
+* ./src changes will be compiled into ./lib/...
+* the corresponding test will then be run from ./spec/...
+* the followingly illustrated "path echo" **is assumed to ALWAYS be the case**
+```
+ lib/same/dirname/source_name.coffee
+spec/same/dirname/source_name_spec.coffee
+                             =====
 ```
 
 
