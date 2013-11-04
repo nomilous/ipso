@@ -92,7 +92,7 @@ it 'creates an http server and listens at opts.port', ipso (done, http, MyServer
     * TODO: opts here
 * It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
 * It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
-* Local module injections can also be stubbed.
+* These **Local Module Injections** can also be stubbed.
 
 
 It can create multiple function expectation stubs (and spies).
