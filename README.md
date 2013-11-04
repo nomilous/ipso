@@ -95,7 +95,7 @@ it 'creates an http server and listens at opts.port', ipso (done, http, MyServer
 * These **Local Module Injections** can also be stubbed.
 
 
-It can create multiple function expectation stubs (and spies).
+It can create multiple function expectation stubs ( **and spies** ).
 
 ```coffee
 
@@ -109,17 +109,16 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
             console.log """
 
-                * underscore denotes a spy function
-                * the original will be called after this
+                _underscore denotes a spy function
+                ==================================
+
+                * the original will be called after the spy (this function)
                 * both will receive the same arguments
                     * reference args can probably be `tweaked`
                         * just occurred to me now
                             * have not verified...
                                 * could be useful
                                     * could also confuze
-
-                * for the case of class instances, `@` a.k.a. `this` will 
-                  refer to the instance context and not this test context.
 
             """
 
@@ -142,12 +141,17 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
         measureDepth: -> return 30
 
-        riseToSurface: (distance, finishedRising) -> 
+        _riseToSurface: (distance, finishedRising) -> 
             distance.should.equal 30
-            finishedRising()
 
-        _openLens: (videoStream) -> 
-            videoStream.codec.should.equal πr²
+        _openLens: -> 
+            @videoStream.codec.should.equal πr²
+
+            #
+            # note: That `@` a.k.a. `this` refers to the instance context 
+            #       and not the test context. It therefore has access to
+            #       properties of the Periscope instance.
+            # 
 
 
     periscope = new Periscope codec: πr²
