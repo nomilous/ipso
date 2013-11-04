@@ -6,7 +6,6 @@ Injection decorator, for tests, with [Mocha](https://github.com/visionmedia/moch
 
 All examples in [coffee-script](http://coffeescript.org/).
 
-
 ipso
 ====
 
@@ -52,7 +51,7 @@ There is a cli.
 
 ### Highlight
 
-* It can quickly start up a node-inspector session on a v8 debugger socket.
+It can quickly start up a node-inspector session on a v8 debugger socket.
 
 ```
 $ ipso --mocha -e name
@@ -65,7 +64,6 @@ ipso: watching directory: ./src
 > inspect 3001 5860 lib/examples/basic.js
 > 
 > debugger listening on port 5860    <----------------------------
-> { TODO: { address: '0.0.0.0', family: 'IPv4', port: 3000 } }
 > Node Inspector v0.5.0
 > info: socket.io started
 > Visit http://127.0.0.1:3001/debug?port=5860 to start debugging.
