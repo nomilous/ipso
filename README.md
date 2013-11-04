@@ -35,7 +35,7 @@ it 'does something', ipso (done, http) ->
 * `done` will only contain the test resolver if the argument's signaure is literally "done" and is in the first position.
 
 
-It defines `.does()` on each injected module to stub with function expectations.
+It defines `.does()` on each injected module for use as a **stubber**.
 
 ```coffee
 
@@ -46,7 +46,7 @@ it 'creates an http server', ipso (done, http) ->
 
 ```
 
-It uses mocha's JSON diff to display failure to call the function.
+It uses mocha's JSON diff to display failure to call the stubbed function.
 
 ```json
 
