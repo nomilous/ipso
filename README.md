@@ -32,6 +32,9 @@ it 'does something', ipso (done, http) ->
 
 ```
 
+* `done` will only contain the test resolver if the argument's signaure is literally "done" and is in the first position.
+
+
 It defines `.does()` on each injected module to stub with function expectations.
 
 ```coffee
@@ -72,13 +75,6 @@ class MyServer
 
 ```coffee
 it 'creates an http server and listens at opts.port', ipso (done, http, MyServer) -> 
-                                                                            #
-                                                                            #
-                                                                            # PENDING FUNCTIONALITY
-                                                                            # =====================
-                                                                            # 
-                                                                            # - local module injection
-                                                                            # 
 
     http.does 
         createServer: -> 
@@ -90,7 +86,7 @@ it 'creates an http server and listens at opts.port', ipso (done, http, MyServer
 
 ```
 
-You may have noticed that `MyServer` was also injected in the previous example.
+**PENDING** You may have noticed that `MyServer` was also injected in the previous example.
 
 * The injector recurses `./lib` for the specified module.
     * TODO: opts here
@@ -99,7 +95,7 @@ You may have noticed that `MyServer` was also injected in the previous example.
 * Local module injections can also be stubbed.
 
 
-It can create multiple function expectation stubs.
+It can create multiple function expectation stubs (and spies).
 
 ```coffee
 
@@ -146,6 +142,34 @@ it 'can create multiple expectation stubs', ipso (done, Periscope) ->
 
 ```
 
+**PENDING** It supports injection of non-js-eval-able module names or cases where the local module search fails
+
+
+```coffee
+
+ipso = require 'ipso'
+ipso.configure
+    modules: 
+        ...
+        engine: 
+            require: 'engine.io'
+        Proxy:
+            require: './lib/proxy/server'
+        Core:
+            require: './lib/core/server'
+        ...
+
+...
+    
+    it 'can inject despite file basename collision and non-eval-able names', ipso (done, engine, Proxy, Core) -> 
+
+        #
+        # ...
+        #
+
+```
+
+
 ### Complex Usage / Current Caveats
 
 For cases where the call chain being tested has an asynchronous step the `done()` can be put into the mock.
@@ -164,12 +188,15 @@ it 'can stop the http server', (done, http, Server) ->
 
 * IMPORTANT 
     * In these cases the test will timeout if the stub was not called as expected. 
-    * There will be no report of `http.createServer()` having not been called. 
-    * `ipso` currently has no way to learn of the timeout.
-    * Therefore it cannot reset the module (remove the stubs).
-    * This is only a problem if the module is used in other tests without injection (ie. per having also been 'required' onto the global scope)
+    * (pending tighter integration with mocha)
+        * There will be no report of `http.createServer()` having not been called. 
+        * `ipso` currently has no way to learn of the timeout.
+            * Therefore it cannot reset the module (remove the stubs).
+            * This is only a problem if the module is used in other tests without injection (ie. per having also been 'required' onto the global scope)
 
 Previous stubs are flushed from **ALL** modules at **EVERY** injection
+    
+* this may be temporary (pending tighter integration with mocha)
 
 ```coffee
     
@@ -201,15 +228,47 @@ The successful approach is to set up ONLY the mocks in the hooks.
 
 ```
 
+It supports promises.
 
+```coffee
 
+it 'fails the test on the first rejection in the chain', ipso (done, Module) -> 
 
+    Module.functionThatReturnsAPromise()
+
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> done()
+
+```
+
+Ipso Facto
+
+```coffee
+
+it 'will do many things to come', ipso (facto, ...) -> 
+
+    facto[metathings]()
+
+    #
+    # facto() calls mocha's done() in the background
+    #
+
+```
+
+What metathings? 
+
+* well, ... (( a brief brainstorm suggested a Planet-sized Plethora of Possibility avidly awaits a plunge into **that** rabbit hole.
 
 
 cli
 ---
 
-There is a cli. 
+* There is a cli. 
+* It is tailored fairly tightly to my size and shape of process. 
+
+**However**, there are options:
 
 ```
 
@@ -231,7 +290,7 @@ There is a cli.
 
 ### Highlight
 
-It can quickly start up a node-inspector session on a v8 debugger socket.
+It can quickly start up a node-inspector session on a v8 debugger socket. It may at some point seamlessly attach to the running tests, with `Module.does(...)` specifying breakpoints. (that would be very! very! nice...)
 
 ```
 $ ipso --mocha -e name
@@ -264,221 +323,3 @@ It watches for ./src and ./spec changes and runs the changed.
 spec/same/dirname/source_name_spec.coffee
                              =====
 ```
-
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```
-
-
-### mode nodule injection
-
-```coffee
-# thing = require 'thing'
-
-it 'does something for which it needs the thing', ipso (done, thing) -> 
-
-    #
-    # then, as usual...
-    #
-
-    thing with: 'stuff', (err) -> 
-
-        err.message.should.equal 'incorrect stuff'
-        done()
-
-```
-
-* `done` can only be injected at position1
-* it must literally be called ""done""
-* there is currently no way to inject node modules with-dashes.or dots in their names.
-* injecting a module that is not already installed will not automatically install it in the 'background' and conveniently update the package file, yet.
-
-
-### spectateable mode nodule injection
-
-```coffee
-
-it 'starts http listening at config.api.port', ipso (facto, http) -> 
-
-    http.does 
-
-        #
-        # create active stub(s) on http object
-        #
-
-        createServer: ->
-
-            #
-            # stubbed function returns "mock" server that defines listen()
-            #
-
-            listen: (port) -> 
-
-                #
-                # test is resolved if **something** calls listen
-                #
-
-                port.should.equal 2999
-                facto()
-
-
-    server api: port: process.env.API_PORT
-
-```
-
-* test arg1 must literally be called ""facto""
-* `thing.does _function: ->` creates as spy on `thing.function`
-* BUG: stubbed module functions are not cleaned up in cases where tests timeout
-* SHORTCOMING: function expectations only work correctly when created in `it()`s
-
-
-### using promises
-
-#### it solves the chain problem
-
-These (↓) tests do not fail... Instead they timeout.
-
-```coffee
-
-it 'does something ...', (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
-        done()
-
-```
-
-The problem is that `should` is throwing an [`AssertionError`](http://nodejs.org/api/assert.html) that is being caught by the promise handler instead of the `it()` function. This catch is a necessary component of the promise API - enabling `then()` chains to reject as designed.
-
-One possible solution is to chain in the test...
-
-```coffee
-
-it 'does something ...', (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
-        done()
-
-    .then (->), done
-
-    #
-    # with the second done as the rejection handler, resulting in the throw being
-    # passed to mocha's test resolver, causing the fail to be received by that 
-    # alternative to it's regular catcher.
-    #
-
-```
-
-ipso does the chain internally if the test returns a promise
-
-
-```coffee
-
-it 'fails without timeout', ipso (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
-        done()
-
-        #
-        # Note: this will still timeout if functionThatReturnsAPromise() rejects 
-        # TODO: it still times out on longer chains! grrr
-        #
-
-```
-
-### `LocalNodule` injection
-
-```coffee
-
-
-```
-
