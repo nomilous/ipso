@@ -247,7 +247,7 @@ The successful approach is to set up ONLY the mocks in the hooks.
 
     it 'should only ever stub inside the tests', ipso (facto, http, MyServer) -> 
 
-        http.does createServer => @mockServer
+        http.does createServer: => @mockServer
 
         (new MyServer).start => 
 
