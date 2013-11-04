@@ -161,7 +161,7 @@ ipso.configure
 
 ...
     
-    it 'can inject despite file basename collision and non-eval-able names', ipso (done, engine, Proxy, Core) -> 
+    it 'can inject by config', ipso (done, engine, Proxy, Core) -> 
 
         #
         # ...
