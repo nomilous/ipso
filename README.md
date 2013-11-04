@@ -9,8 +9,7 @@ All examples in [coffee-script](http://coffeescript.org/).
 ipso
 ====
 
-Injection Decorator
--------------------
+### Injection Decorator
 
 It is placed in front of the test function.
 
@@ -30,6 +29,35 @@ It can inject node modules.
 it 'does something', ipso, (done, http) -> 
 
     http.should.equal require 'http'
+
+```
+
+It creates a capacity to stub functions on injected modules.
+
+```coffee
+
+it 'creates an http server', ipso, (done, http) -> 
+
+    http.does createServer: -> 
+    done()
+
+```
+
+It uses mocha's JSON diff to display failure
+
+```json
+
+      actual expected <----- with colours
+      
+      1 | {
+      2 |   "1": {
+      3 |     "FuctionExpectations": {
+      4 |       "Object.createServer()": {
+      5 |         "was called": truefalse , <----- with colours
+      6 |       }
+      7 |     }
+      8 |   }
+      9 | }
 
 ```
 
