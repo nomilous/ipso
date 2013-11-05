@@ -1,6 +1,7 @@
 ipso = require '../lib/ipso'
 should  = require 'should'
 {deferred} = require 'also'
+Loader = require '../lib/loader'
 
 
 
@@ -36,6 +37,11 @@ describe 'ipso', ipso (http) ->
             should.exist @resolvingPromise
             done()
 
+
+        it 'initializes loader with starting cwd', ipso (done) ->
+
+            Loader._test().dir.should.equal process.cwd()
+            done()
 
 
         it 'passes from within the promise resolution / fullfillment handler', (done) -> 

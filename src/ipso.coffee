@@ -1,6 +1,6 @@
 {util}             = require 'also'
 facto              = require 'facto'
-loader             = require './loader'
+Loader             = require './loader'
 does               = require 'does'
 {spectate, assert} = does does: mode: 'spec'
 
@@ -17,6 +17,18 @@ does               = require 'does'
 #     # 
 #     console.log HUH: payload
 
+
+config = 
+
+    #
+    # ipso should be run in repo root
+    # ===============================
+    #
+
+    dir: process.cwd()
+    modules: {}
+
+{loadModules} = Loader.create config
 
 module.exports = ipso = (fn) -> 
     
@@ -89,7 +101,7 @@ module.exports = ipso = (fn) ->
 
 
             
-            return loader( spectate, fnArgsArray ).then(
+            return loadModules( spectate, fnArgsArray ).then(
 
                 #
                 # * loader resolved with list of Modules refs to inject

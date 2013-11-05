@@ -1,9 +1,21 @@
 {parallel} = require 'also'
 
-module.exports = (spectate, fnArgsArray) ->
+lastInstance          = undefined
+module.exports._test  = -> lastInstance
+module.exports.create = (config = {}) ->
 
-    parallel( for nodule in fnArgsArray
+    lastInstance = local = 
 
-        do (nodule) -> -> spectate require nodule
+        dir: config.dir
 
-    )
+        loadModules: (spectate, fnArgsArray) ->
+
+            parallel( for nodule in fnArgsArray
+
+                do (nodule) -> -> spectate require nodule
+
+            )
+
+    return api = 
+
+        loadModules: local.loadModules
