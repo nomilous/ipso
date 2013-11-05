@@ -282,7 +282,7 @@ Ipso Facto
 
 it 'does many things to come', ipso (facto, ...) -> 
 
-    facto[metathings]()
+    facto[MetaThings]()
 
     #
     # facto() calls mocha's done() in the background
@@ -290,9 +290,14 @@ it 'does many things to come', ipso (facto, ...) ->
 
 ```
 
-What metathings? 
+What MetaThings? 
 
 * well, ... (( the brief brainstorm suggested a Planet-sized Plethora of Particularly Peachy Possibilities Perch Patiently Poised Pending a Plunge into **That** rabbit hole.
+
+
+And who is Unthahorsten?
+
+* And why was he doing the equivalent of standing in the equivalent of a laboratory.
 
 
 cli
