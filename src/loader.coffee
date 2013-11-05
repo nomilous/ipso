@@ -8,11 +8,25 @@ module.exports.create = (config = {}) ->
 
         dir: config.dir
 
-        loadModules: (spectate, fnArgsArray) ->
+        upperCase: (string) -> 
 
-            parallel( for nodule in fnArgsArray
+            try char = string[0].charCodeAt 0
+            catch error
+                return false
+            return true if char > 64 and char < 91
+            return false
 
-                do (nodule) -> -> spectate require nodule
+
+        loadModule: (name) -> 
+
+            return require name unless local.upperCase name[0]
+
+
+        loadModules: (fnArgsArray, spectate) ->
+
+            return promise = parallel( for Module in fnArgsArray
+
+                do (Module) -> -> spectate local.loadModule Module
 
             )
 

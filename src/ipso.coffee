@@ -101,7 +101,7 @@ module.exports = ipso = (fn) ->
 
 
             
-            return loadModules( spectate, fnArgsArray ).then(
+            return loadModules( fnArgsArray, spectate ).then(
 
                 #
                 # * loader resolved with list of Modules refs to inject
