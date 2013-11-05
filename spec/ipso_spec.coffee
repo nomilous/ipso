@@ -44,6 +44,19 @@ describe 'ipso', ipso (http) ->
             done()
 
 
+        it 'can assign module list into loader', (done) -> 
+
+            ipso.modules 
+                tag1: require: '../lib/require/argument'
+                tag2: require: 'module-name'
+
+            Loader._test().modules.should.eql 
+                tag1: require: '../lib/require/argument'
+                tag2: require: 'module-name'
+
+            done()
+
+
         it 'passes from within the promise resolution / fullfillment handler', (done) -> 
 
             @resolvingPromise().then (result) -> 

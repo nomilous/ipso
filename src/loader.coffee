@@ -2,11 +2,12 @@
 
 lastInstance          = undefined
 module.exports._test  = -> lastInstance
-module.exports.create = (config = {}) ->
+module.exports.create = (config) ->
 
     lastInstance = local = 
 
         dir: config.dir
+        modules: config.modules
 
         upperCase: (string) -> 
 
@@ -19,7 +20,8 @@ module.exports.create = (config = {}) ->
 
         loadModule: (name) -> 
 
-            return require name unless local.upperCase name[0]
+            return require local.modules[name].require if try local.modules[name].require?
+            return require name unless local.upperCase name
 
 
         loadModules: (fnArgsArray, spectate) ->

@@ -20,9 +20,21 @@ describe 'Loader', ->
 
     it 'loads node_modules if starting with lowercase', ipso (done) -> 
 
-        instance = Loader.create dir: 'DIR'
+        instance = Loader.create dir: 'DIR', modules: {}
         instance.loadModules ['http'], (http) -> 
 
             http.should.equal require 'http'
+            done()
+
+    it 'loads specified modules by tag', ipso (done) -> 
+
+        instance = Loader.create dir: 'DIR', modules: Inspector: require: '../lib/inspector'
+
+        instance.loadModules( ['http', 'Inspector'], (m) -> m )
+
+        .then ([http, Inspector]) -> 
+
+            http.should.equal require 'http'
+            Inspector.should.equal require '../lib/inspector'
             done()
 

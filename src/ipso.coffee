@@ -142,6 +142,12 @@ module.exports = ipso = (fn) ->
             process.nextTick -> done() if done?
             try promise.then (->), done
 
+Object.defineProperty ipso, 'modules', 
+    get: -> (list) -> 
+        for tag of list 
+            config.modules[tag] = list[tag]
+        return
+
 
 module.exports.once = (fn) -> do (done = false) -> ->
     
