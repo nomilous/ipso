@@ -94,27 +94,6 @@ You may have noticed that `MyServer` was also injected in the previous example.
 * These **Local Module Injections** can also be stubbed.
 
 
-**PENDING** It can `save()` newly written stubs into `./src/**/*` as "first draft"
-
-```coffee
-
-it 'can detect a non existant LocalModule being injected', ipso (done, NewModuleName) -> 
-
-    #
-    # when ./src/**/* contains no file called new_module_name.coffee
-    # --------------------------------------------------------------
-    # 
-    # * a standin module is injected
-    # * a warning is displayed
-    # * NewModuleName.does() can still be used to define stubs
-    # * NewModuleName.$ipso.save( 'tag', 'relative/path' ) can use template
-    #   defined in ~/.ipso/templates/tag and the function stubs to create
-    #   the new source file at ./src/relative/path/new_module_name.coffee
-    # 
-
-
-```
-
 It can create multiple function expectation stubs ( **and spies** ).
 
 ```coffee
@@ -149,6 +128,27 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
 ```
 
+
+**PENDING** It can `save()` newly written stubs into `./src/**/*` as "first draft"
+
+```coffee
+
+it 'can detect a non existant LocalModule being injected', ipso (done, NewModuleName) -> 
+
+    #
+    # when ./src/**/* contains no file called new_module_name.coffee
+    # --------------------------------------------------------------
+    # 
+    # * a standin module is injected
+    # * a warning is displayed
+    # * NewModuleName.does() can still be used to define stubs
+    # * NewModuleName.$ipso.save( 'tag', 'relative/path' ) can use template
+    #   defined in ~/.ipso/templates/tag and the function stubs to create
+    #   the new source file at ./src/relative/path/new_module_name.coffee
+    # 
+
+
+```
 
 **PENDING** It can create future instance stubs (on the prototype)
 
