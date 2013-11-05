@@ -163,7 +163,7 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```
 
-**PENDING** It supports injection of non-js-eval-able module names or cases where the local module search fails
+ It supports injection of non-js-eval-able module names or cases where the local module search fails
 
 
 ```coffee

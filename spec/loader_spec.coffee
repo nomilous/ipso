@@ -1,5 +1,6 @@
 Loader = require '../lib/loader'
 ipso   = require '../lib/ipso'
+{sep} = require 'path'
 
 describe 'Loader', -> 
 
@@ -29,12 +30,30 @@ describe 'Loader', ->
     it 'loads specified modules by tag', ipso (done) -> 
 
         instance = Loader.create dir: __dirname, modules: Inspector: require: '../lib/inspector'
-
         instance.loadModules( ['http', 'Inspector'], (m) -> m )
-
         .then ([http, Inspector]) -> 
 
             http.should.equal require 'http'
             Inspector.should.equal require '../lib/inspector'
             done()
 
+    it 'recurses ./lib for underscored name', (done) -> 
+
+        instance = Loader.create dir: process.cwd() 
+        
+        Loader._test().recurse = (name, path) -> 
+            name.should.equal 'module_name'
+            path.should.equal process.cwd() + sep + 'lib'
+            done()
+
+        instance.loadModules( ['ModuleName'], (m) -> m )
+
+
+    it 'finds match', (done) -> 
+
+        instance = Loader.create dir: process.cwd() 
+        instance.loadModules( ['ModuleName'], (m) -> m )
+        .then ([ModuleName]) ->
+
+            ModuleName.test1().should.equal 1
+            done()

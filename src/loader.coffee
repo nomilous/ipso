@@ -1,5 +1,7 @@
 {parallel}  = require 'also'
-{normalize, sep} = require 'path'
+{normalize, sep, dirname} = require 'path'
+{underscore} = require 'inflection'
+{readdirSync,lstatSync} = require 'fs'
 
 lastInstance          = undefined
 module.exports._test  = -> lastInstance
@@ -18,6 +20,24 @@ module.exports.create = (config) ->
             return true if char > 64 and char < 91
             return false
 
+        recurse: (name, path, matches) -> 
+
+            for fd in readdirSync path
+                file = path + sep + fd
+                stat = lstatSync file
+                if stat.isDirectory()
+                    local.recurse name, file, matches
+                    continue
+                if fd.match new RegExp "^#{name}.[js|coffee]"
+                    matches.push dirname(file) + sep + name
+
+        find: (name) -> 
+
+            matches = []
+            try local.recurse underscore(name), local.dir + sep + 'lib', matches
+            try local.recurse underscore(name), local.dir + sep + 'app', matches
+            if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}"
+            return matches[0]
 
         loadModule: (name) -> 
 
@@ -26,6 +46,7 @@ module.exports.create = (config) ->
                 return require path
 
             return require name unless local.upperCase name
+            return require path if path = local.find name 
 
 
         loadModules: (fnArgsArray, spectate) ->
