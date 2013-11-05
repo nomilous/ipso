@@ -171,11 +171,11 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 ipso = require('ipso').modules 
     engine: 
         require: 'engine.io'
-    Proxy: 
-        require: './lib/proxy/server'
-    Core: 
-        require: './lib/core/server'
-
+    Proxy:                              #
+        require: './lib/proxy/server'   # * Because the filenames are the same
+    Core:                               #   so injecting `Server` will fail.
+        require: './lib/core/server'    # 
+                                        #
 ...
     
     it 'can inject by config', ipso (done, engine, Proxy, Core) -> 
@@ -186,8 +186,8 @@ ipso = require('ipso').modules
 
 ```
 * IMPORTANT
-    * `require` in the above config is a subkey, and not the require function itself
-    * The path should be relative to `process.cwd()` NOT `__dirname`
+    * `require` in the above config is a subkey, and **not the require function itself**
+    * The path should be relative to `process.cwd()`, not `__dirname`
 
 
 
