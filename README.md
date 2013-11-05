@@ -86,14 +86,34 @@ it 'creates an http server and listens at opts.port', ipso (done, http, MyServer
 
 ```
 
-**PENDING** You may have noticed that `MyServer` was also injected in the previous example.
+You may have noticed that `MyServer` was also injected in the previous example.
 
-* The injector recurses `./lib` and './app' for the specified module.
-    * TODO: opts here
+* The injector recurses `./lib` and `./app` for the specified module.
 * It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
 * It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
 * These **Local Module Injections** can also be stubbed.
 
+
+**PENDING** It can `save()` newly written stubs into `./src/**/*` as "first draft"
+
+```coffee
+
+it 'can detect a non existant LocalModule being injected', ipso (done, NewModuleName) -> 
+
+    #
+    # when ./src/**/* contains no file called new_module_name.coffee
+    # --------------------------------------------------------------
+    # 
+    # * a standin module is injected
+    # * a warning is displayed
+    # * NewModuleName.does() can still be used to define stubs
+    # * NewModuleName.$ipso.save( 'tag', 'relative/path' ) can use template
+    #   defined in ~/.ipso/templates/tag and the function stubs to create
+    #   the new source file at ./src/relative/path/new_module_name.coffee
+    # 
+
+
+```
 
 It can create multiple function expectation stubs ( **and spies** ).
 

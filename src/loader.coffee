@@ -2,6 +2,7 @@
 {normalize, sep, dirname} = require 'path'
 {underscore} = require 'inflection'
 {readdirSync,lstatSync} = require 'fs'
+require 'colors'
 
 lastInstance          = undefined
 module.exports._test  = -> lastInstance
@@ -39,21 +40,49 @@ module.exports.create = (config) ->
             if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}, use ipso.modules"
             return matches[0]
 
-        loadModule: (name) -> 
+        loadModule: (name, does) -> 
 
             if path = (try local.modules[name].require)
                 if path[0] is '.' then path = normalize local.dir + sep + path
                 return require path
 
             return require name unless local.upperCase name
-            return require path if path = local.find name 
+            return require path if path = local.find name
+            console.log 'ipso: ' + "warning: missing module #{name}".yellow
+            return {
+
+                $ipso: 
+                    PENDING: true
+                    module: name
+                    save: (path) -> console.log """
+
+                        #
+                        #   NonExistantModule.$ipso.save(templateTag, pa/th) 
+                        #   ------------------------------------------------
+                        #   
+                        #   Not yet implemented.
+                        # 
+                        #   * (for never having to write anything twice)
+                        #   * for cases where ipso detects the injection of a not yet existing module
+                        #   * can save the newly written stub to ./src/path/ as the ""first draft"" 
+                        #   * templates from ~/.ipso/templates
+                        #   * pending `does` to expose access to expectations for a list of functions to create
+                        #                                                         -----------------------------
+                        # 
+                        #   
+                        #             perhaps there's an even slicker way to do it?
+                        #  
+
+                    """.green
+
+            }
 
 
-        loadModules: (fnArgsArray, spectate) ->
+        loadModules: (fnArgsArray, does) ->
 
             return promise = parallel( for Module in fnArgsArray
 
-                do (Module) -> -> spectate local.loadModule Module
+                do (Module) -> -> does.spectate local.loadModule Module, does
 
             )
 

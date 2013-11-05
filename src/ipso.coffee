@@ -1,8 +1,8 @@
-{util}             = require 'also'
-facto              = require 'facto'
-Loader             = require './loader'
-does               = require 'does'
-{spectate, assert} = does does: mode: 'spec'
+{util}  = require 'also'
+facto   = require 'facto'
+Loader  = require './loader'
+Does    = require 'does'
+does    = Does does: mode: 'spec'
 
 # #
 # # spec events into does()
@@ -75,7 +75,7 @@ module.exports = ipso = (fn) ->
 
             inject.push arg1 = (metadata) -> 
 
-                assert( done ).then( 
+                does.assert( done ).then( 
 
                     (result) -> 
 
@@ -101,7 +101,7 @@ module.exports = ipso = (fn) ->
 
 
             
-            return loadModules( fnArgsArray, spectate ).then(
+            return loadModules( fnArgsArray, does ).then(
 
                 #
                 # * loader resolved with list of Modules refs to inject
