@@ -104,23 +104,3 @@ describe 'ipso', ipso (http) ->
             facto()
 
 
-        it '[FAILING IS PASSING] still fails no matter how long the chain', ipso (done) -> 
-
-            @resolvingPromise()
-
-            .then (result) => @resolvingPromise()
-            .then (result) => @resolvingPromise()
-            .then (result) => 
-
-                # true.should.equal 'THIS EARLY FAIL WORKS TOO'
-                @resolvingPromise()
-
-            .then (result) => @resolvingPromise()
-            .then (result) => @resolvingPromise()
-            .then (result) => 
-
-                true.should.equal 'this is expected to fail'
-                done()
-
-
-

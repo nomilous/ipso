@@ -1,5 +1,6 @@
-{util, parallel}   = require 'also'
+{util}             = require 'also'
 facto              = require 'facto'
+loader             = require './loader'
 does               = require 'does'
 {spectate, assert} = does does: mode: 'spec'
 
@@ -17,72 +18,50 @@ does               = require 'does'
 #     console.log HUH: payload
 
 
-
 module.exports = ipso = (fn) -> 
     
-    fnArgs = util.argsOf fn
-    if fnArgs.length == 0 
+    fnArgsArray = util.argsOf fn
+    if fnArgsArray.length == 0 
 
         #
-        # * no args defined on test function signature (ie. synchronous test)
-        # * return a function to mocha's it()
-        # * when mocha calls this function,, this function calls the original test function
-        # * and preserves the context (@)
-        # 
+        # No args passed to the test function
+        # -----------------------------------
+        #
 
         return -> fn.call @
-
-    #
-    # * got args on the test function
-    # * return a function to it() that accepts the test resolver
-    # 
     
-    (done) -> 
+
+    return (done) -> 
 
         #
-        # * when mocha calls this function 'to run the test', this function 
+        # Test function has arguments
+        # ---------------------------
+        #
+        # * Return this function for mocha to run as the test
+        #
+        # * When mocha calls this function 'to run the test', this function 
         #   calls the original test function
         #
-
+        # * Tests created with 'done' or 'facto' at arg1 receive spectatable modules
+        # 
         #
-        # Tests created with 'done' or 'facto' at arg1 receive spectatable modules
-        # ------------------------------------------------------------------------
-        #
-        # eg
-        # 
-        #     it 'does something', ipso (facto, something) -> 
-        #  
-        #         something.does 
-        # 
-        #             functionStub: -> 
-        #                 # replaces original (optionally return mock)
-        # 
-        #             _functionSpy: -> 
-        #                 # called ahead of original
+        #      eg.
+        #           it 'does something', ipso (facto, something) -> 
+        #               something.does 
+        #                   functionStub: -> 
+        #                       # replaces original (optionally return mock)
+        #                   _functionSpy: -> 
+        #                       # called ahead of original
         # 
         # 
 
         inject  = []
 
-        if fnArgs[0] is 'done' or fnArgs[0] is 'facto' 
+        if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
-            fnArgs.shift()
+            fnArgsArray.shift()
 
-            #
-            # * first injected argument is the test resolver
-            # 
-
-            inject.push (metadata) -> 
-
-                #
-                # TODO: consider posibilities of assert output also being
-                #       directed into facto()
-                #
-
-                #
-                # * hand the mocha test resolver into does.assert to perform 
-                #   any necessary raisins
-                #
+            inject.push arg1 = (metadata) -> 
 
                 assert( done ).then( 
 
@@ -92,7 +71,8 @@ module.exports = ipso = (fn) ->
                         # * assert does not call done if nothing failed
                         #
 
-                        if fnArgs[0] is 'facto' then facto metadata
+                        if fnArgsArray[0] is 'facto' then facto metadata
+                        
                         done()
 
                     (error) -> 
@@ -101,52 +81,54 @@ module.exports = ipso = (fn) ->
                         # * assert already called done - to fail the mocha test
                         #
 
-                        if fnArgs[0] is 'facto' then facto metadata
+                        if fnArgsArray[0] is 'facto' then facto metadata
 
                     (notify) -> 
 
                 )
+
+
             
+            return loader( spectate, fnArgsArray ).then(
 
-            return parallel( for nodule in fnArgs
+                #
+                # * loader resolved with list of Modules to inject
+                #
 
-                do (nodule) -> -> spectate require nodule
+                (Modules) => 
 
-            ).then(
-
-                (nodules) => 
-
-                    inject.push nodule for nodule in nodules
+                    inject.push argN = Module for Module in Modules
                     fn.apply @, inject
+
+                #
+                # * loader rejection into done() - error loading module
+                #
                     
                 done
 
             ).then (->), done
-
+ 
 
         else 
 
-            inject.push require nodule for nodule in fnArgs
+            #
+            # not (done,...) or (facto,...)
+            # -----------------------------
+            # 
+            # * Injected modules do not define `.does()` 
+            #
+
+            inject.push require nodule for nodule in fnArgsArray
             promise = fn.apply @, inject
 
             #
-            # * test has not ""asked"" for 'done' but mocha has injected because
+            # * Test has not ""asked"" for 'done' but mocha has injected because
             #   arguments (modules to be injected) are present - call it on next
             #   tick to mimick synchronous test
-            # 
+            #
 
-            process.nextTick -> done() if done? #  unless fnArgs[0] is 'facto'
-
-
-        #
-        # * if the test returned a promise, chain to catch possible 
-        #   failure in the promise rejection handler
-        # 
-        # * noop the resolution handler to let the test call done()
-        #   without the "multiple done()'s were called" error
-        #
-
-        if promise? and promise.then? then promise.then (->), done
+            process.nextTick -> done() if done?
+            try promise.then (->), done
 
 
 module.exports.once = (fn) -> do (done = false) -> ->
