@@ -36,7 +36,7 @@ module.exports.create = (config) ->
             matches = []
             try local.recurse underscore(name), local.dir + sep + 'lib', matches
             try local.recurse underscore(name), local.dir + sep + 'app', matches
-            if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}"
+            if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}, use ipso.modules"
             return matches[0]
 
         loadModule: (name) -> 

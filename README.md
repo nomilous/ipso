@@ -88,7 +88,7 @@ it 'creates an http server and listens at opts.port', ipso (done, http, MyServer
 
 **PENDING** You may have noticed that `MyServer` was also injected in the previous example.
 
-* The injector recurses `./lib` for the specified module.
+* The injector recurses `./lib` and './app' for the specified module.
     * TODO: opts here
 * It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
 * It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
