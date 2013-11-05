@@ -108,7 +108,7 @@ module.exports = ipso = (fn) ->
                 )
             
 
-            promise = parallel( for nodule in fnArgs
+            return parallel( for nodule in fnArgs
 
                 do (nodule) -> -> spectate require nodule
 
@@ -119,13 +119,9 @@ module.exports = ipso = (fn) ->
                     inject.push nodule for nodule in nodules
                     fn.apply @, inject
                     
-
                 done
 
-            )
-
-            if promise? and promise.then? then promise.then (->), done
-            return
+            ).then (->), done
 
 
         else 

@@ -50,10 +50,12 @@ describe 'ipso', ipso (http) ->
 
         it '[FAILING IS PASSING] fails from within the promise resolution / fullfillment handler', ipso (done) -> 
 
-            @resolvingPromise().then (result) -> 
+            @resolvingPromise()
+
+            .then (result) => @resolvingPromise()
+            .then (result) -> 
 
                 true.should.equal 'this is expected to fail'
-
 
 
         it 'injects mode nodules', ipso (done, mocha) -> 

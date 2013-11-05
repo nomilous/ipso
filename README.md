@@ -168,17 +168,15 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```coffee
 
-ipso = require 'ipso'
-ipso.configure
-    modules: 
-        ...
-        engine: 
-            require: 'engine.io'
-        Proxy:
-            require: './lib/proxy/server'
-        Core:
-            require: './lib/core/server'
-        ...
+ipso = require('ipso').modules 
+    ...
+    engine: 
+        require: 'engine.io'
+    Proxy: 
+        require: './lib/proxy/server'
+    Core: 
+        require: './lib/core/server'
+    ...
 
 ...
     
@@ -265,14 +263,14 @@ It supports promises.
 
 ```coffee
 
-it 'fails the test on the first rejection in the chain', ipso (done, Module) -> 
+it 'fails the test on the first rejection in the chain', ipso (facto, Module) -> 
 
     Module.functionThatReturnsAPromise()
 
     .then -> Module.functionThatReturnsAPromise()
     .then -> Module.functionThatReturnsAPromise()
     .then -> Module.functionThatReturnsAPromise()
-    .then -> done()
+    .then -> facto()
 
 ```
 
