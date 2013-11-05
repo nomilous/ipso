@@ -92,7 +92,7 @@ module.exports = ipso = (fn) ->
             return loader( spectate, fnArgsArray ).then(
 
                 #
-                # * loader resolved with list of Modules to inject
+                # * loader resolved with list of Modules refs to inject
                 #
 
                 (Modules) => 
