@@ -28,7 +28,7 @@ describe 'Loader', ->
 
     it 'loads specified modules by tag', ipso (done) -> 
 
-        instance = Loader.create dir: 'DIR', modules: Inspector: require: '../lib/inspector'
+        instance = Loader.create dir: __dirname, modules: Inspector: require: '../lib/inspector'
 
         instance.loadModules( ['http', 'Inspector'], (m) -> m )
 

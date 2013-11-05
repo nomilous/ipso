@@ -142,11 +142,14 @@ module.exports = ipso = (fn) ->
             process.nextTick -> done() if done?
             try promise.then (->), done
 
+
 Object.defineProperty ipso, 'modules', 
     get: -> (list) -> 
         for tag of list 
+            unless list[tag].require?
+                throw new Error 'ipso.module expects { tagName: { require: "path/or/name" } }'
             config.modules[tag] = list[tag]
-        return
+        return ipso
 
 
 module.exports.once = (fn) -> do (done = false) -> ->

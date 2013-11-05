@@ -1,4 +1,5 @@
-{parallel} = require 'also'
+{parallel}  = require 'also'
+{normalize, sep} = require 'path'
 
 lastInstance          = undefined
 module.exports._test  = -> lastInstance
@@ -20,7 +21,10 @@ module.exports.create = (config) ->
 
         loadModule: (name) -> 
 
-            return require local.modules[name].require if try local.modules[name].require?
+            if path = (try local.modules[name].require)
+                if path[0] is '.' then path = normalize local.dir + sep + path
+                return require path
+
             return require name unless local.upperCase name
 
 

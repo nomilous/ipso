@@ -169,14 +169,12 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 ```coffee
 
 ipso = require('ipso').modules 
-    ...
     engine: 
         require: 'engine.io'
     Proxy: 
         require: './lib/proxy/server'
     Core: 
         require: './lib/core/server'
-    ...
 
 ...
     
@@ -187,6 +185,10 @@ ipso = require('ipso').modules
         #
 
 ```
+* IMPORTANT
+    * `require` in the above config is a subkey, and not the require function itself
+    * The path should be relative to `process.cwd()` NOT `__dirname`
+
 
 
 ### Complex Usage / Current Caveats

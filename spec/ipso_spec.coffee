@@ -57,6 +57,33 @@ describe 'ipso', ipso (http) ->
             done()
 
 
+        it 'throws error if modules is loaded into tag', (done) -> 
+
+            try ipso.modules 
+                tag2: require 'http'
+
+            catch error
+                error.message.should.equal 'ipso.module expects { tagName: { require: "path/or/name" } }'
+                done()
+
+        it 'throws error if require is not a subkey', (done) -> 
+
+            try ipso.modules 
+                tag2: erquire:'http'
+
+            catch error
+                error.message.should.equal 'ipso.module expects { tagName: { require: "path/or/name" } }'
+                done()
+
+        it 'ipso.modules returns ipso', (done) -> 
+
+            ipso.modules 
+                tag: require: 'moo'
+
+            .should.equal ipso
+            done()
+
+
         it 'passes from within the promise resolution / fullfillment handler', (done) -> 
 
             @resolvingPromise().then (result) -> 
