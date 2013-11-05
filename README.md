@@ -358,6 +358,6 @@ It watches for ./src and ./spec changes and runs the changed.
 * the followingly illustrated "path echo" **is assumed to ALWAYS be the case**
 
 ```
- lib/same/dirname/source_name.coffee
+ src/same/dirname/source_name.coffee
 spec/same/dirname/source_name_spec.coffee
 ```
