@@ -1,6 +1,7 @@
 {util}  = require 'also'
 facto   = require 'facto'
 Loader  = require './loader'
+colors  = require 'colors'
 Does    = require 'does'
 does    = Does does: mode: 'spec'
 
@@ -70,12 +71,10 @@ module.exports = ipso = (testFunction) ->
 
                 (error) -> 
 
-                    console.log  error
+                    console.log 'ipso: ' + error.message.red
 
             )
-
-
-
+            
     return (done) -> 
 
         #
