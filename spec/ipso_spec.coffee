@@ -1,6 +1,6 @@
 ipso = require '../lib/ipso'
 should  = require 'should'
-{deferred} = require 'also'
+{deferred, util} = require 'also'
 Loader = require '../lib/loader'
 
 
@@ -20,6 +20,24 @@ describe 'ipso', ->
 
             # console.log @resolvingPromise
 
+
+        context 'injection for synchronous tests', -> 
+
+            it 'returns a function without arguments if no "done"', (done) -> 
+
+                fn = ipso (zlib, net) -> 
+                args = util.argsOf fn
+                args.should.eql []
+                done()
+
+        context 'injection for asynchronous tests', -> 
+
+            it 'returns a function with done as only argument if "done"', (done) -> 
+
+                fn = ipso (done, zlib, net) -> 
+                args = util.argsOf fn
+                args.should.eql ['done']
+                done()
 
         context 'it can inject into context', ipso (http) -> 
 
