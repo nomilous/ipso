@@ -30,18 +30,51 @@ config =
 
 {loadModules} = Loader.create config
 
-module.exports = ipso = (fn) -> 
+module.exports = ipso = (testFunction) -> 
     
-    fnArgsArray = util.argsOf fn
+    fnArgsArray = util.argsOf testFunction
+
+    inject = []
+
     if fnArgsArray.length == 0 
 
         #
         # No args passed to the test function
         # -----------------------------------
         #
+        # * Return a function to mocha that calls the test function when called
+        # 
 
-        return -> fn.call @
-    
+        return -> testFunction.call @
+
+    else if fnArgsArray[0] isnt 'done' and fnArgsArray[0] isnt 'facto' 
+
+        #
+        # Test function has arguments but not done or facto
+        # -------------------------------------------------
+        # 
+        # * Return a test function but without arguments so that mocha
+        #   does not inject the test resolver.
+        # 
+        # * All args are assumed to be injection tags
+        # 
+
+        return -> 
+
+            loadModules( fnArgsArray, does ).then(
+
+                (Modules) => 
+
+                    inject.push argN = Module for Module in Modules
+                    testFunction.apply @, inject
+
+                (error) -> 
+
+                    console.log  error
+
+            )
+
+
 
     return (done) -> 
 
@@ -66,8 +99,6 @@ module.exports = ipso = (fn) ->
         #                       # called ahead of original
         # 
         # 
-
-        inject  = []
 
         if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
@@ -99,48 +130,52 @@ module.exports = ipso = (fn) ->
 
                 )
 
+        loadModules( fnArgsArray, does ).then(
 
-            
-            return loadModules( fnArgsArray, does ).then(
+            #
+            # * loader resolved with list of Modules refs to inject
+            #
 
-                #
-                # * loader resolved with list of Modules refs to inject
-                #
+            (Modules) => 
 
-                (Modules) => 
+                inject.push argN = Module for Module in Modules
+                testFunction.apply @, inject
 
-                    inject.push argN = Module for Module in Modules
-                    fn.apply @, inject
+            #
+            # * loader rejection into done() - error loading module
+            #
+                
+            done
 
-                #
-                # * loader rejection into done() - error loading module
-                #
-                    
-                done
-
-            ).then (->), done
+        ).then (->), done
  
 
-        else 
+        # else 
 
-            #
-            # not (done,...) or (facto,...)
-            # -----------------------------
-            # 
-            # * Injected modules do not define `.does()` 
-            #
+        #     #
+        #     # TODO: repeated... tidy up
+        #     #
 
-            inject.push require nodule for nodule in fnArgsArray
-            promise = fn.apply @, inject
+        #     promise = loadModules( fnArgsArray, does ).then(
 
-            #
-            # * Test has not ""asked"" for 'done' but mocha has injected because
-            #   arguments (modules to be injected) are present - call it on next
-            #   tick to mimick synchronous test
-            #
+        #         (Modules) => 
 
-            process.nextTick -> done() if done?
-            try promise.then (->), done
+        #             inject.push argN = Module for Module in Modules
+        #             fn.apply @, inject
+
+        #         done
+
+        #     ).then (->), done
+ 
+
+        #     #
+        #     # * Test has not ""asked"" for 'done' but mocha has injected because
+        #     #   arguments (modules to be injected) are present - call it on next
+        #     #   tick to mimick synchronous test
+        #     #
+
+        #     process.nextTick -> done() if done?
+        #     try promise.then (->), done
 
 
 Object.defineProperty ipso, 'modules', 

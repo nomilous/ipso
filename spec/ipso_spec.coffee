@@ -5,7 +5,7 @@ Loader = require '../lib/loader'
 
 
 
-describe 'ipso', ipso (http) -> 
+describe 'ipso', -> 
 
     before -> 
 
@@ -19,6 +19,22 @@ describe 'ipso', ipso (http) ->
         it 'goes in front of a test function like this:', ipso -> 
 
             # console.log @resolvingPromise
+
+
+        context 'it can inject into context', ipso (http) -> 
+
+            it 'has injected http', (done) -> 
+
+                http.should.equal require 'http'
+                done()
+
+        context 'it can inject into before', -> 
+
+            before ipso (http) -> @http = http
+
+            it 'did inject http', -> 
+
+                @http = require 'http'
 
 
 
