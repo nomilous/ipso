@@ -53,8 +53,8 @@ It uses mocha's JSON diff to display failure to call the stubbed function.
       actual expected
       
       1 | {
-      2 |   "1": {
-      3 |     "FuctionExpectations": {
+      2 |   "http": {
+      3 |     "functions": {
       4 |       "Object.createServer()": {
       5 |         "was called": truefalse ,
       6 |       }

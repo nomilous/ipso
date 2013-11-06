@@ -22,7 +22,7 @@ describe 'Loader', ->
     it 'loads node_modules if starting with lowercase', ipso (done) -> 
 
         instance = Loader.create dir: 'DIR', modules: {}
-        instance.loadModules ['http'], spectate: (http) -> 
+        instance.loadModules ['http'], spectate: (name, http) -> 
 
             http.should.equal require 'http'
             done()
@@ -30,7 +30,7 @@ describe 'Loader', ->
     it 'loads specified modules by tag', ipso (done) -> 
 
         instance = Loader.create dir: __dirname, modules: Inspector: require: '../lib/inspector'
-        instance.loadModules( ['http', 'Inspector'], spectate:  (m) -> m )
+        instance.loadModules( ['http', 'Inspector'], spectate:  (name, m) -> m )
         .then ([http, Inspector]) -> 
 
             http.should.equal require 'http'
@@ -46,13 +46,13 @@ describe 'Loader', ->
             path.should.equal process.cwd() + sep + 'lib'
             done()
 
-        instance.loadModules( ['ModuleName'], spectate: (m) -> m )
+        instance.loadModules( ['ModuleName'], spectate: (name, m) -> m )
 
 
     it 'finds match', (done) -> 
 
         instance = Loader.create dir: process.cwd() 
-        instance.loadModules( ['ModuleName'], spectate: (m) -> m )
+        instance.loadModules( ['ModuleName'], spectate: (name, m) -> m )
         .then ([ModuleName]) ->
 
             ModuleName.test1().should.equal 1

@@ -82,7 +82,7 @@ module.exports.create = (config) ->
 
             return promise = parallel( for Module in fnArgsArray
 
-                do (Module) -> -> does.spectate local.loadModule Module, does
+                do (Module) -> -> does.spectate Module, local.loadModule( Module, does )
 
             )
 
