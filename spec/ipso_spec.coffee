@@ -23,28 +23,26 @@ describe 'ipso', ->
 
         context 'injection for synchronous tests', -> 
 
-            it 'returns a function without arguments if no "done"', (done) -> 
+            it 'returns a function with done as the only argument if no "done"', (done) -> 
+
+                #
+                # injection is asynchronous even when mocha test is not
+                #
 
                 fn = ipso (zlib, net) -> 
                 args = util.argsOf fn
-                args.should.eql []
+                args.should.eql ['done']
                 done()
 
         context 'injection for asynchronous tests', -> 
 
-            it 'returns a function with done as only argument if "done"', (done) -> 
+            it 'returns a function with done as the only argument if "done"', (done) -> 
 
                 fn = ipso (done, zlib, net) -> 
                 args = util.argsOf fn
                 args.should.eql ['done']
                 done()
 
-        context 'it can inject into context', ipso (http) -> 
-
-            it 'has injected http', (done) -> 
-
-                http.should.equal require 'http'
-                done()
 
         context 'it can inject into before', -> 
 

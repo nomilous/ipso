@@ -54,13 +54,10 @@ module.exports = ipso = (testFunction) ->
         # Test function has arguments but not done or facto
         # -------------------------------------------------
         # 
-        # * Return a test function but without arguments so that mocha
-        #   does not inject the test resolver.
-        # 
         # * All args are assumed to be injection tags
         # 
 
-        return -> 
+        return (done) -> 
 
             loadModules( fnArgsArray, does ).then(
 
@@ -68,13 +65,18 @@ module.exports = ipso = (testFunction) ->
 
                     inject.push argN = Module for Module in Modules
                     testFunction.apply @, inject
+                    done() 
 
-                (error) -> 
+                done
 
-                    console.log 'ipso: ' + error.message.red
+            ).then (->), done
 
-            )
-            
+        #
+        # TODO: consider making a loadModules that is not async so
+        #       that ipso can be used to inject into describe() and
+        #       context()
+        #
+
     return (done) -> 
 
         #
@@ -147,34 +149,6 @@ module.exports = ipso = (testFunction) ->
             done
 
         ).then (->), done
- 
-
-        # else 
-
-        #     #
-        #     # TODO: repeated... tidy up
-        #     #
-
-        #     promise = loadModules( fnArgsArray, does ).then(
-
-        #         (Modules) => 
-
-        #             inject.push argN = Module for Module in Modules
-        #             fn.apply @, inject
-
-        #         done
-
-        #     ).then (->), done
- 
-
-        #     #
-        #     # * Test has not ""asked"" for 'done' but mocha has injected because
-        #     #   arguments (modules to be injected) are present - call it on next
-        #     #   tick to mimick synchronous test
-        #     #
-
-        #     process.nextTick -> done() if done?
-        #     try promise.then (->), done
 
 
 Object.defineProperty ipso, 'modules', 
