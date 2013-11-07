@@ -95,17 +95,16 @@ module.exports.create = (config) ->
 
             return promise = parallel( for Module in fnArgsArray
 
-                do (Module) -> -> pipeline [
+                #
+                # https://github.com/nomilous/knowledge/blob/master/spec/promise/loops.coffee#L81
+                #
 
-                    -> local.loadModule( Module, does )
-                    (module) -> does.spectate 
+                do (Module) -> -> return nestedPromise = pipeline [
 
-                        name: Module
-                        tagged: false
-                        module
+                    (      ) -> local.loadModule Module, does
+                    (module) -> does.spectate name: Module, tagged: false, module
 
                 ]
-
             )
 
     return api = 
