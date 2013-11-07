@@ -193,23 +193,40 @@ describe 'ipso', ->
             it 'registers spectated object as tagged', (done) -> 
 
                 object = this: 1
-                ipso.tag tagName: object
-                expx = does._test().expectations
-                lastone = expx[uuid] for uuid of expx
 
-                lastone.name.should.equal 'tagName'
-                lastone.tagged.should.equal true
-                object.does.should.be.an.instanceof Function
-                done()
+                ipso.tag( tagName: object ).then -> 
 
-
-
-            it.only 'returns a promise', (done) -> 
-
-                ipso.tag( tagName: {} ).then done
+                    expx = does._test().spectacles
+                    lastone = expx[uuid] for uuid of expx
+                    lastone.name.should.equal 'tagName'
+                    lastone.tagged.should.equal true
+                    object.does.should.be.an.instanceof Function
+                    lastone.object.should.equal object
+                    done()
 
 
-            it 'can do more than one'
+            it 'can tag more than one at a time', ipso (facto) -> 
+
+                ipso.tag
+
+                    satelite: class Satelite
+                    planet: class Planet
+                    star: class Star
+                    π: class π
+
+                .then -> 
+
+                    tagged = does._test().tagged
+
+                    should.exist tagged['satelite']
+                    should.exist tagged['planet']
+                    should.exist tagged['star']
+                    should.exist tagged['π']
+                    facto()
+
+
+
+
 
 
 

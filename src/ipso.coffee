@@ -1,4 +1,4 @@
-{util, deferred}  = require 'also'
+{util, deferred, parallel}  = require 'also'
 facto   = require 'facto'
 Loader  = require './loader'
 colors  = require 'colors'
@@ -160,19 +160,16 @@ Object.defineProperty ipso, 'modules',
         return ipso
 
 Object.defineProperty ipso, 'tag',
-    get: -> deferred (action, list) -> 
-        for tag of list 
-            does.spectate
+    get: -> deferred (action, list) ->
+
+        parallel( for tag of list
+            do (tag) -> -> does.spectate
+
                 name: tag
                 tagged: true
                 object = list[tag]
 
-        #
-        # todo: spectate is async, resolve after all
-        #
-
-        action.resolve()
-
+        ).then action.resolve, action.reject, action.notify
 
 
 module.exports.once = (fn) -> do (done = false) -> ->
