@@ -19,25 +19,60 @@ describe 'Loader', ->
         done()
 
 
+    it 'attempts load from does.tagged (async injected) objects first', ipso (done) -> 
+
+        instance = Loader.create dir: __dirname
+
+        instance.loadModules ['tag1'], 
+
+            #
+            # mock result callback from does.get( query.tag )
+            #
+
+            get: (opts, callback) -> 
+                opts.query.should.eql tag: 'tag1'
+                callback null, this: 'thing'
+
+            spectate: (opts, object) -> 
+
+                opts.should.eql name: 'tag1', tagged: false 
+                object.should.eql this: 'thing'
+                done()
+
+
     it 'loads node_modules if starting with lowercase', ipso (done) -> 
 
         instance = Loader.create dir: 'DIR', modules: {}
-        instance.loadModules ['http'], spectate: (name, http) -> 
+        instance.loadModules ['http'], does = 
 
-            http.should.equal require 'http'
-            done()
+            get: (args...) -> args.pop()() # no tagged objects, empty callback
+            spectate: (name, http) -> 
+
+                http.should.equal require 'http'
+                done()
 
     it 'loads specified modules by tag', ipso (done) -> 
 
         instance = Loader.create dir: __dirname, modules: Inspector: require: '../lib/inspector'
-        instance.loadModules( ['http', 'Inspector'], spectate:  (name, m) -> m )
+        instance.loadModules ['http', 'Inspector'], 
+
+            get: (args...) -> args.pop()()
+
+            #
+            # stub does.spectate() to pass through directly
+            #
+
+            spectate: (name, m) -> m 
+
         .then ([http, Inspector]) -> 
 
             http.should.equal require 'http'
             Inspector.should.equal require '../lib/inspector'
             done()
 
-    it 'recurses ./lib for underscored name', (done) -> 
+
+
+    it 'recurses ./lib for underscored name', ipso (done) -> 
 
         instance = Loader.create dir: process.cwd() 
         
@@ -46,13 +81,17 @@ describe 'Loader', ->
             path.should.equal process.cwd() + sep + 'lib'
             done()
 
-        instance.loadModules( ['ModuleName'], spectate: (name, m) -> m )
+        instance.loadModules ['ModuleName'], 
+            get: (args...) -> args.pop()()
+            spectate: (name, m) -> m
 
 
-    it 'finds match', (done) -> 
+    it 'finds match', ipso (done) -> 
 
         instance = Loader.create dir: process.cwd() 
-        instance.loadModules( ['ModuleName'], spectate: (name, m) -> m )
+        instance.loadModules ['ModuleName'], 
+            get: (args...) -> args.pop()()
+            spectate: (name, m) -> m
         .then ([ModuleName]) ->
 
             ModuleName.test1().should.equal 1
