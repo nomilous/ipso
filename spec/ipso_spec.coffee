@@ -2,6 +2,7 @@ ipso = require '../lib/ipso'
 should  = require 'should'
 {deferred, util} = require 'also'
 Loader = require '../lib/loader'
+does = require 'does'
 
 
 
@@ -182,9 +183,32 @@ describe 'ipso', ->
             facto()
 
 
-        it 'defines tag() for hook prepping a spectatable objects the do not reset stubs at injection', (done) -> 
+        it 'defines tag() for hook prepping spectatable objects the do not reset stubs at injection', (done) -> 
 
             ipso.tag.should.be.an.instanceof Function
             done()
+
+        context 'tag()', -> 
+
+            it.only 'registers spectated object as tagged', (done) -> 
+
+                object = this: 1
+                ipso.tag tagName: object
+                expx = does._test().expectations
+                lastone = expx[uuid] for uuid of expx
+
+                lastone.name.should.equal 'tagName'
+                lastone.tagged.should.equal true
+                object.does.should.be.an.instanceof Function
+                done()
+
+
+
+            it 'returns a promise'
+
+
+            it 'can do more than one'
+
+
 
 

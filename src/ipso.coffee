@@ -161,7 +161,11 @@ Object.defineProperty ipso, 'modules',
 
 Object.defineProperty ipso, 'tag',
     get: -> (list) -> 
-        console.log list
+        for tag of list 
+            does.spectate
+                name: tag
+                tagged: true
+                object = list[tag]
 
 
 
