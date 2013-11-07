@@ -168,7 +168,7 @@ ipso.tag = deferred (action, list) ->
 
             name: tag
             tagged: true
-            object = list[tag]
+            list[tag]
 
     ).then action.resolve, action.reject, action.notify
 
