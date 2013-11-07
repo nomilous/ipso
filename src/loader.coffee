@@ -62,7 +62,7 @@ module.exports.create = (config) ->
                 #      
 
                 #
-                # * does.get() returns the entire spectated entity, including expectiotions,
+                # * does.get() returns the entire spectated entity, including expectections,
                 #   only resolve with the object itself for injection
                 #
 
