@@ -53,7 +53,16 @@ module.exports.create = (config) ->
 
             does.get query: tag: name, (error, object) -> 
 
+                #
+                # * does.get() returns error on not found tag or bad args
+                #       * for now those errors can be safely ignored 
+                #           * not found is valid reason to fall through to local injection below 
+                #           * bad args will not occur becase no pathway exists that leads through 
+                #             here to a call to does.get with bad args.
+                #      
+
                 return action.resolve object if object?
+                # return action.reject error if # TODO: network/db errors later
 
                 if path = (try local.modules[name].require)
                     if path[0] is '.' then path = normalize local.dir + sep + path
