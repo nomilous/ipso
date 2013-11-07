@@ -151,25 +151,27 @@ module.exports = ipso = (testFunction) ->
         ).then (->), done
 
 
-Object.defineProperty ipso, 'modules', 
-    get: -> (list) -> 
-        for tag of list 
-            unless list[tag].require?
-                throw new Error 'ipso.module expects { tagName: { require: "path/or/name" } }'
-            config.modules[tag] = list[tag]
-        return ipso
+ipso.modules = (list) -> 
 
-Object.defineProperty ipso, 'tag',
-    get: -> deferred (action, list) ->
+    for tag of list 
+        unless list[tag].require?
+            throw new Error 'ipso.module expects { tagName: { require: "path/or/name" } }'
+        config.modules[tag] = list[tag]
+    return ipso
 
-        parallel( for tag of list
-            do (tag) -> -> does.spectate
 
-                name: tag
-                tagged: true
-                object = list[tag]
+ipso.tag = deferred (action, list) ->
 
-        ).then action.resolve, action.reject, action.notify
+    parallel( for tag of list
+
+        do (tag) -> -> does.spectate
+
+            name: tag
+            tagged: true
+            object = list[tag]
+
+    ).then action.resolve, action.reject, action.notify
+
 
 
 module.exports.once = (fn) -> do (done = false) -> ->
