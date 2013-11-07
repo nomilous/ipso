@@ -1,4 +1,4 @@
-{util}  = require 'also'
+{util, deferred}  = require 'also'
 facto   = require 'facto'
 Loader  = require './loader'
 colors  = require 'colors'
@@ -160,12 +160,18 @@ Object.defineProperty ipso, 'modules',
         return ipso
 
 Object.defineProperty ipso, 'tag',
-    get: -> (list) -> 
+    get: -> deferred (action, list) -> 
         for tag of list 
             does.spectate
                 name: tag
                 tagged: true
                 object = list[tag]
+
+        #
+        # todo: spectate is async, resolve after all
+        #
+
+        action.resolve()
 
 
 

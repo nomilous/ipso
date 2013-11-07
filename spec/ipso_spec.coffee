@@ -190,7 +190,7 @@ describe 'ipso', ->
 
         context 'tag()', -> 
 
-            it.only 'registers spectated object as tagged', (done) -> 
+            it 'registers spectated object as tagged', (done) -> 
 
                 object = this: 1
                 ipso.tag tagName: object
@@ -204,7 +204,9 @@ describe 'ipso', ->
 
 
 
-            it 'returns a promise'
+            it.only 'returns a promise', (done) -> 
+
+                ipso.tag( tagName: {} ).then done
 
 
             it 'can do more than one'
