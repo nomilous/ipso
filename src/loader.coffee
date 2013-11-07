@@ -51,7 +51,7 @@ module.exports.create = (config) ->
             # * falls back to local (synchronously loaded) modules
             # 
 
-            does.get query: tag: name, (error, object) -> 
+            does.get query: tag: name, (error, spectated) -> 
 
                 #
                 # * does.get() returns error on not found tag or bad args
@@ -61,7 +61,12 @@ module.exports.create = (config) ->
                 #             here to a call to does.get with bad args.
                 #      
 
-                return action.resolve object if object?
+                #
+                # * does.get() returns the entire spectated entity, including expectiotions,
+                #   only resolve with the object itself for injection
+                #
+
+                return action.resolve spectated.object if spectated?
                 # return action.reject error if # TODO: network/db errors later
 
                 if path = (try local.modules[name].require)

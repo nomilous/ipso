@@ -31,7 +31,7 @@ describe 'Loader', ->
 
             get: (opts, callback) -> 
                 opts.query.should.eql tag: 'tag1'
-                callback null, this: 'thing'
+                callback null, object: this: 'thing'
 
             spectate: (opts, object) -> 
 
