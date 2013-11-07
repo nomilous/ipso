@@ -182,3 +182,9 @@ describe 'ipso', ->
             facto()
 
 
+        it 'defines tag() for hook prepping a spectatable objects the do not reset stubs at injection', (done) -> 
+
+            ipso.tag.should.be.an.instanceof Function
+            done()
+
+

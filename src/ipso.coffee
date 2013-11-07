@@ -159,6 +159,11 @@ Object.defineProperty ipso, 'modules',
             config.modules[tag] = list[tag]
         return ipso
 
+Object.defineProperty ipso, 'tag',
+    get: -> (list) -> 
+        console.log list
+
+
 
 module.exports.once = (fn) -> do (done = false) -> ->
     
