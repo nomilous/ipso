@@ -10,8 +10,17 @@ describe 'ipso', ->
 
     before -> 
 
+        resolver = => @resolve
+
+        @fakeit = (title, fn) => 
+            @test = timer: _onTimeout: ->
+            fn.call @, resolver()
+
+
         @resolvingPromise = deferred (action) -> 
             action.resolve 'RESULT'
+
+    beforeEach -> @RESULT = undefined
 
 
     context 'for mocha tests', ->
@@ -55,33 +64,23 @@ describe 'ipso', ->
 
 
 
-        it 'calls each tet context into does as test starts up', ipso (done) -> 
+        it 'calls each test "runtime" into does as test starts up', ipso (done) -> 
 
             spec = does._test().runtime.current.spec
 
-            spec.title.should.equal 'loads test context into does for async tests'
+            spec.title.should.equal 'calls each test "runtime" into does as test starts up'
             done()
 
 
-        it 'loads test context into does for synchronous tests to', ipso -> 
+        it 'still fails as it should', (done) -> 
 
-            spec = does._test().runtime.current.spec
-            spec.title.should.equal 'loads test context into does for async tests'
+            @resolve = (error) -> 
+                error.name.should.equal 'AssertionError'
+                done()
 
-            #
-            # this is not really synchronous, ipso is using mocha's done in the background
-            #
+            @fakeit 'fails this', ipso (done) -> 
+                true.should.equal 'this is expected to fail'
 
-
-
-        it '[FAILING IS PASSING] still fails as it should', ipso -> 
-
-            true.should.equal 'this is expected to fail'
-
-            #
-            # dunno how to test that a test fails
-            # this failing is therefore passing
-            #
 
 
         it 'preserves the mocha context', ipso (done) ->
@@ -146,14 +145,20 @@ describe 'ipso', ->
 
 
 
-        it '[FAILING IS PASSING] fails from within the promise resolution / fullfillment handler', ipso (done) -> 
+        it 'fails from within the promise resolution / fullfillment handler', (done) -> 
 
-            @resolvingPromise()
+            @resolve = (error) -> 
+                error.name.should.equal 'AssertionError'
+                done()
 
-            .then (result) => @resolvingPromise()
-            .then (result) -> 
+            @fakeit 'fails this', ipso (done) => 
 
-                true.should.equal 'this is expected to fail'
+                @resolvingPromise()
+
+                .then (result) => @resolvingPromise()
+                .then (result) -> 
+
+                    true.should.equal 'this is expected to fail'
 
 
         it 'injects mode nodules', ipso (done, mocha) -> 
@@ -168,7 +173,13 @@ describe 'ipso', ->
             zlib.should.equal require 'zlib'
 
 
-        it '[FAILING IS PASSING] fail when injecting undefined module', ipso (facto, i) -> 
+        it 'fails when injecting undefined module', (done) ->
+
+            @resolve = (error) -> 
+                error.should.match /Cannot find module/
+                done()
+
+            @fakeit 'fails this', ipso (facto, i) ->
 
 
         it 'metadatas', ipso (facto, should) -> 
