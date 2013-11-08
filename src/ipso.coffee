@@ -71,7 +71,7 @@ module.exports = ipso = (testFunction) ->
 
                 done
 
-            ).then (->), done
+            ).then -> does.assert( done ).then (->), done
 
         #
         # TODO: consider making a loadModules that is not async so
