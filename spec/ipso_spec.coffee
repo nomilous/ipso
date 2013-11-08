@@ -55,6 +55,25 @@ describe 'ipso', ->
 
 
 
+        it 'calls each tet context into does as test starts up', ipso (done) -> 
+
+            spec = does._test().runtime.current.spec
+
+            spec.title.should.equal 'loads test context into does for async tests'
+            done()
+
+
+        it 'loads test context into does for synchronous tests to', ipso -> 
+
+            spec = does._test().runtime.current.spec
+            spec.title.should.equal 'loads test context into does for async tests'
+
+            #
+            # this is not really synchronous, ipso is using mocha's done in the background
+            #
+
+
+
         it '[FAILING IS PASSING] still fails as it should', ipso -> 
 
             true.should.equal 'this is expected to fail'

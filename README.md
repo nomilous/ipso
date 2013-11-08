@@ -2,7 +2,7 @@
 `npm install ipso` 0.0.10 [license](./license)
 
 
-Decorators, for testing, with [Mocha](https://github.com/visionmedia/mocha), (others unknown)
+Decorators, for testing, with [Mocha](https://github.com/visionmedia/mocha)
 
 All examples in [coffee-script](http://coffeescript.org/).
 

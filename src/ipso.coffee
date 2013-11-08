@@ -59,6 +59,8 @@ module.exports = ipso = (testFunction) ->
 
         return (done) -> 
 
+            does.activate context: @, mode: 'spec', spec: @test, resolver: done
+
             loadModules( fnArgsArray, does ).then(
 
                 (Modules) => 
@@ -78,6 +80,9 @@ module.exports = ipso = (testFunction) ->
         #
 
     return (done) -> 
+
+        does.activate context: @, mode: 'spec', spec: @test, resolver: done
+            
 
         #
         # Test function has arguments
