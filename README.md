@@ -55,12 +55,10 @@ It uses mocha's JSON diff to display failure to call the stubbed function.
       1 | {
       2 |   "http": {
       3 |     "functions": {
-      4 |       "Object.createServer()": {
-      5 |         "was called": truefalse ,
-      6 |       }
-      7 |     }
-      8 |   }
-      9 | }
+      4 |       "Object.createServer()": "was NOT called"
+      5 |     }
+      6 |   }
+      7 | }
 
 ```
 
@@ -228,14 +226,6 @@ it 'can stop the http server', (done, http, Server) ->
     Server.create (server) -> server.stop()
 
 ```
-
-* IMPORTANT 
-    * In these cases the test will timeout if the stub or mock was not called as expected. 
-    * (pending tighter integration with mocha)
-        * There will be no report of `http.createServer()` having not been called. 
-        * `ipso` currently has no way to learn of the timeout.
-            * Therefore it cannot reset the module (remove the stubs).
-            * This is only a problem if the module is used in other tests without injection (ie. per having also been 'required' onto the global scope)
 
 Previous stubs are flushed from **ALL** modules at **EVERY** injection
     
