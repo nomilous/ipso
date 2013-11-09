@@ -305,10 +305,10 @@ beforeEach ipso (done, http) ->
             return ipso.mock( 'mock server' ).does
 
                 #
-                # note: '=>' pathway from hook's root scope means @port (a.k.a `_this.port`) 
-                # refers to the `this` of the hook's root scope - which is shared with 
-                # the tests themselves, so @port becomes available in all tests that 
-                # are preceeded by this hook    
+                # note: '=>' pathway from hook's root scope means @port
+                # refers to the `this` of the hook's root scope - which 
+                # is shared with the tests themselves, so @port becomes 
+                # available in all tests that are preceeded by this     hook
                 # 
 
                                          #
