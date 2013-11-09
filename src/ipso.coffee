@@ -5,6 +5,8 @@ colors  = require 'colors'
 Does    = require 'does'
 does    = Does does: mode: 'spec'
 
+console.log TODO: 'allow injection into describe and context using async: false'
+
 # #
 # # spec events into does()
 # # -----------------------
@@ -81,7 +83,7 @@ module.exports = ipso = (testFunction) ->
         #
         # TODO: consider making a loadModules that is not async so
         #       that ipso can be used to inject into describe() and
-        #       context()
+        #       context()   [ NOT POSSIBLE, ipso injector is async, context and describe are not ]
         #
 
     return (done) -> 

@@ -10,6 +10,57 @@ module.exports.create = (config) ->
 
     lastInstance = local = 
 
+        #
+        # `loadModules( arrayOfName, doesInstance )`
+        # -----------------------------------------
+        # 
+        # * Asynchronously load the list of modules.
+        # * Used by `it()`'s and `before()`'s and `after()`'s in mocha (they're async)
+        # * Can load special case ipso.tag(ged) objects
+        # * Objects are assigned spectateability. (  `objct.does(...`   )
+        #
+
+        loadModules: (arrayOfName, doesInstance) ->
+
+            return promise = parallel( for moduleName in arrayOfName
+
+                #
+                # https://github.com/nomilous/knowledge/blob/master/spec/promise/loops.coffee#L81
+                #
+
+                do (moduleName) -> -> return nestedPromise = pipeline [
+
+                    (      ) -> local.loadModule moduleName, doesInstance
+                    (module) -> doesInstance.spectate name: moduleName, tagged: false, module
+
+                ]
+            )
+
+
+        #
+        # `loadModulesSync( arrayOfName, doesInstance )`
+        # ----------------------------------------------
+        # 
+        # * Synchronously load the list of modules.
+        # * Used by `describe()`'s and `context()`'s in mocha (they're sync)
+        # * VERY IMPORTANT
+        #     * does not load tagged objects
+        # 
+
+        loadModulesSync: (arrayOfName, doesInstance) -> 
+
+            for moduleName in arrayOfName
+
+                local.loadModuleSync moduleName, doesInstance
+
+
+
+
+
+
+
+
+
         dir: config.dir
         modules: config.modules
 
@@ -105,22 +156,46 @@ module.exports.create = (config) ->
                 }
 
 
-        loadModules: (fnArgsArray, does) ->
+        loadModuleSync: (name, does) -> 
 
-            return promise = parallel( for Module in fnArgsArray
+            if path = (try local.modules[name].require)
+                    if path[0] is '.' then path = normalize local.dir + sep + path
+                    return require path
 
-                #
-                # https://github.com/nomilous/knowledge/blob/master/spec/promise/loops.coffee#L81
-                #
+            return require name unless local.upperCase name
+            return require path if path = local.find name
+            console.log 'ipso: ' + "warning: missing module #{name}".yellow
+            return {
 
-                do (Module) -> -> return nestedPromise = pipeline [
+                $ipso: 
+                    PENDING: true
+                    module: name
+                    save: (path) -> console.log """
 
-                    (      ) -> local.loadModule Module, does
-                    (module) -> does.spectate name: Module, tagged: false, module
+                        #
+                        #   NonExistantModule.$ipso.save(templateTag, pa/th) 
+                        #   ------------------------------------------------
+                        #   
+                        #   Not yet implemented.
+                        # 
+                        #   * (for never having to write anything twice)
+                        #   * for cases where ipso detects the injection of a not yet existing module
+                        #   * can save the newly written stub to ./src/path/ as the ""first draft"" 
+                        #   * templates from ~/.ipso/templates
+                        #   * pending `does` to expose access to expectations for a list of functions to create
+                        #                                                         -----------------------------
+                        # 
+                        #   
+                        #             perhaps there's an even slicker way to do it?
+                        #  
 
-                ]
-            )
+                    """.green
+
+            }
+
+
 
     return api = 
 
         loadModules: local.loadModules
+        loadModulesSync: local.loadModulesSync
