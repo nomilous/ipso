@@ -288,8 +288,10 @@ describe 'ipso', ->
                 error.expected.should.equal 'something else'
 
 
+        it 'throws expected functions on timeout even if timeout is reset', ipso (facto, Something) ->
 
-
+            @timeout 10
+            Something.does something: -> 'hrumph'
 
 
 
