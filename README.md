@@ -225,7 +225,7 @@ ipso = require('ipso').modules
 
 ```coffee
 
-context 'create a tagged object for injection into multiple nested tests', -> 
+context 'creates tagged objects for injection into multiple nested tests', -> 
     
     before ipso (done, ClassName) ->
 
