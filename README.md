@@ -137,7 +137,7 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
             """
 
-        otherThing: -> 
+        anotherFunction: -> 
 
     Server.start()
 
@@ -300,7 +300,7 @@ beforeEach ipso (done, http) ->
             
             return ipso.mock( 'my mock server' ).does
 
-                listen:  -> args.pop()()
+                listen: (args...) -> args.pop()()
                 address: -> 'mock address object'
 
 
