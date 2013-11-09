@@ -225,7 +225,7 @@ describe 'MyClass', ipso (MyClass) ->
                         #       needs a Sync version
                         #
 
-                        return mock( 'server' ).does
+                        return mock( 'my mock server' ).does
 
                             listen: (@port) =>
                             address: -> 'mock address'
@@ -239,8 +239,10 @@ describe 'MyClass', ipso (MyClass) ->
                 #
                 # TODO: make absence of next fail the test
                 #
-
-                # server.listen 3000
+                #@port.should.equal 3000
+                server.listen 3000
+                #console.log server.address()
+                
                 facto()
 
 

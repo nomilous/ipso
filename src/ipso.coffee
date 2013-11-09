@@ -177,14 +177,20 @@ ipso.modules = (list) ->
 
 
 ipso.ipso = ipso
-ipso.mock = (name, list) -> 
+ipso.mock = (name) -> 
 
     object = 
         title: name
         is: (mock) -> 
             if typeof mock is 'object' then return object.should.equal mock
             name.should.equal mock
-        does: -> 
+
+    #
+    # TODO: tagged?
+    #
+
+    return does.spectateSync name: name, object
+        
 
     
 

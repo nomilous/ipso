@@ -282,9 +282,10 @@ Previous stubs are flushed from **ALL** modules at **EVERY** injection
 
 ```
 
-**PENDING** It can create active mocks for fullblown stubbing whole modules
+**PARTIALLY PENDING** It can create active mocks for fullblown stubbing whole modules
 
 ```coffee
+
 beforeEach ipso (done, http) -> 
 
     http.does
@@ -297,11 +298,30 @@ beforeEach ipso (done, http) ->
 
                 handler mock('req').does(...), mock('res').does(...)
             
-            return mock( 'server' ).does
+            return ipso.mock( 'my mock server' ).does
 
-                listen: (@port) =>
-                address: -> 'mock address'
+                listen:  -> args.pop()()
+                address: -> 'mock address object'
 
+
+```
+```json
+
+      actual expected
+      
+       1 | {
+       2 |   "http": {
+       3 |     "functions": {
+       4 |       "Object.createServer()": "was called"
+       5 |     }
+       6 |   },
+       7 |   "my mock server": {
+       8 |     "functions": {
+       9 |       "Object.listen()": "was called",
+      10 |       "Object.address()": "was NOT called"
+      11 |     }
+      12 |   }
+      13 | }
 
 ```
 
