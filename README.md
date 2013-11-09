@@ -304,18 +304,15 @@ beforeEach ipso (done, http) ->
             
             return ipso.mock( 'mock server' ).does
 
+                listen: (@port, args...) => 
+                address: -> 'mock address object'
+
                 #
                 # note: '=>' pathway from hook's root scope means @port
                 # refers to the `this` of the hook's root scope - which 
                 # is shared with the tests themselves, so @port becomes 
                 # available in all tests that are preceeded by this     hook
                 # 
-
-                                         #
-                                         # this '=>' is also necessary
-                                         #
-                listen: (@port, args...) => 
-                address: -> 'mock address object'
 
 
 it 'creates a server, starts listening and responds when hit', ipso (facto, http) ->
