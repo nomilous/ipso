@@ -63,7 +63,9 @@ module.exports = ipso = (testFunction) ->
                 return
 
             #
-            # * Injecting into it() or "hook"()
+            #  Injecting into it() or "hook"()
+            # 
+            #  * Inject asynchronously
             #
 
             does.activate context: @, mode: 'spec', spec: @test, resolver: done
@@ -93,33 +95,26 @@ module.exports = ipso = (testFunction) ->
 
     return (done) -> 
 
-        does.activate context: @, mode: 'spec', spec: @test, resolver: done
-            
+        unless @test?
+
+            console.log 'ipso cannot inject done into describe() or context()'.red
+            return
+
+        does.activate context: @, mode: 'spec', spec: @test, resolver: done   
 
         #
         # ### Test function has arguments
         #
-        # * Return this function for mocha to run as the test
-        #
-        # * When mocha calls this function 'to run the test', this function 
-        #   calls the original test function
-        #
-        # * Tests created with 'done' or 'facto' at arg1 receive spectatable modules
-        # 
-        #
-        #      eg.
-        #           it 'does something', ipso (facto, something) -> 
-        #               something.does 
-        #                   functionStub: -> 
-        #                       # replaces original (optionally return mock)
-        #                   _functionSpy: -> 
-        #                       # called ahead of original
-        # 
-        # 
 
         if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
             fnArgsArray.shift()
+
+            #
+            # * arg1 contains a proxy function that wraps the test resolver (done)
+            # * it calls the done only after does.assert(... is called  to first 
+            #   check that all expectations have been met
+            #
 
             inject.push arg1 = (metadata) -> 
 
