@@ -221,6 +221,26 @@ ipso = require('ipso').modules
     * The path should be relative to `process.cwd()`, not `__dirname`
 
 
+**PARTIALLY PENDING** It supports tagged objects for multiple subsequent injections.
+
+```coffee
+
+context 'create a tagged object for injection into multiple nested tests', -> 
+    
+    before ipso (done, ClassName) ->
+
+        ipso.tag 
+
+            instanceA: new ClassName 'type A'
+            instanceB: new ClassName 'type B'
+
+        .then done
+
+    it 'can test with them', (instanceA, instanceB) -> 
+    it 'and again', (instanceA, instanceB) -> 
+
+```
+
 
 ### Complex Usage / Current Caveats
 
