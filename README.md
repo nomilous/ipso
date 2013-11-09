@@ -282,7 +282,7 @@ Previous stubs are flushed from **ALL** modules at **EVERY** injection
 
 ```
 
-**PARTIALLY PENDING** It can create active mocks for fullblown stubbing whole modules
+**PARTIALLY PENDING** It can create active mocks for fullblown mocking and stubbing
 
 ```coffee
 
@@ -296,12 +296,40 @@ beforeEach ipso (done, http) ->
                 # mock an actual "hit"
                 #
 
-                handler mock('req').does(...), mock('res').does(...)
-            
-            return ipso.mock( 'my mock server' ).does
+                handler mock('req'), mock('mock response').does
 
-                listen: (args...) -> args.pop()()
+                    writeHead: -> 
+                    write: ->
+                    end: ->
+            
+            return ipso.mock( 'mock server' ).does
+
+                #
+                # note: '=>' pathway from hook's root scope means @port (a.k.a `_this.port`) 
+                #       refers to the `this` of the hook's root scope - which is shared with 
+                #       the tests themselves, so @port becomes available in all tests that 
+                #       are preceeded by this hook    
+                # 
+
+                                         #
+                                         # this '=>' is also necessary
+                                         #
+                listen: (@port, args...) => 
                 address: -> 'mock address object'
+
+
+it 'creates a server, starts listening and responds when hit', ipso (facto, http) ->
+
+    server = http.createServer (req, res) -> 
+
+        res.writeHead 200
+        res.end()
+        facto()
+
+    server.listen 3000, -> console.log 'listen callback'
+    @port.should.equal 3000
+
+    
 
 
 ```
@@ -315,13 +343,20 @@ beforeEach ipso (done, http) ->
        4 |       "Object.createServer()": "was called"
        5 |     }
        6 |   },
-       7 |   "my mock server": {
+       7 |   "mock server": {
        8 |     "functions": {
        9 |       "Object.listen()": "was called",
-      10 |       "Object.address()": "was NOT called"
+      10 |       "Object.address()": "was called"
       11 |     }
-      12 |   }
-      13 | }
+      12 |   },
+      13 |   "mock response": {
+      14 |     "functions": {
+      15 |       "Object.writeHead()": "was called",
+      16 |       "Object.write()": "was NOT called",  <--------------------
+      17 |       "Object.end()": "was called"
+      18 |     }
+      19 |   }
+      20 | }
 
 ```
 

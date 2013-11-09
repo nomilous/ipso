@@ -7,12 +7,12 @@
 describe 'MyClass', ipso (MyClass) ->
 
 
-    it 'injected MyClass for use throughout the entire test suite', -> 
+    xit 'injected MyClass for use throughout the entire test suite', -> 
 
         MyClass.should.equal require '../../lib/examples/my_class'
 
 
-    context """
+    xcontext """
 
         module injection (into tests)
         =============================
@@ -53,7 +53,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-    context """
+    xcontext """
 
         tagged module injection
         =======================
@@ -116,7 +116,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        context """
+        xcontext """
 
         Asynchronous
         ============
@@ -136,7 +136,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        context """
+        xcontext """
 
         Stubbing in hooks
         =================
@@ -185,65 +185,78 @@ describe 'MyClass', ipso (MyClass) ->
         
 
 
-        context """ LATER
+    context """
 
-        Active Mocks
-        ============
+    Active Mocks
+    ============
 
-        * stubs can return mocks to "nest" function expectations
-        .
-        
+    * stubs can return mocks to "nest" function expectations
+    .
+    
 
-        """, -> 
+    """, -> 
 
-            beforeEach ipso (http) -> 
+        beforeEach ipso (http) -> 
 
-                http.does
+            http.does
 
-                    createServer: (handler) =>  
+                createServer: (handler) =>  
 
-                        #
-                        # call the handler on nextTick with mocks for req and res
-                        #
+                    #
+                    # call the handler on nextTick with mocks for req and res
+                    #
 
-                        process.nextTick -> handler mock('req'), mock('res')
+                    process.nextTick -> handler mock('req'), mock('mock response').does
 
-                                                        #
-                                                        # POSSIBILE??:
-                                                        # 
-                                                        # * Catching 'undefined is not a function' to record all
-                                                        #   calls made to a mock for should to test afterards.
-                                                        # 
-                                                        #         (js.method_missing?)
-                                                        # 
-
-                        #
-                        # return a "server" mock with active function expectations that also 
-                        # fails the tests if not called...
-                        # 
-                        # TODO: does.spectate(...  which creates .does(..., is async, this mock probably 
-                        #       needs a Sync version
-                        #
-
-                        return mock( 'my mock server' ).does
-
-                            listen: (@port) =>
-                            address: -> 'mock address'
+                        writeHead: ->
+                        write: -> 
+                        end: ->
 
 
+                                                    #
+                                                    # POSSIBILE??:
+                                                    # 
+                                                    # * Catching 'undefined is not a function' to record all
+                                                    #   calls made to a mock for should to test afterards.
+                                                    # 
+                                                    #         (js.method_missing?)
+                                                    # 
 
-            it '@port is populated or test failes fails', ipso (facto, http) -> 
+                    #
+                    # return a "server" mock with active function expectations that also 
+                    # fails the tests if not called...
+                    # 
+                    # TODO: does.spectate(...  which creates .does(..., is async, this mock probably 
+                    #       needs a Sync version
+                    #
 
-                server = http.createServer()
+                    return mock( 'mock server' ).does
 
-                #
-                # TODO: make absence of next fail the test
-                #
-                #@port.should.equal 3000
-                server.listen 3000
-                #console.log server.address()
-                
+                        listen: (@port, args...) => 
+                        address: -> 'mock address'
+
+
+
+        it '@port is populated or test failes fails'.red, ipso (facto, http) -> 
+
+            server = http.createServer (req, res) -> 
+
+                # console.log REQ: req
+                # console.log RES: res
+
                 facto()
+
+
+            #
+            # TODO: make absence of next fail the test
+            #
+            
+            server.listen 3000
+
+            @port.should.equal 3000
+            console.log server.address()
+            
+            
 
 
 
