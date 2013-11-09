@@ -111,7 +111,7 @@ describe 'ipso', ->
         ============
 
         * done can be called from the stubbed function
-        * the test will timeout BUT will report the "function not called" instead of timout 
+        * the test will timeout BUT will report the "function not called" instead of timeout 
 
         """, -> 
 
@@ -121,6 +121,51 @@ describe 'ipso', ->
                 subject.does thing: -> done()
                 subject.thing()
 
+
+
+
+        context """
+
+        Stubbing in hooks
+        =================
+
+        beforeEach
+        ----------
+
+        * the function expectation (stub) applies in all tests preceeded by the hook
+
+        before[All]
+        -----------
+
+        * ##undecided
+
+
+        """, -> 
+
+
+            beforeEach ipso (subject) -> 
+
+                subject.does
+                    _thing: (@spiedArg1) => 
+                    _nonExistantFunction: (@spiedArg2) =>
+                    #anotherThing: ->
+
+
+            it 'passes this test because subject.thing() was called'.red, ipso (subject) -> 
+
+                subject.thing()
+                subject.callsNonExistantFunction 1001
+
+
+            context 'nested context', -> 
+
+                it 'still applies the function expectation'.red, ipso (subject) -> 
+
+                    subject.thing( 999 )
+                    @spiedArg1.should.equal 999
+
+                    subject.callsNonExistantFunction 1001
+                    @spiedArg2.should.equal 1001
 
 
 
