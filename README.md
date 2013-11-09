@@ -244,33 +244,6 @@ Previous stubs are flushed from **ALL** modules at **EVERY** injection
 
 ```
 
-The successful approach is to set up ONLY the mocks in the hooks.
-
-```coffee
-    
-    before -> 
-        @mockServer = 
-            _listen: (@port) => # have not tried this (@) => trick 
-                                # in this particualt context yet...
-            address: ->
-            close: ->
-
-    it 'should only ever stub inside the tests', ipso (facto, http, MyServer) -> 
-
-        http.does createServer: => @mockServer
-
-        (new MyServer).start => 
-
-            @port.should.equal something
-
-            #
-            # ... but i suspect it works
-            # 
-
-            facto()
-
-```
-
 It supports promises.
 
 ```coffee
