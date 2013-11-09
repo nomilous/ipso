@@ -257,6 +257,49 @@ Previous stubs are flushed from **ALL** modules at **EVERY** injection
 
 ```
 
+**PENDING** It can create active mocks for fullblown stubbing whole modules
+
+```coffee
+beforeEach ipso (done, http) -> 
+
+    http.does
+
+        createServer: (handler) =>  
+
+            #
+            # call the handler on nextTick with mocks for req and res
+            #
+
+            process.nextTick -> handler mock('req'), mock('res')
+
+                                            #
+                                            # POSSIBILE??:
+                                            # 
+                                            # * Catching 'undefined is not a function' to record all
+                                            #   calls made to a mock for should to test afterards.
+                                            # 
+                                            #         (js.method_missing?)
+                                            # 
+
+            #
+            # return a "server" mock with active function expectations that also 
+            # fails the tests if not called...
+            # 
+            # TODO: does.spectate(...  which creates .does(..., is async, this mock probably 
+            #       needs a Sync version
+            #
+
+            return mock( 'server' ).does
+
+                listen: (@port) =>
+                address: -> 'mock address'
+
+    .then done
+
+```
+
+
+
 It supports promises.
 
 ```coffee

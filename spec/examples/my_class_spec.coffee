@@ -1,4 +1,4 @@
-ipso = require '../../lib/ipso'
+{ipso, mock} = require '../../lib/ipso'
 
 
 
@@ -49,15 +49,11 @@ describe 'MyClass', ipso (MyClass) ->
         it 'can inject a not yet written module', ipso (ThereIsNoSourceFileForThisYet) -> 
 
             ThereIsNoSourceFileForThisYet.does()
-            console.log ThereIsNoSourceFileForThisYet.$ipso.save()
+            ThereIsNoSourceFileForThisYet.$ipso.save()
 
 
 
-
-
-
-
-    xcontext """
+    context """
 
         tagged module injection
         =======================
@@ -127,6 +123,7 @@ describe 'MyClass', ipso (MyClass) ->
 
         * done can be called from the stubbed function
         * the test will timeout BUT will report the "function not called" instead of timeout 
+        .
 
         """, -> 
 
@@ -153,6 +150,8 @@ describe 'MyClass', ipso (MyClass) ->
         -----------
 
         * ##undecided
+
+        .
 
 
         """, -> 
@@ -183,9 +182,66 @@ describe 'MyClass', ipso (MyClass) ->
                     @spiedArg2.should.equal 1001
 
 
+        
+
+
+        context """ LATER
+
+        Active Mocks
+        ============
+
+        * stubs can return mocks to "nest" function expectations
+        .
+        
+
+        """, -> 
+
+            beforeEach ipso (http) -> 
+
+                http.does
+
+                    createServer: (handler) =>  
+
+                        #
+                        # call the handler on nextTick with mocks for req and res
+                        #
+
+                        process.nextTick -> handler mock('req'), mock('res')
+
+                                                        #
+                                                        # POSSIBILE??:
+                                                        # 
+                                                        # * Catching 'undefined is not a function' to record all
+                                                        #   calls made to a mock for should to test afterards.
+                                                        # 
+                                                        #         (js.method_missing?)
+                                                        # 
+
+                        #
+                        # return a "server" mock with active function expectations that also 
+                        # fails the tests if not called...
+                        # 
+                        # TODO: does.spectate(...  which creates .does(..., is async, this mock probably 
+                        #       needs a Sync version
+                        #
+
+                        return mock( 'server' ).does
+
+                            listen: (@port) =>
+                            address: -> 'mock address'
 
 
 
+            it '@port is populated or test failes fails', ipso (facto, http) -> 
+
+                server = http.createServer()
+
+                #
+                # TODO: make absence of next fail the test
+                #
+
+                # server.listen 3000
+                facto()
 
 
 

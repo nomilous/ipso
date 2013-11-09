@@ -174,6 +174,14 @@ ipso.modules = (list) ->
     return ipso
 
 
+ipso.ipso = ipso
+ipso.mock = (name, list) -> 
+
+    console.log 'mock not implemented yet'.red
+    does: -> 
+
+    
+
 ipso.tag = deferred (action, list) ->
 
     parallel( for tag of list
