@@ -54,7 +54,11 @@ It defines `.does()` on each injected module for use as a **stubber**.
 
 it 'creates an http server', ipso (done, http) -> 
 
-    http.does createServer: -> 
+    http.does 
+        createServer: -> 
+        anotherFunction: -> 
+
+    http.createServer()
     done()
 
 ```
@@ -68,10 +72,11 @@ It uses mocha's JSON diff to display failure to call the stubbed function.
       1 | {
       2 |   "http": {
       3 |     "functions": {
-      4 |       "Object.createServer()": "was NOT called"
-      5 |     }
-      6 |   }
-      7 | }
+      4 |       "Object.createServer()": "was called"
+      5 |       "Object.anotherFunction()": "was NOT called"
+      6 |     }
+      7 |   }
+      8 | }
 
 ```
 
@@ -283,42 +288,22 @@ Previous stubs are flushed from **ALL** modules at **EVERY** injection
 beforeEach ipso (done, http) -> 
 
     http.does
-
         createServer: (handler) =>  
-
-            #
-            # call the handler on nextTick with mocks for req and res
-            #
-
-            process.nextTick -> handler mock('req'), mock('res')
+            process.nextTick ->
 
                 #
-                # POSSIBILE??:
-                # 
-                # * Catching 'undefined is not a function' to record all
-                #   calls made to req and res mocks for should to test afterards.
-                # 
-                #         (js.method_missing?)
-                # 
+                # mock an actual "hit"
+                #
 
-            #
-            # return a "server" mock with active function expectations that also 
-            # fails the tests if not called...
-            # 
-            # TODO: does.spectate(...  which creates .does(..., is async, 
-            #       this mock probably needs a Sync version
-            #
-
+                handler mock('req').does(...), mock('res').does(...)
+            
             return mock( 'server' ).does
 
                 listen: (@port) =>
                 address: -> 'mock address'
 
-    .then done
 
 ```
-
-
 
 It supports promises.
 
