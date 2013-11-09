@@ -1,9 +1,11 @@
 {util, deferred, parallel}  = require 'also'
+{AssertionError} = require 'assert'
 facto   = require 'facto'
 Loader  = require './loader'
 colors  = require 'colors'
 Does    = require 'does'
 does    = Does does: mode: 'spec'
+should  = require 'should'
 
 config = 
 
@@ -177,8 +179,12 @@ ipso.modules = (list) ->
 ipso.ipso = ipso
 ipso.mock = (name, list) -> 
 
-    console.log 'mock not implemented yet'.red
-    does: -> 
+    object = 
+        title: name
+        is: (mock) -> 
+            if typeof mock is 'object' then return object.should.equal mock
+            name.should.equal mock
+        does: -> 
 
     
 

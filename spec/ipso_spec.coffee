@@ -264,6 +264,29 @@ describe 'ipso', ->
                     should.exist tagged['π']
                     facto()
 
+    context 'mock', -> 
+
+        it 'returns a mock object', -> 
+
+            mock = ipso.mock 'thing'
+            mock.is.should.be.an.instanceof Function
+            mock.does.should.be.an.instanceof Function
+
+        it 'can assert as self', -> 
+
+            mock1 = ipso.mock 'something'
+            mock2 = ipso.mock 'something else'
+
+            try mock1.is mock2
+            catch error
+                error.should.be.an.instanceof require('assert').AssertionError
+                error.should.match /expected/
+
+            try mock1.is 'something else'
+            catch error
+                error.actual.should.equal 'something'
+                error.expected.should.equal 'something else'
+
 
 
 
