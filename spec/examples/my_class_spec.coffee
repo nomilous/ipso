@@ -276,7 +276,7 @@ describe 'MyClass', ipso (MyClass) ->
                 SomeModule.someFunction1()
                 facto()
 
-        it 'does not have expectation hooks from SomeOtherModule even tho it got injected', ipso (facto, SomeOtherModule) -> 
+        it 'does not have expectation failures from SomeOtherModule even tho it got injected', ipso (facto, SomeOtherModule) -> 
 
             console.log SomeOtherModule
             facto()
