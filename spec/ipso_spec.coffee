@@ -288,10 +288,29 @@ describe 'ipso', ->
                 error.expected.should.equal 'something else'
 
 
-        it 'throws expected functions on timeout even if timeout is reset', ipso (facto, Something) ->
+        # it 'throws expected functions not called instead of timeout even if timeout is reset', ipso (facto, Something) -> 
 
-            @timeout 10
-            Something.does something: -> 'hrumph'
+        #     @timeout 10
+        #     Something.does 
+        #         something: -> 'okgood'
+        #         somethingElse: -> facto()
+
+        #     Something.something()
+        #     # Something.somethingElse()
+
+        #     # 1 | {
+        #     # 2 |   "Something": {
+        #     # 3 |     "functions": {
+        #     # 4 |       "Object.something()": "was called",
+        #     # 5 |       "Object.somethingElse()": "was NOT called"
+        #     # 6 |     }
+        #     # 7 |   }
+        #     # 8 | }
+
+        #     # 
+        #     # not bothering to try and make a 'passing test' capable 
+        #     # of testing that this test fails by timeout
+        #     # 
 
 
 
