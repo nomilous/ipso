@@ -170,6 +170,9 @@ ipso.modules = (list) ->
         config.modules[tag] = list[tag]
     return ipso
 
+#
+# convenience {ipso, mock, tag} = require 'ipso'
+#
 
 ipso.ipso = ipso
 ipso.mock = (name) -> 
