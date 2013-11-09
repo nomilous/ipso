@@ -1,18 +1,27 @@
 ipso = require '../../lib/ipso'
 
-describe 'ipso', -> 
 
 
+# describe (MyClass) -> # will need to override describe to pull this off
 
+describe 'MyClass', ipso (MyClass) ->
+
+
+    it 'injected MyClass for use throughout the entire test suite', -> 
+
+        MyClass.should.equal require '../../lib/examples/my_class'
 
 
     context """
 
-        module injection
-        ================
+        module injection (into tests)
+        =============================
 
         * lowercase injects node modules
-        * CamelCase injects local modules (recursed from ./lib and ./app)
+        * CamelCase injects local modules 
+            * recurses ./lib and ./app
+            * use ipso.modules(...) to handle name collision
+            * successfully injects not yet defined modules with a warning
         * it can be synchronous or asynchronous
         .
 
@@ -26,23 +35,29 @@ describe 'ipso', ->
             events.should.equal require 'events'
 
 
-        it 'can inject a Local Module', ipso (done, MyClass) -> 
+        it 'can inject a Local Module', ipso (done, ModuleName) -> 
 
             #
             # * done will only be the mocha test resolver if the argument's name 
             #   is literally "done"
             #
 
-            MyClass.should.equal require '../../lib/examples/my_class'
+            ModuleName.should.equal require '../../lib/testing/recursor/module_name'
             done()
 
 
+        it 'can inject a not yet written module', ipso (ThereIsNoSourceFileForThisYet) -> 
+
+            ThereIsNoSourceFileForThisYet.does()
+            console.log ThereIsNoSourceFileForThisYet.$ipso.save()
 
 
 
 
 
-    context """
+
+
+    xcontext """
 
         tagged module injection
         =======================

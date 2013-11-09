@@ -98,7 +98,7 @@ describe 'Loader', ->
 
     context 'loadModulesSync()', -> 
 
-        it.only 'returns an array of loaded modules', ipso (done) -> 
+        it 'returns an array of loaded modules', ipso (done) -> 
 
             instance = Loader.create dir: process.cwd()
             [ModuleName, zlib, NonExistant] = instance.loadModulesSync ['ModuleName', 'zlib', 'NonExistant']
@@ -109,6 +109,13 @@ describe 'Loader', ->
 
             NonExistant.$ipso.PENDING.should.equal true
             done()
+
+        context 'it is used to inject into suites', ipso (os) -> 
+
+            it 'has os', -> 
+
+                os.should.equal require 'os'
+
 
 
 

@@ -11,7 +11,7 @@ ipso
 
 ### Injection Decorator
 
-It is placed in front of the test function.
+It is placed in front of the test functions.
 
 ```coffee
 ipso = require 'ipso'
@@ -22,7 +22,20 @@ it 'does something', ipso (done) ->
 
 ```
 
-It can inject node modules.
+It can inject node modules into suites.
+
+```coffee
+
+describe 'it can inject into describe', ipso (vm) -> 
+    context 'it can inject into context', ipso (net) -> 
+        it 'confirms', -> 
+
+            vm.should.equal  require 'vm'
+            net.should.equal require 'net'
+
+```
+
+It can inject node modules into tests.
 
 ```coffee
 

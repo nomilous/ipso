@@ -5,33 +5,21 @@ colors  = require 'colors'
 Does    = require 'does'
 does    = Does does: mode: 'spec'
 
-console.log TODO: 'allow injection into describe and context using async: false'
-
-# #
-# # spec events into does()
-# # -----------------------
-# # 
-# require('./mocha_runner').on 'spec_event', (payload) ->   # subscribe
-#     #
-#     # is mocha spawning children?
-#     # ---------------------------
-#     # 
-#     # ## THIS IN A RUNNING TEST 
-#     # 
-#     console.log HUH: payload
-
-
 config = 
 
     #
-    # ipso should be run in repo root
-    # ===============================
+    # **ipso should be run in repo root**
     #
 
     dir: process.cwd()
     modules: {}
 
-{loadModules} = Loader.create config
+{loadModules, loadModulesSync} = Loader.create config
+
+#
+# `ipso( testFunction )` - Decorates a test function
+# --------------------------------------------------
+# 
 
 module.exports = ipso = (testFunction) -> 
     
@@ -42,9 +30,8 @@ module.exports = ipso = (testFunction) ->
     if fnArgsArray.length == 0 
 
         #
-        # No args passed to the test function
-        # -----------------------------------
-        #
+        # ### No args passed to the test function
+        # 
         # * Return a function to mocha that calls the test function when called
         # 
 
@@ -53,13 +40,29 @@ module.exports = ipso = (testFunction) ->
     else if fnArgsArray[0] isnt 'done' and fnArgsArray[0] isnt 'facto' 
 
         #
-        # Test function has arguments but not done or facto
-        # -------------------------------------------------
+        # ### Test function has arguments but not done or facto
         # 
         # * All args are assumed to be injection tags
         # 
 
         return (done) -> 
+
+            unless @test?
+
+                #
+                # Injecting into describe() or context()
+                # 
+                # * Inject synchronously
+                #
+
+                does.activate context: @, mode: 'spec', spec: null, resolver: null
+                inject.push Module for Module in loadModulesSync( fnArgsArray, does )
+                testFunction.apply @, inject
+                return
+
+            #
+            # * Injecting into it() or "hook"()
+            #
 
             does.activate context: @, mode: 'spec', spec: @test, resolver: done
 
@@ -92,8 +95,7 @@ module.exports = ipso = (testFunction) ->
             
 
         #
-        # Test function has arguments
-        # ---------------------------
+        # ### Test function has arguments
         #
         # * Return this function for mocha to run as the test
         #

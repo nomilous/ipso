@@ -167,6 +167,16 @@ describe 'ipso', ->
             done()
 
 
+        describe 'it can inject into describe', ipso (vm) -> 
+
+            context 'it can inject into context', ipso (net) -> 
+
+                it 'confirms', -> 
+
+                    vm.should.equal require 'vm'
+                    net.should.equal require 'net'
+
+
         it 'can inject into synchronous test', ipso (zlib, net) -> 
 
             net.should.equal require 'net'

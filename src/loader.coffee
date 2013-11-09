@@ -135,8 +135,8 @@ module.exports.create = (config) ->
                         save: (path) -> console.log """
 
                             #
-                            #   NonExistantModule.$ipso.save(templateTag, pa/th) 
-                            #   ------------------------------------------------
+                            #   #{name}.$ipso.save(templateTag, pa/th) 
+                            #   -------------------------------------------------------------------
                             #   
                             #   Not yet implemented.
                             # 
@@ -173,8 +173,8 @@ module.exports.create = (config) ->
                     save: (path) -> console.log """
 
                         #
-                        #   NonExistantModule.$ipso.save(templateTag, pa/th) 
-                        #   ------------------------------------------------
+                        #   #{name}.$ipso.save(templateTag, pa/th) 
+                        #   --------------------------------------------------------------
                         #   
                         #   Not yet implemented.
                         # 
