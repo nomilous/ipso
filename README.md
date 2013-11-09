@@ -329,9 +329,6 @@ it 'creates a server, starts listening and responds when hit', ipso (facto, http
     server.listen 3000, -> console.log 'listen callback'
     @port.should.equal 3000
 
-    
-
-
 ```
 ```json
 
