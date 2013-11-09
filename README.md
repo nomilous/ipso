@@ -257,8 +257,8 @@ it 'can stop the http server', (done, http, Server) ->
     http.does 
         createServer: ->
             listen: (args...) -> 
-                process.nextTick args.pop() # blind callback lastarg(), 
-                                            # mimics async listen step
+                process.nextTick args.pop()() # blind callback lastarg(), 
+                                              # mimics async listen step
             close: -> done()
 
     Server.create (server) -> server.stop()
