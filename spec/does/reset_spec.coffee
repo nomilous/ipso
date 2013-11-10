@@ -9,6 +9,16 @@ objects: -> does._test().spectacles
 # various combinations of ancestor hooks
 #
 
+before ipso (done, should) -> 
+
+    ipso.tag
+
+        GOT: should.exist
+        NOT: should.not.exist
+
+    .then done
+
+
 beforeEach ipso (MyClass) -> MyClass.does each_ROOT_1: -> 
 
 describe 'DESCRIBE', ipso (MyClass) ->
@@ -32,21 +42,22 @@ describe 'DESCRIBE', ipso (MyClass) ->
                 MyClass.each_INNER_1()
                 MyClass.each_INNER_2()
 
-        it 'no longer expects INNER functions', ipso (MyClass, should) ->
+        it 'no longer expects INNER functions', ipso (MyClass, NOT) ->
 
-            should.not.exist MyClass.each_INNER_1
-            should.not.exist MyClass.each_INNER_2
+            NOT MyClass.each_INNER_1
+            NOT MyClass.each_INNER_2
 
             MyClass.each_ROOT_1()
             MyClass.each_DESCRIBE_1()
             MyClass.each_OUTER_1()
 
-    it 'no longer expects OUTER functions', ipso (MyClass, should) ->
+    it 'no longer expects OUTER functions', ipso (MyClass, NOT) ->
 
-        should.not.exist MyClass.each_INNER_1
-        should.not.exist MyClass.each_INNER_2
-        should.not.exist MyClass.each_OUTER_1
+        NOT MyClass.each_INNER_1
+        NOT MyClass.each_INNER_2
+        NOT MyClass.each_OUTER_1
         
+        #NOT MyClass.each_ROOT_1
         MyClass.each_ROOT_1()
         MyClass.each_DESCRIBE_1()
 
