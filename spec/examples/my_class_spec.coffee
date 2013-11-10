@@ -4,7 +4,7 @@
 
 # describe (MyClass) -> # will need to override describe to pull this off
 
-describe 'MyClass', ipso (MyClass) ->
+describe 'MyClass', ->
 
 
     xit 'injected MyClass for use throughout the entire test suite', -> 
@@ -261,9 +261,16 @@ describe 'MyClass', ipso (MyClass) ->
 
         context 'can set expectations on an object injected into the superscope', -> 
 
-            beforeEach ipso -> MyClass.does function: ->
+            beforeEach ipso -> 
 
-            it 'passes only if MyClass.function() is called', ipso -> MyClass.function()
+                # MyClass.does function: ->
+
+                # console.log MyClass
+
+            it 'passes only if MyClass.function() is called', ipso -> 
+
+
+                #MyClass.function()
 
 
         # beforeEach ipso (SomeModule) -> 

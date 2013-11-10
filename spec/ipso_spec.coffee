@@ -23,6 +23,15 @@ describe 'ipso', ->
     beforeEach -> @RESULT = undefined
 
 
+    it 'it works normally', -> 
+
+        #console.log 'in works normally'.bold
+        true.should.equal true
+
+
+    context 'it warns on injecting done into context', ipso (done) ->
+
+
     context 'for mocha tests', ->
 
 
@@ -58,10 +67,10 @@ describe 'ipso', ->
 
             before ipso (http) -> @http = http
 
-            it 'did inject http', -> 
+            it 'did inject http', ipso (done) -> 
 
                 @http = require 'http'
-
+                done()
 
 
         it 'calls each test "runtime" into does as test starts up', ipso (done) -> 
@@ -72,9 +81,10 @@ describe 'ipso', ->
             done()
 
 
-        it 'still fails as it should', (done) -> 
+        it 'still fails as it should', -> 
 
             @resolve = (error) -> 
+                #console.log error
                 error.name.should.equal 'AssertionError'
                 done()
 
@@ -135,7 +145,7 @@ describe 'ipso', ->
             done()
 
 
-        it 'passes from within the promise resolution / fullfillment handler', (done) -> 
+        it 'passes from within the promise resolution / fullfillment handler', ipso (done) -> 
 
             @resolvingPromise().then (result) -> 
 
@@ -143,20 +153,13 @@ describe 'ipso', ->
                 done()
 
 
-        it 'fails from within the promise resolution / fullfillment handler', (done) -> 
+        it 'fails from within the promise resolution / fullfillment handler', -> 
 
             @resolve = (error) -> 
                 error.name.should.equal 'AssertionError'
                 done()
 
             @fakeit 'fails this', ipso (done) => 
-
-                @resolvingPromise()
-
-                .then (result) => @resolvingPromise()
-                .then (result) -> 
-
-                    true.should.equal 'this is expected to fail'
 
 
         it 'injects mode nodules', ipso (done, mocha) -> 

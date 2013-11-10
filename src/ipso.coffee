@@ -35,112 +35,89 @@ module.exports = ipso = (testFunction) ->
         # ### No args passed to the test function
         # 
         # * Return a function to mocha that calls the test function when called
-        # 
+        #
 
+
+
+
+
+        console.log TODO: 'does should still be activated here, ipso was called' 
         return -> testFunction.call @
 
-    else if fnArgsArray[0] isnt 'done' and fnArgsArray[0] isnt 'facto' 
 
-        #
-        # ### Test function has arguments but not done or facto
-        # 
-        # * All args are assumed to be injection tags
-        # 
 
-        return (done) -> 
 
-            unless @test?
 
-                #
-                # Injecting into describe() or context()
-                # 
-                # * Inject synchronously
-                #
 
-                does.activate context: @, mode: 'spec', spec: null, resolver: null
-                inject.push Module for Module in loadModulesSync( fnArgsArray, does )
-                testFunction.apply @, inject
+    return (done) -> 
+
+        unless done?
+
+            #
+            # ### Injecting into describe() or context()
+            #
+
+            if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
+
+                console.log 'ipso cannot inject done into describe() or context()'.red
                 return
 
-            #
-            #  Injecting into it() or "hook"()
-            # 
-            #  * Inject asynchronously
-            #
+            does.activate context: @, mode: 'spec', spec: null, resolver: null
+            inject.push Module for Module in loadModulesSync( fnArgsArray, does )
+            testFunction.apply @, inject
+            return
 
-            does.activate context: @, mode: 'spec', spec: @test, resolver: done
 
-            loadModules( fnArgsArray, does ).then(
 
-                (Modules) => 
+        #
+        # ### Injecting into hook or it()
+        #
 
-                    inject.push argN = Module for Module in Modules
-                    testFunction.apply @, inject
-                    done() 
+        does.activate context: @, mode: 'spec', spec: @test, resolver: done
 
-                done
 
-            ).then( 
+        #
+        # * testResolver wraps mocha's done into a proxy that call it via 
+        #   does.asset(... for function expectations that mocha is not aware of.
+        #
 
-                -> does.assert( done )
-                (error) -> done error
+        testResolver = (metadata) -> 
+
+            does.assert( done ).then( 
+
+                (result) -> 
+
+                    #
+                    # * does.assert(... does not call done if nothing failed
+                    #
+
+                    if fnArgsArray[0] is 'facto' then facto metadata
+                    done()
+
+                (error) -> 
+
+                    #
+                    # * does.assert(... already called done - to fail the mocha test
+                    #
+
+                    if fnArgsArray[0] is 'facto' then facto metadata
+
+                (notify) -> 
+
+                    #
+                    # * later... 
+                    #
 
             )
 
         #
-        # TODO: consider making a loadModules that is not async so
-        #       that ipso can be used to inject into describe() and
-        #       context()   [ NOT POSSIBLE, ipso injector is async, context and describe are not ]
-        #
-
-    return (done) -> 
-
-        unless @test?
-
-            console.log 'ipso cannot inject done into describe() or context()'.red
-            return
-
-        does.activate context: @, mode: 'spec', spec: @test, resolver: done   
-
-        #
-        # ### Test function has arguments
+        # * testResolver is only injected if arg1 is done or facto
         #
 
         if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
-            fnArgsArray.shift()
-
-            #
-            # * arg1 contains a proxy function that wraps the test resolver (done)
-            # * it calls the done only after does.assert(... is called  to first 
-            #   check that all expectations have been met
-            #
-
-            inject.push arg1 = (metadata) -> 
-
-                does.assert( done ).then( 
-
-                    (result) -> 
-
-                        #
-                        # * assert does not call done if nothing failed
-                        #
-
-                        if fnArgsArray[0] is 'facto' then facto metadata
-                        
-                        done()
-
-                    (error) -> 
-
-                        #
-                        # * assert already called done - to fail the mocha test
-                        #
-
-                        if fnArgsArray[0] is 'facto' then facto metadata
-
-                    (notify) -> 
-
-                )
+            inject.push testResolver
+            arg1 = fnArgsArray.shift()
 
         loadModules( fnArgsArray, does ).then(
 
@@ -150,8 +127,25 @@ module.exports = ipso = (testFunction) ->
 
             (Modules) => 
 
-                inject.push argN = Module for Module in Modules
-                testFunction.apply @, inject
+                inject.push Module for Module in Modules
+                promise = testFunction.apply @, inject
+
+                if arg1 isnt 'done' and arg1 isnt 'facto' 
+
+                    #
+                    # * test did not "request" done or facto (ie. synchronous)
+                    #   but this test wrapper got a done from mocha, it needs
+                    #   to be called.
+                    #
+
+                    testResolver()
+
+                #
+                # * redirect AssertionError being raised in a promise chain
+                #   back into mocha's test resolver
+                #
+
+                if promise.then? then promise.then (->), done
 
             #
             # * loader rejection into done() - error loading module
