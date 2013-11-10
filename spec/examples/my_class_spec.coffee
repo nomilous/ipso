@@ -4,7 +4,7 @@
 
 # describe (MyClass) -> # will need to override describe to pull this off
 
-describe 'MyClass', ->
+describe 'MyClass', ipso (MyClass) ->
 
 
     xit 'injected MyClass for use throughout the entire test suite', -> 
@@ -263,14 +263,14 @@ describe 'MyClass', ->
 
             beforeEach ipso -> 
 
-                # MyClass.does function: ->
+                MyClass.does function: ->
 
-                # console.log MyClass
+                console.log MyClass
 
             it 'passes only if MyClass.function() is called', ipso -> 
 
-
-                #MyClass.function()
+                console.log MyClass
+                # MyClass.function()
 
 
         # beforeEach ipso (SomeModule) -> 

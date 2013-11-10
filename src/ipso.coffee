@@ -153,7 +153,7 @@ module.exports = ipso = (testFunction) ->
                 
             done
 
-        ).then (->), done
+        )
 
 
 ipso.modules = (list) -> 
