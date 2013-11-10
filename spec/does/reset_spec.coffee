@@ -81,10 +81,14 @@ describe 'DESCRIBE', ipso (MyClass) ->
             function1: -> 
             function2: ->
 
-        it 'fails because expectations on the mock were not called', ipso ->
+        it 'fails because expectations on the mock were not called', ipso (mock1) ->
 
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
+
+            mockedThing.is mock1
             mockedThing.function1()
+
+            
 
 
 
