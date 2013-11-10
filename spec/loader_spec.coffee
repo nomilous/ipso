@@ -47,7 +47,7 @@ describe 'Loader', ->
             instance.loadModules ['http'], does = 
 
                 get: (args...) -> args.pop()() # no tagged objects, empty callback
-                spectate: (name, http) -> 
+                spectate: (opts, http) -> 
 
                     http.should.equal require 'http'
                     done()
@@ -63,7 +63,7 @@ describe 'Loader', ->
                 # stub does.spectate() to pass through directly
                 #
 
-                spectate: (name, m) -> m 
+                spectate: (opts, m) -> m 
 
             .then ([http, Inspector]) -> 
 
@@ -82,7 +82,7 @@ describe 'Loader', ->
 
             instance.loadModules ['ModuleName'], 
                 get: (args...) -> args.pop()()
-                spectate: (name, m) -> m
+                spectate: (opts, m) -> m
 
 
         it 'finds match', ipso (done) -> 
@@ -90,7 +90,7 @@ describe 'Loader', ->
             instance = Loader.create dir: process.cwd() 
             instance.loadModules ['ModuleName'], 
                 get: (args...) -> args.pop()()
-                spectate: (name, m) -> m
+                spectate: (opts, m) -> m
             .then ([ModuleName]) ->
 
                 ModuleName.test1().should.equal 1
@@ -101,7 +101,8 @@ describe 'Loader', ->
         it 'returns an array of loaded modules', ipso (done) -> 
 
             instance = Loader.create dir: process.cwd()
-            [ModuleName, zlib, NonExistant] = instance.loadModulesSync ['ModuleName', 'zlib', 'NonExistant']
+            [ModuleName, zlib, NonExistant] = instance.loadModulesSync ['ModuleName', 'zlib', 'NonExistant'], 
+                spectateSync: (opts, m) -> m
 
 
             ModuleName.should.equal require '../lib/testing/recursor/module_name'

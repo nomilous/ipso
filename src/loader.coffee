@@ -11,7 +11,7 @@ module.exports.create = (config) ->
     lastInstance = local = 
 
         #
-        # `loadModules( arrayOfName, doesInstance )`
+        # `loadModules( arrayOfNames, doesInstance )`
         # -----------------------------------------
         # 
         # * Asynchronously load the list of modules.
@@ -20,9 +20,9 @@ module.exports.create = (config) ->
         # * Objects are assigned spectateability. (  `objct.does(...`   )
         #
 
-        loadModules: (arrayOfName, doesInstance) ->
+        loadModules: (arrayOfNames, doesInstance) ->
 
-            return promise = parallel( for moduleName in arrayOfName
+            return promise = parallel( for moduleName in arrayOfNames
 
                 #
                 # https://github.com/nomilous/knowledge/blob/master/spec/promise/loops.coffee#L81
@@ -38,7 +38,7 @@ module.exports.create = (config) ->
 
 
         #
-        # `loadModulesSync( arrayOfName, doesInstance )`
+        # `loadModulesSync( arrayOfNames, doesInstance )`
         # ----------------------------------------------
         # 
         # * Synchronously load the list of modules.
@@ -47,17 +47,12 @@ module.exports.create = (config) ->
         #     * does not load tagged objects
         # 
 
-        loadModulesSync: (arrayOfName, doesInstance) -> 
+        loadModulesSync: (arrayOfNames, doesInstance) -> 
 
-            for moduleName in arrayOfName
+            return arrayOfModules = for moduleName in arrayOfNames
 
-                local.loadModuleSync moduleName, doesInstance
-
-
-
-
-
-
+                Module = local.loadModuleSync moduleName, doesInstance
+                doesInstance.spectateSync name: moduleName, tagged: false, Module
 
 
 
@@ -199,3 +194,7 @@ module.exports.create = (config) ->
 
         loadModules: local.loadModules
         loadModulesSync: local.loadModulesSync
+
+
+
+

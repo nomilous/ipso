@@ -259,26 +259,34 @@ describe 'MyClass', ipso (MyClass) ->
 
     context 'expectation scope', -> 
 
-        beforeEach ipso (SomeModule) -> 
-            SomeModule.does 
-                someFunction1: ->
-                someFunction2: ->
+        context 'can set expectations on an object injected into the superscope', -> 
 
-        context 'nested suite', -> 
+            beforeEach ipso -> MyClass.does function: ->
 
-            beforeEach ipso (SomeOtherModule) -> 
-                SomeOtherModule.does 
-                    someFunction1: ->
-                    someFunction2: ->
+            it 'passes only if MyClass.function() is called', ipso -> MyClass.function()
 
-            it 'has all the expectation failures from ancestor hooks', ipso (facto, SomeModule) -> 
 
-                SomeModule.someFunction1()
-                facto()
+        # beforeEach ipso (SomeModule) -> 
+        #     SomeModule.does 
+        #         someFunction1: ->
+        #         someFunction2: ->
 
-        it 'does not have expectation failures from SomeOtherModule even tho it got injected', ipso (facto, SomeOtherModule) -> 
 
-            console.log SomeOtherModule
-            facto()
+        # context 'nested suite', -> 
+
+        #     beforeEach ipso (SomeOtherModule) -> 
+        #         SomeOtherModule.does 
+        #             someFunction1: ->
+        #             someFunction2: ->
+
+        #     it 'has all the expectation failures from ancestor hooks', ipso (facto, SomeModule) -> 
+
+        #         #SomeModule.someFunction1()
+        #         facto()
+
+        # xit 'does not have expectation failures from SomeOtherModule even tho it got injected', ipso (facto, SomeOtherModule) -> 
+
+        #     console.log SomeOtherModule
+        #     facto()
 
 

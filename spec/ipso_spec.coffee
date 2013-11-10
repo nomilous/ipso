@@ -139,10 +139,8 @@ describe 'ipso', ->
 
             @resolvingPromise().then (result) -> 
 
-
                 result.should.equal 'RESULT'
                 done()
-
 
 
         it 'fails from within the promise resolution / fullfillment handler', (done) -> 
@@ -183,7 +181,7 @@ describe 'ipso', ->
             zlib.should.equal require 'zlib'
 
 
-        it 'fails when injecting undefined module', (done) ->
+        it 'fails when injecting undefined node module', (done) ->
 
             @resolve = (error) -> 
                 error.should.match /Cannot find module/
@@ -192,32 +190,13 @@ describe 'ipso', ->
             @fakeit 'fails this', ipso (facto, i) ->
 
 
-        it 'metadatas', ipso (facto, should) -> 
+        it 'succeeds when injecting undefined LocalModule', ipso (LocalModule) ->
 
-            should.should.equal require 'should'
-            facto meta: data = """
-
+            LocalModule.$ipso.PENDING.should.equal true
 
 
 
-
-
-
-                               this meta-data intentionally left page-like
-
-
-
-
-
-
-
-
-
-
-            """
-
-
-        it 'injects spectatable modules when called with ipso (facto, mod, ule, names) ->', ipso (facto, should) -> 
+        it 'injects modules as spectatable', ipso (facto, should) -> 
 
             should.does.should.be.an.instanceof Function
             facto()
