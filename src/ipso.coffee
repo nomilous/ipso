@@ -113,7 +113,13 @@ module.exports = ipso = (actualTestFunction) ->
             (Modules) => 
 
                 argsToInjectIntoTest.push Module for Module in Modules
-                promise = actualTestFunction.apply @, argsToInjectIntoTest
+
+                try promise = actualTestFunction.apply @, argsToInjectIntoTest
+                catch error
+
+                    does.reset()
+                    done error
+                    return
 
                 if arg1 isnt 'done' and arg1 isnt 'facto' 
 

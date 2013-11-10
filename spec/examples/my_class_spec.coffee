@@ -7,12 +7,12 @@
 describe 'MyClass', ipso (MyClass) ->
 
 
-    xit 'injected MyClass for use throughout the entire test suite', -> 
+    it 'injected MyClass for use throughout the entire test suite', -> 
 
         MyClass.should.equal require '../../lib/examples/my_class'
 
 
-    xcontext """
+    context """
 
         module injection (into tests)
         =============================
@@ -53,7 +53,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-    xcontext """
+    context """
 
         tagged module injection
         =======================
@@ -70,7 +70,7 @@ describe 'MyClass', ipso (MyClass) ->
 
             ipso.tag
 
-                Subject:  MyClass
+                # Subject:  MyClass
                 subject:  new MyClass( 'A Title' )
 
             .then done
@@ -116,7 +116,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        xcontext """
+        context """
 
         Asynchronous
         ============
@@ -136,7 +136,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        xcontext """
+        context """
 
         Stubbing in hooks
         =================
@@ -185,7 +185,7 @@ describe 'MyClass', ipso (MyClass) ->
         
 
 
-    xcontext """
+    context """
 
     Active Mocks
     ============
@@ -255,48 +255,4 @@ describe 'MyClass', ipso (MyClass) ->
 
             @port.should.equal 3000
             console.log server.address()
-
-
-    context 'expectation scope', -> 
-
-        it 'klmsdf', ipso (ok) ->
-
-        context 'can set expectations on an object injected into the superscope', -> 
-
-            beforeEach ipso (should) -> MyClass.does function: -> 'mock'
-
-            it 'asserts functions if no resolver or spectateable is injected', ipso -> 
-
-                # MyClass.function().should.equal 'mock'
-
-            xit 'asserts functions if only spectateable is injected', ipso (MyClass) -> 
-
-            xit 'asserts functions if only resolver is injected', ipso (done) -> 
-
-            xit 'asserts functions if resolver and spectateable is injected', ipso (done, MyClass) -> 
-
-
-        # beforeEach ipso (SomeModule) -> 
-        #     SomeModule.does 
-        #         someFunction1: ->
-        #         someFunction2: ->
-
-
-        # context 'nested suite', -> 
-
-        #     beforeEach ipso (SomeOtherModule) -> 
-        #         SomeOtherModule.does 
-        #             someFunction1: ->
-        #             someFunction2: ->
-
-        #     it 'has all the expectation failures from ancestor hooks', ipso (facto, SomeModule) -> 
-
-        #         #SomeModule.someFunction1()
-        #         facto()
-
-        # xit 'does not have expectation failures from SomeOtherModule even tho it got injected', ipso (facto, SomeOtherModule) -> 
-
-        #     console.log SomeOtherModule
-        #     facto()
-
 

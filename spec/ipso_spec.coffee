@@ -23,10 +23,15 @@ describe 'ipso', ->
     beforeEach -> @RESULT = undefined
 
 
-    it 'it works normally', -> 
+    it 'works normally', -> 
 
         #console.log 'in works normally'.bold
         true.should.equal true
+
+    # it 'still works normally', ipso -> 
+
+    #     console.log 'in still works normally'.bold
+    #     true.should.equal false
 
 
     context 'it warns on injecting done into context', ipso (done) ->
