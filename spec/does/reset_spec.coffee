@@ -1,4 +1,4 @@
-ipso = require 'ipso'
+{ipso, mock, tag} = require '../../lib/ipso'
 
 runtime: -> does._test().runtime
 objects: -> does._test().spectacles
@@ -11,7 +11,7 @@ objects: -> does._test().spectacles
 
 before ipso (done, should) -> 
 
-    ipso.tag
+    tag
 
         GOT: should.exist
         NOT: should.not.exist
@@ -22,6 +22,15 @@ before ipso (done, should) ->
 beforeEach ipso (MyClass) -> MyClass.does each_ROOT_1: -> 
 
 describe 'DESCRIBE', ipso (MyClass) ->
+
+    #
+    # TODO: Stubs created in beforeAlls do not create function expectation,
+    # TODO: The mocks that they create become injectable by tag into beforeEach hooks 
+    #       to assemble expectations on them
+
+    before ipso ->  
+        mock1 = mock 'mock1'
+        MyClass.does SHOULD_NOT_CAUSE_FAILURE: -> mock1
 
     beforeEach ipso -> MyClass.does each_DESCRIBE_1: -> 
 
@@ -35,6 +44,10 @@ describe 'DESCRIBE', ipso (MyClass) ->
             beforeEach ipso -> MyClass.does each_INNER_2: -> 
 
             it 'passes becuase all expected functions are called', ipso -> 
+
+                #
+                # should still pass
+                #
 
                 MyClass.each_ROOT_1()
                 MyClass.each_DESCRIBE_1()
@@ -60,4 +73,20 @@ describe 'DESCRIBE', ipso (MyClass) ->
         #NOT MyClass.each_ROOT_1
         MyClass.each_ROOT_1()
         MyClass.each_DESCRIBE_1()
+
+    context 'USING MOCK TAGS', ->
+
+        beforeEach ipso (mock1) -> mock1.does 
+
+            function1: -> 
+            function2: ->
+
+        it 'fails because expectations on the mock were not called', ipso ->
+
+            mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
+            mockedThing.function1()
+
+
+
+
 

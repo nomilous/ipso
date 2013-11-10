@@ -172,7 +172,7 @@ ipso.mock = (name) ->
     # TODO: tagged?
     #
 
-    return does.spectateSync name: name, object
+    return does.spectateSync name: name, tagged: true, object
         
 
     
