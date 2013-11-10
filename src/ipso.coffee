@@ -22,34 +22,17 @@ config =
 # `ipso( testFunction )` - Decorates a test function
 # --------------------------------------------------
 # 
+# * All ipso tests are asynchronous - done is called in the background on the nextTick
+#   if the testFunction signature itself did not contain 'done' at argument1
+# 
 
-module.exports = ipso = (testFunction) -> 
-    
-    fnArgsArray = util.argsOf testFunction
+module.exports = ipso = (actualTestFunction) -> 
 
-    inject = []
+    return testFunctionForMocha = (done) -> 
 
-    if fnArgsArray.length == 0 
+        fnArgsArray = util.argsOf actualTestFunction
 
-        #
-        # ### No args passed to the test function
-        # 
-        # * Return a function to mocha that calls the test function when called
-        #
-
-
-
-
-
-        console.log TODO: 'does should still be activated here, ipso was called' 
-        return -> testFunction.call @
-
-
-
-
-
-
-    return (done) -> 
+        argsToInjectIntoTest = []
 
         unless done?
 
@@ -63,9 +46,10 @@ module.exports = ipso = (testFunction) ->
                 return
 
             does.activate context: @, mode: 'spec', spec: null, resolver: null
-            inject.push Module for Module in loadModulesSync( fnArgsArray, does )
-            testFunction.apply @, inject
+            argsToInjectIntoTest.push Module for Module in loadModulesSync( fnArgsArray, does )
+            actualTestFunction.apply @, argsToInjectIntoTest
             return
+
 
 
 
@@ -94,6 +78,7 @@ module.exports = ipso = (testFunction) ->
                     if fnArgsArray[0] is 'facto' then facto metadata
                     done()
 
+
                 (error) -> 
 
                     #
@@ -116,7 +101,7 @@ module.exports = ipso = (testFunction) ->
 
         if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
-            inject.push testResolver
+            argsToInjectIntoTest.push testResolver
             arg1 = fnArgsArray.shift()
 
         loadModules( fnArgsArray, does ).then(
@@ -127,8 +112,8 @@ module.exports = ipso = (testFunction) ->
 
             (Modules) => 
 
-                inject.push Module for Module in Modules
-                promise = testFunction.apply @, inject
+                argsToInjectIntoTest.push Module for Module in Modules
+                promise = actualTestFunction.apply @, argsToInjectIntoTest
 
                 if arg1 isnt 'done' and arg1 isnt 'facto' 
 

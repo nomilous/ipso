@@ -45,7 +45,21 @@ it 'does something', ipso (done, http) ->
 
 ```
 
-* `done` will only contain the test resolver if the argument's signaure is literally "done" and is in the first position.
+**IMPORTANT**: `done` will only contain the test resolver if the argument's signaure is literally "done" and it in the first position.
+
+In other words.
+
+```coffee
+
+it 'does something', ipso (finished, http) -> 
+
+#
+# => Error: Cannot find module 'finished' 
+# 
+# And the problem becomes more subtle if there IS a module called 'finshed' installed...
+# 
+
+```
 
 
 It defines `.does()` on each injected module for use as a **stubber**.

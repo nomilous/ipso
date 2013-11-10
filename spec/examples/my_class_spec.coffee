@@ -259,18 +259,21 @@ describe 'MyClass', ipso (MyClass) ->
 
     context 'expectation scope', -> 
 
+        it 'klmsdf', ipso (ok) ->
+
         context 'can set expectations on an object injected into the superscope', -> 
 
-            beforeEach ipso -> 
+            beforeEach ipso (should) -> MyClass.does function: -> 'mock'
 
-                MyClass.does function: ->
+            it 'asserts functions if no resolver or spectateable is injected', ipso -> 
 
-                console.log MyClass
+                # MyClass.function().should.equal 'mock'
 
-            it 'passes only if MyClass.function() is called', ipso -> 
+            xit 'asserts functions if only spectateable is injected', ipso (MyClass) -> 
 
-                console.log MyClass
-                # MyClass.function()
+            xit 'asserts functions if only resolver is injected', ipso (done) -> 
+
+            xit 'asserts functions if resolver and spectateable is injected', ipso (done, MyClass) -> 
 
 
         # beforeEach ipso (SomeModule) -> 
