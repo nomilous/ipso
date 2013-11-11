@@ -127,9 +127,10 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
             function1: ->
 
-        xit 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
+        it 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
 
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
+
 
             mockedThing.is mock1
             mockedThing.function1()
@@ -143,9 +144,14 @@ describe 'DESCRIBE', ipso (MyClass) ->
                 it should! (the entity expectation record is present)
 
             """
-            return
+            #return
+
 
             moduleMock = MyClass.SHOULD_NOT_CAUSE_FAILURE_EITHER()
+
+            console.log UUID1: ModuleMock.does.uuid
+            console.log UUID2: moduleMock.does.uuid # different? why?
+
             moduleMock.function1()
             #ModuleMock.$ipso.save()
 
