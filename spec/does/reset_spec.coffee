@@ -126,37 +126,29 @@ describe 'DESCRIBE', ipso (MyClass) ->
         beforeEach ipso (ModuleMock) -> ModuleMock.does 
 
             function1: ->
+            isTheSameObject: ->
 
-        it 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
+        it 'passes because all expectations on the mock were called', ipso (mock1, ModuleMock) ->
 
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
-
-
             mockedThing.is mock1
             mockedThing.function1()
+            mockedThing.function2()
 
-            console.log """
-                
-                injected modulemock as created in before at the top
-                and then expectationed in immediately preceding beforeEach
-                does not define function1()
 
-                it should! (the entity expectation record is present)
-
-            """
-            #return
-
+            
+            MyClass.each_ROOT_1()
+            MyClass.each_DESCRIBE_1()
 
             moduleMock = MyClass.SHOULD_NOT_CAUSE_FAILURE_EITHER()
-
-            console.log UUID1: ModuleMock.does.uuid
-            console.log UUID2: moduleMock.does.uuid # different? why?
-
-            moduleMock.function1()
-            #ModuleMock.$ipso.save()
+            moduleMock.function1()         # <------------------ same object
+            ModuleMock.isTheSameObject()   # <------------------ here by different means
 
 
-# after -> # console.log entities()
+            # ModuleMock.$ipso.save()
+
+
+after -> console.log entities()
 
 
 

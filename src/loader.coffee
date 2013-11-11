@@ -127,26 +127,11 @@ module.exports.create = (config) ->
                     $ipso: 
                         PENDING: true
                         module: name
-                        save: (path) -> console.log """
+                    $save: (template = 'default') ->
 
-                            #
-                            #   #{name}.$ipso.save(templateTag, pa/th) 
-                            #   -------------------------------------------------------------------
-                            #   
-                            #   Not yet implemented.
-                            # 
-                            #   * (for never having to write anything twice)
-                            #   * for cases where ipso detects the injection of a not yet existing module
-                            #   * can save the newly written stub to ./src/path/ as the ""first draft"" 
-                            #   * templates from ~/.ipso/templates
-                            #   * pending `does` to expose access to expectations for a list of functions to create
-                            #                                                         -----------------------------
-                            # 
-                            #   
-                            #             perhaps there's an even slicker way to do it?
-                            #  
-
-                        """.green
+                        #
+                        # * HOWTO? get the path of the calling spec
+                        #
 
                 }
 
@@ -165,26 +150,7 @@ module.exports.create = (config) ->
                 $ipso: 
                     PENDING: true
                     module: name
-                    save: (path) -> console.log """
-
-                        #
-                        #   #{name}.$ipso.save(templateTag, pa/th) 
-                        #   --------------------------------------------------------------
-                        #   
-                        #   Not yet implemented.
-                        # 
-                        #   * (for never having to write anything twice)
-                        #   * for cases where ipso detects the injection of a not yet existing module
-                        #   * can save the newly written stub to ./src/path/ as the ""first draft"" 
-                        #   * templates from ~/.ipso/templates
-                        #   * pending `does` to expose access to expectations for a list of functions to create
-                        #                                                         -----------------------------
-                        # 
-                        #   
-                        #             perhaps there's an even slicker way to do it?
-                        #  
-
-                    """.green
+                $save: (template = 'default') ->
 
             }
 
