@@ -105,7 +105,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
             #ModuleMock.$ipso.save()
 
 
-after -> console.log entities()
+after -> # console.log entities()
 
 
 
