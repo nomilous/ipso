@@ -2,14 +2,19 @@
 `npm install ipso` 0.0.10 [license](./license)
 
 
-Decorators, for testing, with [Mocha](https://github.com/visionmedia/mocha)
+Decorator, for testing, with [Mocha](https://github.com/visionmedia/mocha)
 
 All examples in [coffee-script](http://coffeescript.org/).
 
-ipso
-====
 
-### Injection Decorator
+What is this `ipso` thing?
+--------------------------
+
+[The Short Answer](https://github.com/nomilous/vertex/commit/a4b0ef4c6bc14874f5b7d8ff3e5bcbcf4d45edc6)
+
+The Long Answer, ↓
+
+### (test/) Injection Decorator
 
 It is placed in front of the test functions.
 
@@ -104,15 +109,18 @@ class MyServer
 ```
 
 ```coffee
+{ipso, mock} = require 'ipso'
+
 it 'creates an http server and listens at opts.port', ipso (done, http, MyServer) -> 
 
-    http.does 
+    http.does
         createServer: -> 
-            listen: (port) -> 
-                port.should.equal 3000
+            return mock('server').does
+                listen: (port) ->
+                    port.should.equal 3000
+                    done()
 
     MyServer.listen port: 3000, (req, res) -> 
-    done()
 
 ```
 
@@ -213,7 +221,7 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```
 
- It supports injection of non-js-eval-able module names or cases where the local module search fails
+It supports injection of non-js-eval-able module names or cases where the local module search fails
 
 
 ```coffee
