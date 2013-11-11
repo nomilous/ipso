@@ -50,7 +50,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
                 if beforeAll stubs are not cleared...
 
                 this stub will generate an error, 
-                because it is redeclared in beforeAll
+                because it is also declared in beforeAll
                 in INNER2
 
             """
@@ -61,7 +61,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
             it 'passes becuase all expected functions are called', ipso -> 
 
-                console.log '2A' # this runs second :(
+                # console.log '2A' # this runs second :(
 
                 MyClass.each_ROOT_1()
                 MyClass.each_DESCRIBE_1()
@@ -71,7 +71,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
         it 'no longer expects inner functions and passes because all outer expectations were called', ipso (MyClass, NOT) ->
 
-            console.log 1               # this runs first :(
+            # console.log 1               # this runs first :(
             NOT MyClass.each_INNER_1    # so these,
             NOT MyClass.each_INNER_2    # are testing nothing
 
@@ -81,19 +81,29 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
         context 'INNER 2', -> 
 
+            beforeEach ipso -> MyClass.does each_INNER_1: -> 
+            #beforeEach ipso -> MyClass.does each_INNER_2: -> 
+
             before ipso (MyClass) -> MyClass.does failsToCreateThis: -> """
 
                 if beforeAll stubs are not cleared...
 
                 this stub will generate an error, 
-                because it is redeclared in beforeAll
-                in INNER2
+                because it is also declared in beforeAll
+                in INNER1
 
             """
 
-            it 'cleaned up the stubs created in beforeAll in sibling context', ipso -> 
+            context 'ssdf', ->
 
-                console.log '2B' 
+                it 'cleaned up the stubs created in beforeAll in sibling context', ipso -> 
+
+                    MyClass.each_ROOT_1()
+                    MyClass.each_DESCRIBE_1()
+                    MyClass.each_OUTER_1()
+
+                    MyClass.each_INNER_1()
+
 
     it 'no longer expects OUTER functions', ipso (MyClass, NOT) ->
 
@@ -117,7 +127,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
             function1: ->
 
-        it 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
+        xit 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
 
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
 
