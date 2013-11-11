@@ -1,7 +1,9 @@
 {ipso, mock, tag} = require '../../lib/ipso'
 
-runtime: -> does._test().runtime
-objects: -> does._test().spectacles
+does = require 'does'
+
+runtime = -> does._test().runtime
+entities = -> does._test().entities
 
 # 
 # tests does.reset() here due to the complexity of setting up
@@ -32,6 +34,9 @@ describe 'DESCRIBE', ipso (MyClass) ->
         mock1 = mock 'mock1'
         MyClass.does SHOULD_NOT_CAUSE_FAILURE: -> mock1
 
+    before ipso (ModuleMock) ->  
+        MyClass.does SHOULD_NOT_CAUSE_FAILURE_EITHER: -> ModuleMock
+
     beforeEach ipso -> MyClass.does each_DESCRIBE_1: -> 
 
     context 'OUTER', -> 
@@ -55,12 +60,12 @@ describe 'DESCRIBE', ipso (MyClass) ->
                 MyClass.each_INNER_1()
                 MyClass.each_INNER_2()
 
-        it 'no longer expects INNER functions', ipso (MyClass, NOT) ->
+        it 'no longer expects INNER functions but fails because not all outer expectaations were called', ipso (MyClass, NOT) ->
 
             NOT MyClass.each_INNER_1
             NOT MyClass.each_INNER_2
 
-            MyClass.each_ROOT_1()
+            #MyClass.each_ROOT_1()
             MyClass.each_DESCRIBE_1()
             MyClass.each_OUTER_1()
 
@@ -70,25 +75,37 @@ describe 'DESCRIBE', ipso (MyClass) ->
         NOT MyClass.each_INNER_2
         NOT MyClass.each_OUTER_1
         
-        #NOT MyClass.each_ROOT_1
+        # NOT MyClass.each_ROOT_1
         MyClass.each_ROOT_1()
         MyClass.each_DESCRIBE_1()
 
-    context 'USING MOCK TAGS', ->
+
+    xcontext 'USING MOCK TAGS', ->
 
         beforeEach ipso (mock1) -> mock1.does 
 
             function1: -> 
             function2: ->
 
-        it 'fails because expectations on the mock were not called', ipso (mock1) ->
+        beforeEach ipso (ModuleMock) -> ModuleMock.does 
+
+            function1: ->
+
+        it 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
+
+
 
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
 
             mockedThing.is mock1
             mockedThing.function1()
 
-            
+            moduleMock = MyClass.SHOULD_NOT_CAUSE_FAILURE_EITHER()
+            moduleMock.function1()
+            #ModuleMock.$ipso.save()
+
+
+after -> console.log entities()
 
 
 
