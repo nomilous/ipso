@@ -50,9 +50,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
             it 'passes becuase all expected functions are called', ipso -> 
 
-                #
-                # should still pass
-                #
+                console.log 2 # this runs second :(
 
                 MyClass.each_ROOT_1()
                 MyClass.each_DESCRIBE_1()
@@ -60,12 +58,13 @@ describe 'DESCRIBE', ipso (MyClass) ->
                 MyClass.each_INNER_1()
                 MyClass.each_INNER_2()
 
-        it 'no longer expects INNER functions but fails because not all outer expectaations were called', ipso (MyClass, NOT) ->
+        it 'no longer expects INNER functions and passes because all outer expectations were called', ipso (MyClass, NOT) ->
 
-            NOT MyClass.each_INNER_1
-            NOT MyClass.each_INNER_2
+            console.log 1              # this runs first :(
+            NOT MyClass.each_INNER_1   # so these,
+            NOT MyClass.each_INNER_2   # are testing nothing
 
-            #MyClass.each_ROOT_1()
+            MyClass.each_ROOT_1()
             MyClass.each_DESCRIBE_1()
             MyClass.each_OUTER_1()
 
@@ -80,7 +79,7 @@ describe 'DESCRIBE', ipso (MyClass) ->
         MyClass.each_DESCRIBE_1()
 
 
-    xcontext 'USING MOCK TAGS', ->
+    context 'USING MOCK TAGS', ->
 
         beforeEach ipso (mock1) -> mock1.does 
 
@@ -93,12 +92,21 @@ describe 'DESCRIBE', ipso (MyClass) ->
 
         it 'fails because expectations on the mock were not called', ipso (mock1, ModuleMock) ->
 
-
-
             mockedThing = MyClass.SHOULD_NOT_CAUSE_FAILURE()
 
             mockedThing.is mock1
             mockedThing.function1()
+
+            console.log """
+                
+                injected modulemock as created in before at the top
+                and then expectationed in immediately preceding beforeEach
+                does not define function1()
+
+                it should! (the entity expectation record is present)
+
+            """
+            return
 
             moduleMock = MyClass.SHOULD_NOT_CAUSE_FAILURE_EITHER()
             moduleMock.function1()
