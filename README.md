@@ -188,7 +188,7 @@ it 'can detect a non existant LocalModule being injected', ipso (done, NewModule
 
 ```
 
-**PENDING** It can create future instance stubs (on the prototype)
+**PENDING (unlikely, use tags, see below)** It can create future instance stubs (on the prototype)
 
 ```coffee
 
@@ -269,42 +269,9 @@ context 'creates tagged objects for injection into multiple nested tests', ->
 ```
 
 
-### Complex Usage / Current Caveats
+### Complex Usage
 
-To test in cases where the call chain being tested has an asynchronous step the `done()` can be put into the mock.
-
-```coffee
-it 'can stop the http server', (done, http, Server) -> 
-    
-    http.does 
-        createServer: ->
-            listen: (args...) -> 
-                process.nextTick args.pop()() # blind callback lastarg(), 
-                                              # mimics async listen step
-            close: -> done()
-
-    Server.create (server) -> server.stop()
-
-```
-
-Previous stubs are flushed from **ALL** modules at **EVERY** injection
-    
-* this may be temporary (pending tighter integration with mocha)
-
-```coffee
-    
-    beforeEach ipso (done, http) -> 
-
-        http.does createServer: -> 'mock server'
-        done()
-
-    it 'no longer has the stub in this test', (done, http) -> 
-
-        http.createServer().should.equal 'mock server' # fails
-
-```
-
-**PARTIALLY PENDING** It can create active mocks for fullblown mocking and stubbing
+It can create active mocks for fullblown mocking and stubbing
 
 ```coffee
 
@@ -375,6 +342,30 @@ it 'creates a server, starts listening and responds when hit', ipso (facto, http
       20 | }
 
 ```
+
+
+```coffee
+before ipso (done, should) -> 
+
+    tag
+
+        Got: should.exist
+        Not: should.not.exist
+
+    .then done
+
+it 'has the vodka and the olive', ipso (martini, Got, Not) -> 
+    
+    Got martini.vodka
+    Got martini.olive
+    Not martini.gin
+
+    #
+    # * there is great value in using **only** local scope in test... (!)
+    # 
+
+```
+
 
 It supports promises.
 
