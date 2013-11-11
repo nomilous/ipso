@@ -1,7 +1,8 @@
 {deferred, parallel, pipeline}  = require 'also'
-{normalize, sep, dirname} = require 'path'
+{normalize, sep, dirname, basename, relative} = require 'path'
 {underscore} = require 'inflection'
 {readdirSync,lstatSync} = require 'fs'
+{EOL} = require 'os'
 require 'colors'
 
 lastInstance          = undefined
@@ -127,11 +128,46 @@ module.exports.create = (config) ->
                     $ipso: 
                         PENDING: true
                         module: name
+
+                    #
+                    # $save() source "first draft" from spec stubs
+                    # --------------------------------------------
+                    # 
                     $save: (template = 'default') ->
 
                         #
-                        # * HOWTO? get the path of the calling spec
+                        # * get path of the calling spec
                         #
+
+                        getLocation = ->
+
+                            for line in (new Error).stack.split EOL
+
+                                baseName = undefined
+                                try [m, path, lineNrs] = line.match /.*\((.*?):(.*)/
+                                continue unless path?
+                                fileName = basename path
+                                try [m, baseName] = fileName.match /(.*)_spec.[coffee|js]/
+                                continue unless baseName
+                                specPath = relative process.cwd(), dirname path
+                                return {
+                                    fileName: fileName
+                                    baseName: baseName
+                                    specPath: specPath
+                                }
+
+
+                        does.get query: tag: name, (err, entity) -> 
+
+                            console.log 
+                                location: getLocation()
+
+                                lib: '???'
+
+                                author1: process.env.USER
+                                entity: entity
+
+                                
 
                 }
 

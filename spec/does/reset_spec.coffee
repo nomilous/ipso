@@ -145,10 +145,10 @@ describe 'DESCRIBE', ipso (MyClass) ->
             ModuleMock.isTheSameObject()   # <------------------ here by different means
 
 
-            # ModuleMock.$ipso.save()
+            ModuleMock.$save()
 
 
-after -> console.log entities()
+after -> # console.log entities()
 
 
 
