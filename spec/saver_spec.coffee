@@ -1,4 +1,4 @@
-{ipso, tag} = require '../lib/ipso'
+{ipso, tag, mock} = require '../lib/ipso'
 
 
 describe 'Saver', -> 
@@ -35,12 +35,28 @@ describe 'Saver', ->
 
     context 'save()', -> 
 
-
         it 'gets the entity record from does', ipso (does1, save) -> 
 
             does1.does get: (opts) -> opts.should.eql query: tag: 'ModuleName'
             save 'template', 'ModuleName', does1
 
-            console.log TODO: 'only display functions with stubs / expectations in failure hash'
-    
 
+        context 'with entity', -> 
+
+            beforeEach ipso (does1, Saver) -> 
+
+                entity = mock 'entity'
+                does1.does get: (args...) -> args.pop() null, entity
+
+                template = mock 'template'
+                Saver.does load: -> template
+
+               
+            it 'loads template and passes entity to render', ipso (save, does1, entity, template) -> 
+
+
+                template.does render: (opts) -> opts.entity.is entity
+                save 'templateName', 'ModuleName', does1
+
+
+            

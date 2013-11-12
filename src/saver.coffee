@@ -1,7 +1,7 @@
 require 'colors'
 {EOL} = require 'os'
-{normalize, sep, dirname, basename, relative} = require 'path'
-{dirname, basename, relative} = require 'path'
+{normalize, dirname, basename, relative} = require 'path'
+{dirname, basename, relative, join} = require 'path'
 
 module.exports.specLocation = specLocation = ->
 
@@ -20,7 +20,10 @@ module.exports.specLocation = specLocation = ->
             specPath: specPath
         }
 
-module.exports.save = (template, name, does) ->
+
+module.exports.load = (templatePath) -> require templatePath
+
+module.exports.save = (templateName, name, does) ->
 
     does.get query: tag: name, (err, entity) -> 
 
@@ -29,8 +32,33 @@ module.exports.save = (template, name, does) ->
             console.log 'ipso:', "could not save '#{name}' - #{err.message}"
             return
 
-        console.log 
+        #
+        # load user template module from ~/.ipso/templates/templateName
+        #
 
-            location: specLocation()
-            src: process.env.IPSO_SRC || 'src'
+        try 
+
+            templateModule = join process.env.HOME, '.ipso', 'templates', templateName
+            loaded = module.exports.load templateModule
+
+        catch error
+
+            console.log error.message.red
+            return
+
+
+
+        renderedString = loaded.render 
+
             entity: entity
+
+
+
+
+
+
+        # console.log 
+
+        #     location: module.exports.specLocation()
+        #     src: process.env.IPSO_SRC || 'src'
+        #     entity: entity
