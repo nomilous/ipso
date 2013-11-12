@@ -1,3 +1,4 @@
+require 'colors'
 {EOL} = require 'os'
 {normalize, sep, dirname, basename, relative} = require 'path'
 {dirname, basename, relative} = require 'path'
@@ -22,6 +23,11 @@ module.exports.specLocation = specLocation = ->
 module.exports.save = (template, name, does) ->
 
     does.get query: tag: name, (err, entity) -> 
+
+        if err?
+
+            console.log 'ipso:', "could not save '#{name}' - #{err.message}"
+            return
 
         console.log 
 
