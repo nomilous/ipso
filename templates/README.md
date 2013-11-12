@@ -14,7 +14,7 @@ it 'can detect a non existant LocalModule being injected', ipso (done, NewModule
     # * a standin module is injected
     # * a warning is displayed
     # * NewModuleName.does() can still be used to define stubs
-    # * NewModuleName.$ipso.save( 'templateName' ) can use template
+    # * NewModuleName.$save( 'templateName' ) can use template
     #   defined in ~/.ipso/templates/templateName and the function stubs to 
     #   create the new source file at ./src/relative/path/new_module_name.coffee
     #                                   ===
