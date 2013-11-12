@@ -1,141 +1,200 @@
-{util, parallel}   = require 'also'
-facto              = require 'facto'
-does               = require 'does'
-{spectate, assert} = does does: mode: 'spec'
+{util, deferred, parallel}  = require 'also'
+{AssertionError} = require 'assert'
+facto   = require 'facto'
+Loader  = require './loader'
+colors  = require 'colors'
+Does    = require 'does'
+does    = Does does: mode: 'spec'
+should  = require 'should'
 
-module.exports = (fn) -> 
-    
-    fnArgs = util.argsOf fn
-    if fnArgs.length == 0 
-
-        #
-        # * no args defined on test function signature (ie. synchronous test)
-        # * return a function to mocha's it()
-        # * when mocha calls this function,, this function calls the original test function
-        # * and preserves the context (@)
-        # 
-
-        return -> fn.call @
+config = 
 
     #
-    # * got args on the test function
-    # * return a function to it() that accepts the test resolver
-    # 
-    
-    (done) -> 
+    # **ipso should be run in repo root**
+    #
 
-        #
-        # * when mocha calls this function 'to run the test', this function 
-        #   calls the original test function
-        #
+    dir: process.cwd()
+    modules: {}
 
-        inject  = []
+{loadModules, loadModulesSync} = Loader.create config
 
-        if fnArgs[0] is 'done' 
+#
+# `ipso( testFunction )` - Decorates a test function
+# --------------------------------------------------
+# 
+# * All ipso tests are asynchronous - done is called in the background on the nextTick
+#   if the testFunction signature itself did not contain 'done' at argument1
+# 
 
-            inject.push done
-            fnArgs.shift()
+module.exports = ipso = (actualTestFunction) -> 
 
+    return testFunctionForMocha = (done) -> 
 
-        else 
+        fnArgsArray = util.argsOf actualTestFunction
 
-            #
-            # * test has not ""asked"" for 'done'
-            # * call it here  on the nextTick, but only if not facto at arg1
-            # 
+        argsToInjectIntoTest = []
 
-            done() if done? unless fnArgs[0] is 'facto'
-
-
-        if fnArgs[0] is 'facto' 
+        unless done?
 
             #
-            # Tests created with facto at arg1 receive spectatable modules
-            # ------------------------------------------------------------
+            # ### Injecting into describe() or context()
             #
-            # eg
-            # 
-            #     it 'does something', ipso (facto, something) -> 
-            #  
-            #         something.does ...
-            # 
-            # 
 
-            fnArgs.shift()
+            if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
 
-            #
-            # * first injected argument is the test resolver
-            # 
+                console.log 'ipso cannot inject done into describe() or context()'.red
+                return
 
-            inject.push (metadata) -> 
-
-                #
-                # TODO: consider posibilities of assert output also being
-                #       directed into facto()
-                #
-
-                #
-                # * hand the mocha test resolver into does.assert to perform 
-                #   any necessary raisins
-                #
-
-                assert( done ).then( 
-
-                    (result) -> 
-
-                        #
-                        # * assert does not call done if nothing failed
-                        #
-
-                        facto metadata
-                        done()
-
-                    (error) -> 
-
-                        #
-                        # * assert already called done - to fail the mocha test
-                        #
-
-                        facto metadata
-
-                    (notify) -> 
-
-                )
-            
-
-            promise = parallel( for nodule in fnArgs
-
-                do (nodule) -> -> spectate require nodule
-
-            ).then(
-
-                (nodules) => 
-
-                    inject.push nodule for nodule in nodules
-                    fn.apply @, inject
-                    
-
-                done
-
-            )
-
-            if promise? and promise.then? then promise.then (->), done
+            does.activate context: @, mode: 'spec', spec: null, resolver: null
+            argsToInjectIntoTest.push Module for Module in loadModulesSync( fnArgsArray, does )
+            actualTestFunction.apply @, argsToInjectIntoTest
             return
 
 
-        else 
-
-            inject.push require nodule for nodule in fnArgs
-            promise = fn.apply @, inject
 
 
         #
-        # * if the test returned a promise, chain to catch possible 
-        #   failure in the promise rejection handler
-        # 
-        # * noop the resolution handler to let the test call done()
-        #   without the "multiple done()'s were called" error
+        # ### Injecting into hook or it()
         #
 
-        if promise? and promise.then? then promise.then (->), done
+        does.activate context: @, mode: 'spec', spec: @test, resolver: done
+
+
+        #
+        # * testResolver wraps mocha's done into a proxy that call it via 
+        #   does.asset(... for function expectations that mocha is not aware of.
+        #
+
+        testResolver = (metadata) -> 
+
+            does.assert( done ).then( 
+
+                (result) -> 
+
+                    #
+                    # * does.assert(... does not call done if nothing failed
+                    #
+
+                    if fnArgsArray[0] is 'facto' then facto metadata
+                    done()
+
+
+                (error) -> 
+
+                    #
+                    # * does.assert(... already called done - to fail the mocha test
+                    #
+
+                    if fnArgsArray[0] is 'facto' then facto metadata
+
+                (notify) -> 
+
+                    #
+                    # * later... 
+                    #
+
+            )
+
+        #
+        # * testResolver is only injected if arg1 is done or facto
+        #
+
+        if fnArgsArray[0] is 'done' or fnArgsArray[0] is 'facto' 
+
+            argsToInjectIntoTest.push testResolver
+            arg1 = fnArgsArray.shift()
+
+        loadModules( fnArgsArray, does ).then(
+
+            #
+            # * loader resolved with list of Modules refs to inject
+            #
+
+            (Modules) => 
+
+                argsToInjectIntoTest.push Module for Module in Modules
+
+                try promise = actualTestFunction.apply @, argsToInjectIntoTest
+                catch error
+
+                    does.reset()
+                    done error
+                    return
+
+                if arg1 isnt 'done' and arg1 isnt 'facto' 
+
+                    #
+                    # * test did not "request" done or facto (ie. synchronous)
+                    #   but this test wrapper got a done from mocha, it needs
+                    #   to be called.
+                    #
+
+                    testResolver()
+
+                #
+                # * redirect AssertionError being raised in a promise chain
+                #   back into mocha's test resolver
+                #
+
+                if promise.then? then promise.then (->), done
+
+            #
+            # * loader rejection into done() - error loading module
+            #
+                
+            done
+
+        )
+
+
+ipso.modules = (list) -> 
+
+    for tag of list 
+        unless list[tag].require?
+            throw new Error 'ipso.module expects { tagName: { require: "path/or/name" } }'
+        config.modules[tag] = list[tag]
+    return ipso
+
+#
+# convenience {ipso, mock, tag} = require 'ipso'
+#
+
+ipso.ipso = ipso
+ipso.mock = (name) -> 
+
+    object = 
+        title: name
+        is: (mock) -> 
+            if typeof mock is 'object' then return object.should.equal mock
+            name.should.equal mock
+
+    #
+    # TODO: tagged?
+    #
+
+    return does.spectateSync name: name, tagged: true, object
+        
+
+    
+
+ipso.tag = deferred (action, list) ->
+
+    parallel( for tag of list
+
+        do (tag) -> -> does.spectate
+
+            name: tag
+            tagged: true
+            list[tag]
+
+    ).then action.resolve, action.reject, action.notify
+
+
+
+module.exports.once = (fn) -> do (done = false) -> ->
+    
+    return if done
+    done = true
+    fn.apply @, arguments
+    
 

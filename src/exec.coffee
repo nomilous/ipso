@@ -20,6 +20,7 @@
 {compile}      = require 'coffee-script'
 colors         = require 'colors'
 program        = require 'commander'
+# MochaRunner    = require './mocha_runner'
 keypress       = require 'keypress'
 keypress process.stdin
 
@@ -42,6 +43,9 @@ program.option '    --lib     [dir]',    'Specify alternate compile target.', 'l
 
 kids = []
 
+# if mocha then testRunner = MochaRunner.create reporter: 'Dot'
+# MochaRunner.on 'spec_event', (payload) -> console.log payload
+
 test = deferred ({resolve}, file) -> 
 
     unless mocha 
@@ -53,6 +57,11 @@ test = deferred ({resolve}, file) ->
         # mocha is not the default
         # there is no default yet
         #
+
+    # console.log run: file
+    # testRunner.run [file], resolve 
+
+
     
     ipsoPath = normalize __dirname + '/ipso'
     bin      = normalize __dirname + '/../node_modules/.bin/mocha'
@@ -64,11 +73,12 @@ test = deferred ({resolve}, file) ->
     ]
 
     #
-    # TODO: consider posibilities behind spec report to facto
+    # * TODO: consider posibilities behind spec report to facto
     #       * related notes below
-    #
+    # 
 
     console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    process.env.IPSO_SRC = src
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'
@@ -164,7 +174,12 @@ secondaryTabComplete = (act) ->
 
         #
         # pathWalker - secondary tab completion walks the file tree (up or down)
-        #
+        # ----------------------------------------------------------------------
+        # 
+        # * TODO: find furtherest common match on tab
+        #      
+        #   ie. all files start with 'ser', tab on 's' should populate input to '**/ser'
+        # 
 
         try all  = input.split(' ').pop() # whitespace in path not supported in path...
         parts    = all.split sep

@@ -1,159 +1,444 @@
-**experimental/unstable** api changes will still occur (without deprecation warnings) <br\>
-`npm install ipso` 0.0.9 [license](./license)
+**experimental/unstable** api changes will still occur (without deprecation warnings)
+
+`npm install ipso` 0.0.10 [license](./license)
 
 
-Bits and bobs. For testing. 
+Decorator, for testing, with [Mocha](https://github.com/visionmedia/mocha)
 
-ipso
-====
-
-Spec integrations
------------------
-
-A test decorator. (for [mocha](https://github.com/visionmedia/mocha))
+All examples in [coffee-script](http://coffeescript.org/).
 
 
+What is this `ipso` thing?
+--------------------------
+
+[The Short Answer](https://github.com/nomilous/vertex/commit/a4b0ef4c6bc14874f5b7d8ff3e5bcbcf4d45edc6)
+
+The Long Answer, ↓
+
+### (test/) Injection Decorator
+
+It is placed in front of the test functions.
 
 ```coffee
 ipso = require 'ipso'
 
 it 'does something', ipso (done) -> 
 
-    #
-    # as usual
-    #
-    
+    done() # as usual
+
+```
+
+It can inject node modules into suites.
+
+```coffee
+
+describe 'it can inject into describe', ipso (vm) -> 
+    context 'it can inject into context', ipso (net) -> 
+        it 'confirms', -> 
+
+            vm.should.equal  require 'vm'
+            net.should.equal require 'net'
+
+```
+
+It can inject node modules into tests.
+
+```coffee
+
+it 'does something', ipso (done, http) -> 
+
+    http.should.equal require 'http'
+
+```
+
+**IMPORTANT**: `done` will only contain the test resolver if the argument's signaure is literally "done" and it in the first position.
+
+In other words.
+
+```coffee
+
+it 'does something', ipso (finished, http) -> 
+
+#
+# => Error: Cannot find module 'finished' 
+# 
+# And the problem becomes more subtle if there IS a module called 'finshed' installed...
+# 
+
+```
+
+
+It defines `.does()` on each injected module for use as a **stubber**.
+
+```coffee
+
+it 'creates an http server', ipso (done, http) -> 
+
+    http.does 
+        createServer: -> 
+        anotherFunction: -> 
+
+    http.createServer()
     done()
 
 ```
 
-### mode nodule injection
+It uses mocha's JSON diff to display failure to call the stubbed function.
 
-```coffee
-# thing = require 'thing'
+```json
 
-it 'does something for which it needs the thing', ipso (done, thing) -> 
-
-    #
-    # then, as usual...
-    #
-
-    thing with: 'stuff', (err) -> 
-
-        err.message.should.equal 'incorrect stuff'
-        done()
+      actual expected
+      
+      1 | {
+      2 |   "http": {
+      3 |     "functions": {
+      4 |       "Object.createServer()": "was called"
+      5 |       "Object.anotherFunction()": "was NOT called"
+      6 |     }
+      7 |   }
+      8 | }
 
 ```
 
-* `done` can only be injected at position1
-* it must literally be called ""done""
-* there is currently no way to inject node modules with-dashes.or dots in their names.
-* injecting a module that is not already installed will not automatically install it in the 'background' and conveniently update the package file, yet.
+The stub replaces the actual function on the module and can therefore return a suitable mock. 
+
+```coffee
+http = require 'http'
+class MyServer
+    listen: (opts, handler) -> 
+        http.createServer(handler).listen opts.port
+```
+
+```coffee
+{ipso, mock} = require 'ipso'
+
+it 'creates an http server and listens at opts.port', ipso (done, http, MyServer) -> 
+
+    http.does
+        createServer: -> 
+            return mock('server').does
+                listen: (port) ->
+                    port.should.equal 3000
+                    done()
+
+    MyServer.listen port: 3000, (req, res) -> 
+
+```
+
+You may have noticed that `MyServer` was also injected in the previous example.
+
+* The injector recurses `./lib` and `./app` for the specified module.
+* It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
+* It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
+* These **Local Module Injections** can also be stubbed.
 
 
-### spectateable mode nodule injection
+It can create multiple function expectation stubs ( **and spies** ).
 
 ```coffee
 
-it 'starts http listening at config.api.port', ipso (facto, http) -> 
+it 'can create multiple expectation stubs', ipso (done, Server) -> 
 
-    http.does 
+    Server.does 
 
-        #
-        # create active stub(s) on http object
-        #
+        _listen: ->
 
-        createServer: ->
+            # console.log arguments 
+
+            console.log """
+
+                _underscore denotes a spy function
+                ==================================
+
+                * the original will be called after the spy (this function)
+                * both will receive the same arguments
+
+            """
+
+        anotherFunction: -> 
+
+    Server.start()
+
+
+```
+
+
+**PENDING (unlikely, use tags, see below)** It can create future instance stubs (on the prototype)
+
+```coffee
+
+it 'can create multiple expectation stubs', ipso (done, Periscope, events, should) -> 
+    
+    # Periscope.$prototype.does  (dunno yet)
+    Periscope.prototype.does 
+
+        measureDepth: -> return 30
+
+        _riseToSurface: (distance, finishedRising) -> 
+            distance.should.equal 30
+
+        _openLens: -> 
+            @videoStream.codec.should.equal πr²
 
             #
-            # stubbed function returns "mock" server that defines listen()
-            #
-
-            listen: (port) -> 
-
-                #
-                # test is resolved if **something** calls listen
-                #
-
-                port.should.equal 2999
-                facto()
+            # note: That `@` a.k.a. `this` refers to the instance context 
+            #       and not the test context. It therefore has access to
+            #       properties of the Periscope instance.
+            # 
 
 
-    server api: port: process.env.API_PORT
+    periscope = new Periscope codec: πr²
+    periscope.up (error, eyehole) -> 
 
-```
-
-* test arg1 must literally be called ""facto""
-* `thing.does _function: ->` creates as spy on `thing.function`
-* some difficulties integrating with mocha
-    * [BUG](https://github.com/nomilous/ipso/issues/1): stubbed module functions are not cleaned up in cases where tests timeout
-    * SHORTCOMING: function expectations only work correctly when created in `it()`s
-    * if anybody knows how to add a Reporter to an **already running** instance of mocha from within the running context
-
-
-### using promises
-
-#### it solves the chain problem
-
-These (↓) tests do not fail... Instead they timeout.
-
-```coffee
-
-it 'does something ...', (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
+        should.not.exist error
+        eyehole.should.be.an.instanceof events.EventEmitter
         done()
 
 ```
 
-The problem is that `should` is throwing an [`AssertionError`](http://nodejs.org/api/assert.html) that is being caught by the promise handler instead of the `it()` function. This catch is a necessary component of the promise API - enabling `then()` chains to reject as designed.
-
-One possible solution is to chain in the test...
-
-```coffee
-
-it 'does something ...', (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
-        done()
-
-    .then (->), done
-
-    #
-    # with the second done as the rejection handler, resulting in the throw being
-    # passed to mocha's test resolver, causing the fail to be received by that 
-    # alternative to it's regular catcher.
-    #
-
-```
-
-ipso does the chain internally if the test returns a promise
+It supports injection of non-js-eval-able module names or cases where the local module search fails
 
 
 ```coffee
 
-it 'fails without timeout', ipso (done) -> 
-
-    functionThatReturnsAPromise().then -> 
-
-        true.should.equal false
-        done()
+ipso = require('ipso').modules 
+    engine: 
+        require: 'engine.io'
+    Proxy:                              #
+        require: './lib/proxy/server'   # * Because the filenames are the same
+    Core:                               #   so injecting `Server` will fail.
+        require: './lib/core/server'    # 
+                                        #
+...
+    
+    it 'can inject by config', ipso (done, engine, Proxy, Core) -> 
 
         #
-        # Note: this will still timeout if functionThatReturnsAPromise() rejects 
-        # TODO: it still times out on longer chains! grrr
+        # ...
         #
 
 ```
+* IMPORTANT
+    * `require` in the above config is a subkey, and **not the require function itself**
+    * The path should be relative to `process.cwd()`, not `__dirname`
 
-### `LocalNodule` injection
+
+**PARTIALLY PENDING** It supports tagged objects for multiple subsequent injections.
 
 ```coffee
 
+context 'creates tagged objects for injection into multiple nested tests', -> 
+    
+    before ipso (done, ClassName) ->
+
+        ipso.tag 
+
+            instanceA: new ClassName 'type A'
+            instanceB: new ClassName 'type B'
+            client:    require 'socket.io-client'
+
+        .then done
+
+    it 'can test with them', (instanceA, instanceB, client) -> 
+    it 'and again', (instanceA, instanceB) -> 
 
 ```
 
+
+### Complex Usage
+
+It can create active mocks for fullblown mocking and stubbing
+
+```coffee
+
+beforeEach ipso (done, http) -> 
+
+    http.does
+        createServer: (handler) =>  
+            process.nextTick ->
+
+                #
+                # mock an actual "hit"
+                #
+
+                handler mock('req'), mock('mock response').does
+
+                    writeHead: -> 
+                    write: ->
+                    end: ->
+            
+            return ipso.mock( 'mock server' ).does
+
+                listen: (@port, args...) => 
+                address: -> 'mock address object'
+
+                #
+                # note: '=>' pathway from hook's root scope means @port
+                # refers to the `this` of the hook's root scope - which 
+                # is shared with the tests themselves, so @port becomes 
+                # available in all tests that are preceeded by this     hook
+                # 
+
+it 'creates a server, starts listening and responds when hit', ipso (facto, http) ->
+
+    server = http.createServer (req, res) -> 
+
+        res.writeHead 200
+        res.end()
+        facto()
+
+    server.listen 3000
+    @port.should.equal 3000
+
+```
+```json
+
+      actual expected
+      
+       1 | {
+       2 |   "http": {
+       3 |     "functions": {
+       4 |       "Object.createServer()": "was called"
+       5 |     }
+       6 |   },
+       7 |   "mock server": {
+       8 |     "functions": {
+       9 |       "Object.listen()": "was called",
+      10 |       "Object.address()": "was called"
+      11 |     }
+      12 |   },
+      13 |   "mock response": {
+      14 |     "functions": {
+      15 |       "Object.writeHead()": "was called",
+      16 |       "Object.write()": "was NOT called",  <--------------------
+      17 |       "Object.end()": "was called"
+      18 |     }
+      19 |   }
+      20 | }
+
+```
+
+
+```coffee
+before ipso (done, should) -> 
+
+    tag
+
+        Got: should.exist
+        Not: should.not.exist
+
+    .then done
+
+it 'has the vodka and the olive', ipso (martini, Got, Not) -> 
+    
+    Got martini.vodka
+    Got martini.olive
+    Not martini.gin
+
+    #
+    # * there is great value in using **only** local scope in test... (!)
+    # 
+
+```
+
+
+It supports promises.
+
+```coffee
+
+it 'fails the test on the first rejection in the chain', ipso (facto, Module) -> 
+
+    Module.functionThatReturnsAPromise()
+
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> Module.functionThatReturnsAPromise()
+    .then -> facto()
+
+```
+
+Ipso Facto
+
+```coffee
+
+it 'does many things to come', ipso (facto, ...) -> 
+
+    facto[MetaThings]()
+
+    #
+    # facto() calls mocha's done() in the background
+    #
+
+```
+
+What MetaThings? 
+
+* well, ... (( the brief brainstorm suggested a Planet-sized Plethora of Particularly Peachy Possibilities Perch Patiently Poised Pending a Plunge into **That** rabbit hole.
+
+
+And who is Unthahorsten?
+
+* And why was he doing the equivalent of standing in the equivalent of a laboratory.
+
+
+cli
+---
+
+* There is a cli. 
+* It is tailored fairly tightly to my size and shape of process. 
+
+**However**, there are options:
+
+```
+
+  Usage: ipso [options]
+
+  Options:
+
+    -h, --help            output usage information
+    -V, --version         output the version number
+    -w, --no-watch        Dont watch spec and src dirs.
+    -n, --no-env          Dont load .env.test
+    -m, --mocha           Use mocha.
+    -e, --alt-env [name]  Loads .env.name
+        --spec    [dir]   Specify alternate spec dir.
+        --src     [dir]   Specify alternate src dir.
+        --lib     [dir]   Specify alternate compile target.
+
+```
+
+### Highlight
+
+It can quickly start up a node-inspector session on a v8 debugger socket. It may at some point seamlessly attach to the running tests, with `Module.does(...)` specifying breakpoints. (that would be very! very! nice...)
+
+```
+$ ipso --mocha -e name
+ipso: warning: .env.name is PRODUCTION
+ipso: loaded .env.name
+ipso: watching directory: ./spec
+ipso: watching directory: ./src
+>
+>
+> inspect 3001 5860 lib/examples/basic.js
+> 
+> debugger listening on port 5860    <----------------------------
+> Node Inspector v0.5.0
+> info: socket.io started
+> Visit http://127.0.0.1:3001/debug?port=5860 to start debugging.
+>       =====================================
+```
+
+### Specific!ness
+
+It watches for ./src and ./spec changes and runs the changed.
+
+`ipso --mocha --src [dir] --spec [dir] --lib [dir]`
+
+* ./src changes will be compiled into ./lib/...
+* the corresponding test will then be run from ./spec/...
+* the followingly illustrated "path echo" **is assumed to ALWAYS be the case**
+
+```
+ src/same/dirname/source_name.coffee
+spec/same/dirname/source_name_spec.coffee
+```
