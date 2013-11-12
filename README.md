@@ -151,11 +151,6 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
                 * the original will be called after the spy (this function)
                 * both will receive the same arguments
-                    * reference args can probably be `tweaked`
-                        * just occurred to me now
-                            * have not verified...
-                                * could be useful
-                                    * could also confuze
 
             """
 
@@ -239,10 +234,11 @@ context 'creates tagged objects for injection into multiple nested tests', ->
 
             instanceA: new ClassName 'type A'
             instanceB: new ClassName 'type B'
+            client:    require 'socket.io-client'
 
         .then done
 
-    it 'can test with them', (instanceA, instanceB) -> 
+    it 'can test with them', (instanceA, instanceB, client) -> 
     it 'and again', (instanceA, instanceB) -> 
 
 ```
