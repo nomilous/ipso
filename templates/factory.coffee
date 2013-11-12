@@ -1,3 +1,10 @@
+###
+
+Place into ~/.ipso/templates/factory.coffee to access as MissingModule.$save 'factory' 
+
+###
+
+
 module.exports.target = (pending, specLocation) ->
 
     #
