@@ -1,8 +1,8 @@
 {deferred, parallel, pipeline}  = require 'also'
-{normalize, sep, dirname, basename, relative} = require 'path'
+{normalize, sep, dirname} = require 'path'
 {underscore} = require 'inflection'
 {readdirSync,lstatSync} = require 'fs'
-{EOL} = require 'os'
+{save} = require './saver'
 require 'colors'
 
 lastInstance          = undefined
@@ -87,43 +87,6 @@ module.exports.create = (config) ->
             if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}, use ipso.modules"
             return matches[0]
 
-        #
-        # $save() source "first draft" from spec stubs
-        # --------------------------------------------
-        # 
-
-
-        save: (template, name, does) ->
-
-            #
-            # * get path of the calling spec
-            #
-
-            getLocation = ->
-
-                for line in (new Error).stack.split EOL
-
-                    baseName = undefined
-                    try [m, path, lineNrs] = line.match /.*\((.*?):(.*)/
-                    continue unless path?
-                    fileName = basename path
-                    try [m, baseName] = fileName.match /(.*)_spec.[coffee|js]/
-                    continue unless baseName
-                    specPath = relative process.cwd(), dirname path
-                    return {
-                        fileName: fileName
-                        baseName: baseName
-                        specPath: specPath
-                    }
-
-            does.get query: tag: name, (err, entity) -> 
-
-                console.log 
-
-                    location: getLocation()
-                    lib: '???'
-                    entity: entity
-
 
         loadModule: deferred (action, name, does) -> 
 
@@ -167,7 +130,7 @@ module.exports.create = (config) ->
                         PENDING: true
                         module: name
 
-                    $save: (template = 'default') -> local.save template, name, does
+                    $save: (template = 'default') -> save template, name, does
 
                 }
 
@@ -188,7 +151,7 @@ module.exports.create = (config) ->
                     PENDING: true
                     module: name
 
-                $save: (template = 'default') -> local.save template, name, does
+                $save: (template = 'default') -> save template, name, does
 
             }
 

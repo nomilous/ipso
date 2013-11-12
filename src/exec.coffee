@@ -78,6 +78,7 @@ test = deferred ({resolve}, file) ->
     # 
 
     console.log '\nipso: ' + "node_modules/.bin/mocha #{args.join ' '}".grey
+    process.env.IPSO_SRC = src
     running = spawn bin, args, stdio: 'inherit'
     # running.stdout.on 'data', (chunk) -> refresh chunk.toString()
     # running.stderr.on 'data', (chunk) -> refresh chunk.toString(), 'stderr'

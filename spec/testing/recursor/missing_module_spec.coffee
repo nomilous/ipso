@@ -24,10 +24,5 @@ describe 'MissingModule', ipso (MissingModule) ->
         it 'does',  ipso -> MissingModule.function4()
 
 
-    after ipso -> 
-
-
-        console.log todo: 'um ? functions count is -3'
-
-        MissingModule.$save()
+    after -> MissingModule.$save()
 
