@@ -24,5 +24,5 @@ describe 'MissingModule', ipso (MissingModule) ->
         it 'does',  ipso -> MissingModule.function4()
 
 
-    after -> MissingModule.$save()
+    after -> MissingModule.$save 'factory'
 

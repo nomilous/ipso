@@ -1,7 +1,8 @@
 require 'colors'
 {EOL} = require 'os'
-{normalize, dirname, basename, relative} = require 'path'
-{dirname, basename, relative, join} = require 'path'
+{normalize, dirname, basename, relative, join, sep} = require 'path'
+mkdirp = require 'mkdirp'
+{writeFileSync} = require 'fs'
 
 module.exports.specLocation = specLocation = ->
 
@@ -38,22 +39,41 @@ module.exports.save = (templateName, name, does) ->
 
         try 
 
-            templateModule = join process.env.HOME, '.ipso', 'templates', templateName
-            loaded = module.exports.load templateModule
+            templateModulePath = join process.env.HOME, '.ipso', 'templates', templateName
+            templateModule = module.exports.load templateModulePath
 
         catch error
-
             console.log error.message.red
             return
 
 
+        specLocation = module.exports.specLocation()
+        pathParts    = specLocation.specPath.split sep
+        pathParts.shift()
+        pathParts.unshift process.env.IPSO_SRC || 'src'
 
-        renderedString = loaded.render 
 
-            entity: entity
+        sourceFile = 
+            path: process.cwd() + sep + pathParts.join sep
+            filename: specLocation.baseName + '.coffee'
 
 
+        if typeof templateModule.target is 'function' 
 
+            templateModule.target sourceFile, specLocation
+
+
+        if typeof templateModule.render is 'function' 
+
+            moduleBody = templateModule.render entity
+
+        if typeof moduleBody is 'string' 
+
+            mkdirp.sync sourceFile.path
+            fileName =  join sourceFile.path, sourceFile.filename
+            writeFileSync fileName, moduleBody
+            console.log 'ipso:', "Created #{fileName}".green
+            console.log moduleBody
 
 
 
@@ -62,3 +82,4 @@ module.exports.save = (templateName, name, does) ->
         #     location: module.exports.specLocation()
         #     src: process.env.IPSO_SRC || 'src'
         #     entity: entity
+

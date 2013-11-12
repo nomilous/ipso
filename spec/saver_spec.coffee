@@ -55,8 +55,7 @@ describe 'Saver', ->
             it 'loads template and passes entity to render', ipso (save, does1, entity, template) -> 
 
 
-                template.does render: (opts) -> opts.entity.is entity
+                template.does render: (e) -> e.is entity
                 save 'templateName', 'ModuleName', does1
 
 
-            
