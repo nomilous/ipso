@@ -49,7 +49,7 @@ describe 'MyClass', ipso (MyClass) ->
         it 'can inject a not yet written module', ipso (ThereIsNoSourceFileForThisYet) -> 
 
             ThereIsNoSourceFileForThisYet.does()
-            ThereIsNoSourceFileForThisYet.$ipso.save()
+            #ThereIsNoSourceFileForThisYet.$save()
 
 
 
@@ -79,9 +79,9 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        it 'can now inject "subject" of MyClass into all tests', ipso (subject, Subject) -> 
+        it 'can now inject "subject" of MyClass into all tests', ipso (subject, MyClass) -> 
 
-            subject.should.be.an.instanceof Subject
+            subject.should.be.an.instanceof MyClass
             subject.title.should.equal 'A Title'
 
 
@@ -243,6 +243,10 @@ describe 'MyClass', ipso (MyClass) ->
 
                 # console.log REQ: req
                 # console.log RES: res
+
+                res.writeHead()
+                res.write()
+                res.end()
 
                 facto()
 

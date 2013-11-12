@@ -1,39 +1,33 @@
 ipso = require '../../../lib/ipso'
 
 
-# describe 'saveable injection fails here', (MissingModule) -> # ???
-describe 'unwritten module', -> 
+describe 'MissingModule', ipso (MissingModule) -> 
     
     context 'things', -> 
 
-        beforeEach ipso (MissingModule) -> MissingModule.does 
+        beforeEach ipso -> MissingModule.does 
 
             function1: ->
             function2: ->
             function3: ->
 
-        it 'does', ipso (MissingModule) -> 
+        it 'does', ipso -> 
 
             MissingModule.function1()
             MissingModule.function2()
             MissingModule.function3()
-            #done()
 
 
     context 'other stuff', -> 
 
-        beforeEach ipso (MissingModule) -> MissingModule.does function4: ->
-        it 'does', ipso (MissingModule) -> MissingModule.function4()
+        beforeEach  ipso -> MissingModule.does function4: ->
+        it 'does',  ipso -> MissingModule.function4()
 
 
-after ipso (MissingModule) -> 
+    after ipso -> 
 
 
-    console.log todo: 'um ? functions count is -3'
+        console.log todo: 'um ? functions count is -3'
 
-    #
-    # when to allow (safely) save() ?
-    # 
-
-    MissingModule.$save()
+        MissingModule.$save()
 

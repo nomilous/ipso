@@ -87,6 +87,44 @@ module.exports.create = (config) ->
             if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}, use ipso.modules"
             return matches[0]
 
+        #
+        # $save() source "first draft" from spec stubs
+        # --------------------------------------------
+        # 
+
+
+        save: (template, name, does) ->
+
+            #
+            # * get path of the calling spec
+            #
+
+            getLocation = ->
+
+                for line in (new Error).stack.split EOL
+
+                    baseName = undefined
+                    try [m, path, lineNrs] = line.match /.*\((.*?):(.*)/
+                    continue unless path?
+                    fileName = basename path
+                    try [m, baseName] = fileName.match /(.*)_spec.[coffee|js]/
+                    continue unless baseName
+                    specPath = relative process.cwd(), dirname path
+                    return {
+                        fileName: fileName
+                        baseName: baseName
+                        specPath: specPath
+                    }
+
+            does.get query: tag: name, (err, entity) -> 
+
+                console.log 
+
+                    location: getLocation()
+                    lib: '???'
+                    entity: entity
+
+
         loadModule: deferred (action, name, does) -> 
 
             #
@@ -129,51 +167,14 @@ module.exports.create = (config) ->
                         PENDING: true
                         module: name
 
-                    #
-                    # $save() source "first draft" from spec stubs
-                    # --------------------------------------------
-                    # 
-                    $save: (template = 'default') ->
-
-                        #
-                        # * get path of the calling spec
-                        #
-
-                        getLocation = ->
-
-                            for line in (new Error).stack.split EOL
-
-                                baseName = undefined
-                                try [m, path, lineNrs] = line.match /.*\((.*?):(.*)/
-                                continue unless path?
-                                fileName = basename path
-                                try [m, baseName] = fileName.match /(.*)_spec.[coffee|js]/
-                                continue unless baseName
-                                specPath = relative process.cwd(), dirname path
-                                return {
-                                    fileName: fileName
-                                    baseName: baseName
-                                    specPath: specPath
-                                }
-
-
-                        does.get query: tag: name, (err, entity) -> 
-
-                            console.log 
-                                location: getLocation()
-
-                                lib: '???'
-
-                                author1: process.env.USER
-                                entity: entity
-
-                                
+                    $save: (template = 'default') -> local.save template, name, does
 
                 }
 
 
         loadModuleSync: (name, does) -> 
 
+            try return does.getSync( query: tag: name )
             if path = (try local.modules[name].require)
                     if path[0] is '.' then path = normalize local.dir + sep + path
                     return require path
@@ -186,7 +187,8 @@ module.exports.create = (config) ->
                 $ipso: 
                     PENDING: true
                     module: name
-                $save: (template = 'default') ->
+
+                $save: (template = 'default') -> local.save template, name, does
 
             }
 
