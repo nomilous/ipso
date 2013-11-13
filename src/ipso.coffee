@@ -168,6 +168,15 @@ ipso.mock = (name) ->
             if typeof mock is 'object' then return object.should.equal mock
             name.should.equal mock
 
+        #
+        # experiment - may become property expetations
+        #
+
+        has: (list) -> 
+
+            object[key] = list[key] for key of list
+            return object
+
     #
     # TODO: tagged?
     #

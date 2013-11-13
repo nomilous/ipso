@@ -1,6 +1,6 @@
 **experimental/unstable** api changes will still occur (without deprecation warnings)
 
-`npm install ipso` 0.0.11 [license](./license)
+`npm install ipso` 0.0.12 [license](./license)
 
 
 Decorator, for testing, with [Mocha](https://github.com/visionmedia/mocha)
