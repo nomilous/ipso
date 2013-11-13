@@ -223,7 +223,7 @@ describe 'ipso', ->
 
                 ipso.tag( tagName: object ).then -> 
 
-                    expx = does._test().spectacles
+                    expx = does._test().entities
                     lastone = expx[uuid] for uuid of expx
                     lastone.name.should.equal 'tagName'
                     lastone.tagged.should.equal true

@@ -172,7 +172,7 @@ ipso.mock = (name) ->
         # experiment - may become property expetations
         #
 
-        has: (list) -> 
+        with: (list) -> 
 
             object[key] = list[key] for key of list
             return object
