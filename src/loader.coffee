@@ -137,10 +137,13 @@ module.exports.create = (config) ->
 
         loadModuleSync: (name, does) -> 
 
-            try return does.getSync( query: tag: name )
+            if Module = (try does.getSync( query: tag: name ))
+                return Module
+
             if path = (try local.modules[name].require)
-                    if path[0] is '.' then path = normalize local.dir + sep + path
-                    return require path
+                console.log path: path
+                if path[0] is '.' then path = normalize local.dir + sep + path
+                return require path
 
             return require name unless local.upperCase name
             return require path if path = local.find name
