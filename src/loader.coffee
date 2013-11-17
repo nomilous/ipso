@@ -76,7 +76,8 @@ module.exports.create = (config) ->
                 if stat.isDirectory()
                     local.recurse name, file, matches
                     continue
-                if fd.match new RegExp "^#{name}.[js|coffee]"
+
+                if match = fd.match new RegExp "^(#{name})\.(js|coffee)$"
                     matches.push dirname(file) + sep + name
 
         find: (name) -> 
@@ -84,6 +85,7 @@ module.exports.create = (config) ->
             matches = []
             try local.recurse underscore(name), local.dir + sep + 'lib', matches
             try local.recurse underscore(name), local.dir + sep + 'app', matches
+
             if matches.length > 1 then throw new Error "ipso: found multiple matches for #{name}, use ipso.modules"
             return matches[0]
 
