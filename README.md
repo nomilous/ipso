@@ -202,15 +202,13 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 context 'creates tagged objects for injection into multiple nested tests', -> 
     
-    before ipso (done, ClassName) ->
+    before ipso (ClassName) ->
 
         ipso.tag 
 
             instanceA: new ClassName 'type A'
             instanceB: new ClassName 'type B'
             client:    require 'socket.io-client'
-
-        .then done
 
     it 'can test with them', (instanceA, instanceB, client) -> 
     it 'and again', (instanceA, instanceB) -> 

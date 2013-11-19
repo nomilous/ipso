@@ -180,9 +180,14 @@ ipso.mock = (name) ->
 
 ipso.tag = deferred (action, list) ->
 
+    #
+    # not necessary to carry the promise, this is a synchronous call
+    # but remains potentially async for future use
+    #
+
     parallel( for tag of list
 
-        do (tag) -> -> does.spectate
+        do (tag) -> -> does.spectateSync
 
             name: tag
             tagged: true
