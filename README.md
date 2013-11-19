@@ -196,33 +196,6 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```
 
-It supports injection of non-js-eval-able module names or cases where the local module search fails
-
-
-```coffee
-
-ipso = require('ipso').modules 
-    engine: 
-        require: 'engine.io'
-    Proxy:                              #
-        require: './lib/proxy/server'   # * Because the filenames are the same
-    Core:                               #   so injecting `Server` will fail.
-        require: './lib/core/server'    # 
-                                        #
-...
-    
-    it 'can inject by config', ipso (done, engine, Proxy, Core) -> 
-
-        #
-        # ...
-        #
-
-```
-* IMPORTANT
-    * `require` in the above config is a subkey, and **not the require function itself**
-    * The path should be relative to `process.cwd()`, not `__dirname`
-
-
 **PARTIALLY PENDING** It supports tagged objects for multiple subsequent injections.
 
 ```coffee

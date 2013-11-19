@@ -147,14 +147,6 @@ module.exports = ipso = (actualTestFunction) ->
         )
 
 
-ipso.modules = (list) -> 
-
-    for tag of list 
-        unless list[tag].require?
-            throw new Error 'ipso.module expects { tagName: { require: "path/or/name" } }'
-        config.modules[tag] = list[tag]
-    return ipso
-
 #
 # convenience {ipso, mock, tag} = require 'ipso'
 #

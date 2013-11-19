@@ -110,46 +110,6 @@ describe 'ipso', ->
             done()
 
 
-        it 'can assign module list into loader', (done) -> 
-
-            ipso.modules 
-                tag1: require: '../lib/require/argument'
-                tag2: require: 'module-name'
-
-            Loader._test().modules.should.eql 
-                tag1: require: '../lib/require/argument'
-                tag2: require: 'module-name'
-
-            done()
-
-
-        it 'throws error if modules is loaded into tag', (done) -> 
-
-            try ipso.modules 
-                tag2: require 'http'
-
-            catch error
-                error.message.should.equal 'ipso.module expects { tagName: { require: "path/or/name" } }'
-                done()
-
-        it 'throws error if require is not a subkey', (done) -> 
-
-            try ipso.modules 
-                tag2: erquire:'http'
-
-            catch error
-                error.message.should.equal 'ipso.module expects { tagName: { require: "path/or/name" } }'
-                done()
-
-        it 'ipso.modules returns ipso', (done) -> 
-
-            ipso.modules 
-                tag: require: 'moo'
-
-            .should.equal ipso
-            done()
-
-
         it 'passes from within the promise resolution / fullfillment handler', ipso (done) -> 
 
             @resolvingPromise().then (result) -> 
