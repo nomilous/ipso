@@ -117,8 +117,7 @@ module.exports = ipso = (actualTestFunction) ->
                 try promise = actualTestFunction.apply @, argsToInjectIntoTest
                 catch error
 
-                    does.reset()
-                    done error
+                    does.reset().then -> done error
                     return
 
                 if arg1 isnt 'done' and arg1 isnt 'facto' 
@@ -136,13 +135,19 @@ module.exports = ipso = (actualTestFunction) ->
                 #   back into mocha's test resolver
                 #
 
-                if promise.then? then promise.then (->), done
+                if promise.then? then promise.then (->), (error) -> 
+
+                    does.reset().then -> done error
+
 
             #
             # * loader rejection into done() - error loading module
             #
                 
-            done
+            (error) -> 
+
+                does.reset().then -> done error
+                
 
         )
 
