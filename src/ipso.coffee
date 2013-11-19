@@ -129,6 +129,7 @@ module.exports = ipso = (actualTestFunction) ->
                     #
 
                     testResolver()
+                    return
 
                 #
                 # * redirect AssertionError being raised in a promise chain
