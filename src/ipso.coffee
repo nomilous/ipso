@@ -128,6 +128,11 @@ module.exports = ipso = (actualTestFunction) ->
                     #   to be called.
                     #
 
+                    try if promise.then? and @test.type is 'test'
+                        return does.reset().then -> 
+                            done new Error 'Synchronous test returned promise. Inject test resolver (done or facto).'
+                            
+
                     testResolver()
                     return
 
@@ -136,7 +141,7 @@ module.exports = ipso = (actualTestFunction) ->
                 #   back into mocha's test resolver
                 #
 
-                if promise.then? then promise.then (->), (error) -> 
+                try if promise.then? then promise.then (->), (error) -> 
 
                     does.reset().then -> done error
 
