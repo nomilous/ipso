@@ -207,6 +207,8 @@ ipso.tag = deferred (action, list) ->
     ).then action.resolve, action.reject, action.notify
 
 
+ipso.does = does
+
 
 module.exports.once = (fn) -> do (done = false) -> ->
     
