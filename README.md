@@ -358,7 +358,7 @@ cli
 ---
 
 * There is a cli. 
-* It is tailored fairly tightly to my size and shape of process. 
+* It is currently tailored fairly tightly to my size and shape of process. 
 
 **However**, there are options:
 
