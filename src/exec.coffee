@@ -47,10 +47,15 @@ kids = []
 # MochaRunner.on 'spec_event', (payload) -> console.log payload
 
 test = deferred ({resolve}, file) -> 
+    
+    unless file.split('.').pop().match /^js$|coffee$/
+        console.log '\nipso: ' + "ignored #{file}".grey
+        resolve()
+        return
 
     unless mocha 
         console.log '\nipso: ' + "Unspecified spec scaffold.".red, "ipso --mocha"
-        refresh()
+        resolve()
         return
 
         #
