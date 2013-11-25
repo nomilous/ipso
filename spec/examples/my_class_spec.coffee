@@ -20,7 +20,7 @@ describe 'MyClass', ipso (MyClass) ->
         * lowercase injects node modules
         * CamelCase injects local modules 
             * recurses ./lib and ./app
-            * use ipso.modules(...) to handle name collision
+            * use ipso.tag(...) to handle name collision
             * successfully injects not yet defined modules with a warning
         * it can be synchronous or asynchronous
         .
@@ -66,17 +66,12 @@ describe 'MyClass', ipso (MyClass) ->
     """, ->  
 
 
-        before ipso (done, MyClass) -> 
+        before ipso (MyClass) -> 
 
             ipso.tag
 
                 # Subject:  MyClass
                 subject:  new MyClass( 'A Title' )
-
-            .then done
-            #.then -> done()
-
-
 
 
         it 'can now inject "subject" of MyClass into all tests', ipso (subject, MyClass) -> 
@@ -226,9 +221,6 @@ describe 'MyClass', ipso (MyClass) ->
                     # return a "server" mock with active function expectations that also 
                     # fails the tests if not called...
                     # 
-                    # TODO: does.spectate(...  which creates .does(..., is async, this mock probably 
-                    #       needs a Sync version
-                    #
 
                     return mock( 'mock server' ).does
 
@@ -237,7 +229,7 @@ describe 'MyClass', ipso (MyClass) ->
 
 
 
-        it '@port is populated or test failes fails'.red, ipso (facto, http) -> 
+        it '@port is populated or test failes'.red, ipso (facto, http) -> 
 
             server = http.createServer (req, res) -> 
 

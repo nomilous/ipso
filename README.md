@@ -1,9 +1,11 @@
-**experimental/unstable** api changes will still occur (without deprecation warnings)
+**due homage:** [RSpec](http://rspec.info/)
+
+**experimental/unstable** api changes will still occur (**without** deprecation warnings)
 
 `npm install ipso` 0.0.15 [license](./license)
 
 
-Decorator, for testing, with [Mocha](https://github.com/visionmedia/mocha)
+Injection Decorator, for mocking and stubbing, with [Mocha](https://github.com/visionmedia/mocha)
 
 All examples in [coffee-script](http://coffeescript.org/).
 
