@@ -352,8 +352,8 @@ And who is Unthahorsten?
 * And why was he doing the equivalent of standing in the equivalent of a laboratory.
 
 
-cli
----
+cli (pending move into separate module)
+---------------------------------------
 
 * There is a cli. 
 * It is tailored fairly tightly to my size and shape of process. 
