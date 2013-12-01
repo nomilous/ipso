@@ -127,9 +127,9 @@ describe 'ipso', ->
             @fakeit 'fails this', ipso (done) => 
 
 
-        it 'injects mode nodules', ipso (done, mocha) -> 
+        it 'injects mode nodules', ipso (done, should) -> 
 
-            mocha.should.equal require 'mocha'
+            should.should.equal require 'should'
             done()
 
 

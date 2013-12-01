@@ -54,8 +54,8 @@ describe 'Loader', ->
 
         it 'loads specified modules by tag', ipso (done) -> 
 
-            instance = Loader.create dir: __dirname, modules: Inspector: require: '../lib/inspector'
-            instance.loadModules ['http', 'Inspector'], 
+            instance = Loader.create dir: __dirname, modules: Saver: require: '../lib/saver'
+            instance.loadModules ['http', 'Saver'], 
 
                 get: (args...) -> args.pop()()
 
@@ -65,10 +65,10 @@ describe 'Loader', ->
 
                 spectate: (opts, m) -> m 
 
-            .then ([http, Inspector]) -> 
+            .then ([http, Saver]) -> 
 
                 http.should.equal require 'http'
-                Inspector.should.equal require '../lib/inspector'
+                Saver.should.equal require '../lib/saver'
                 done()
 
         it 'recurses ./lib for underscored name', ipso (done) -> 
