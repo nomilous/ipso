@@ -1,7 +1,7 @@
 {
   "name": "ipso",
   "description": "Testing bits",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
@@ -12,10 +12,10 @@
   "main": "./lib/ipso",
   "repository": "git@github.com:nomilous/ipso.git",
   "dependencies": {
-    "also": "0.0.12",
+    "also": "0.0.13",
     "facto": "0.0.1",
     "should": "~2.0.2",
-    "does": "0.0.4",
+    "does": "0.0.5",
     "inflection": "~1.2.6",
     "mkdirp": "~0.3.5",
     "colors": "~0.6.2"
