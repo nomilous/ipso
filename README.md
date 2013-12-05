@@ -163,6 +163,7 @@ You may have noticed that `MyServer` was also injected in the previous example.
 * The injector recurses `./lib` and `./app` for the specified module.
 * It does so only if the module has a `CamelCaseModuleName` in the injection argument's signature
 * It searches for the underscored equivalent `./lib/**/*/camel_case_module_name.js|coffee`
+  * TODO: make search strategy configurable
 * These **Local Module Injections** can also be stubbed.
 
 
