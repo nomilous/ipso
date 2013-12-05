@@ -184,7 +184,7 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
 **IMPORTANT** Stubs set up in before (All) hooks are not enforced as expectations
 
-```
+```coffee
 
 before ipso ->
     mock('thing').does
