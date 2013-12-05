@@ -218,9 +218,9 @@ it 'calls function2', ipso (thing) ->
 
 Mocks can define propertes using `.with()`
 
-{ipso, mock} = require 'ipso'
-
 ```coffee
+
+{ipso, mock} = require 'ipso'
 
 before ipso ->
     mock('thing').with
