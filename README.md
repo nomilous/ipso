@@ -186,6 +186,9 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
 
 ```coffee
 
+{ipso, mock} = require 'ipso'
+
+
 before ipso ->
     mock('thing').does
         function1: -> return 'value1'
@@ -212,6 +215,33 @@ it 'calls function2', ipso (thing) ->
 
 
 ```
+
+Mocks can define propertes using `.with()`
+
+{ipso, mock} = require 'ipso'
+
+```coffee
+
+before ipso ->
+    mock('thing').with
+        property1: 'value1'
+        property2: 'value2'
+
+beforeEach ipso (thing) -> 
+
+    thing.with
+
+        property2: 'overwrite value2'
+
+    .does
+
+        function1: -> 'with and does are chainable'
+        function2: -> 
+
+
+```
+
+* Note that `.with()` only exists on objects created with ipso.mock()
 
 
 **PENDING (unlikely, use tags, see below)** It can create future instance stubs (on the prototype)
