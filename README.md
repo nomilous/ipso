@@ -216,7 +216,7 @@ it 'calls function2', ipso (thing) ->
 
 ```
 
-Mocks can define propertes using `.with()`
+Mocks can define properties using `.with()`
 
 ```coffee
 
@@ -277,7 +277,7 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```
 
-**PARTIALLY PENDING** It supports tagged objects for multiple subsequent injections.
+It supports tagged objects for multiple subsequent injections.
 
 ```coffee
 
@@ -372,14 +372,14 @@ it 'creates a server, starts listening and responds when hit', ipso (facto, http
 
 
 ```coffee
-before ipso (done, should) -> 
+
+before ipso (should) -> 
 
     tag
 
         Got: should.exist
         Not: should.not.exist
 
-    .then done
 
 it 'has the vodka and the olive', ipso (martini, Got, Not) -> 
     
