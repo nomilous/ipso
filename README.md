@@ -442,6 +442,12 @@ What MetaThings?
 * well, ... (( the brief brainstorm suggested a Planet-sized Plethora of Particularly Peachy Possibilities Perch Patiently Poised Pending a Plunge into **That** rabbit hole.
 
 
+There is a [cli](https://github.com/nomilous/ipso-cli)
+
+* It assists with the overhead of dev using coffee-script, specifically the compile.then -> runTest on changes in src/**/*
+
+
+
 And who is Unthahorsten?
 
 * And why was he doing the equivalent of standing in the equivalent of a laboratory.
