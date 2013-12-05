@@ -7,7 +7,7 @@
 
 Injection Decorator, for mocking and stubbing, with [Mocha](https://github.com/visionmedia/mocha)
 
-All examples in [coffee-script](http://coffeescript.org/).
+Almost all examples in [coffee-script](http://coffeescript.org/).
 
 
 What is this `ipso` thing?
@@ -27,6 +27,19 @@ ipso = require 'ipso'
 it 'does something', ipso (done) -> 
 
     done() # as usual
+
+```
+
+or js:
+
+```js
+ipso = require('ipso');
+
+it('does something', ipso(  function(done) {
+  
+  done();
+
+}  ));
 
 ```
 
@@ -388,7 +401,7 @@ it 'has the vodka and the olive', ipso (martini, Got, Not) ->
     Not martini.gin
 
     #
-    # * there is great value in using **only** local scope in test... (!)
+    # * there is great value in using **only** local scope in test... (!, later)
     # 
 
 ```
