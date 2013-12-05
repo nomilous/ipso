@@ -102,6 +102,24 @@ It uses mocha's JSON diff to display failure to call the stubbed function.
 
 ```
 
+or, (depending on your mocha version)
+
+```json
+
+      + expected - actual
+
+       {
+         "http": {
+           "functions": {
+             "Object.createServer()": "was called",
+      +      "Object.anotherFunction()": "was called"
+      -      "Object.anotherFunction()": "was NOT called"
+           }
+         }
+       }
+
+```
+
 The stub replaces the actual function on the module and can therefore return a suitable mock. 
 
 ```coffee
@@ -160,6 +178,37 @@ it 'can create multiple expectation stubs', ipso (done, Server) ->
         anotherFunction: -> 
 
     Server.start()
+
+
+```
+
+**IMPORTANT** Stubs set up in before (All) hooks are not enforced as expectations
+
+```
+
+before ipso ->
+    mock('thing').does
+        function1: -> return 'value1'
+
+
+beforeEach ipso (thing) -> 
+
+    #
+    # injected mock thing (as defined in above)
+    #
+
+    thing.does
+        function2: -> return 'value2'
+
+
+
+it 'calls function2', ipso (thing) -> 
+
+    thing.function2() 
+
+    #
+    # does not fail even tho function1() was not called
+    #
 
 
 ```
