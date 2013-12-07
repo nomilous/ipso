@@ -2,7 +2,7 @@
 
 **experimental/unstable** api changes will still occur (**without** deprecation warnings)
 
-`npm install ipso` 0.0.17 [license](./license)
+`npm install ipso` 0.0.18 [license](./license)
 
 
 Injection Decorator, for mocking and stubbing, with [Mocha](https://github.com/visionmedia/mocha)
