@@ -33,7 +33,7 @@ describe 'define', ipso (should) ->
                 fs.statSync.toString().should.not.match /MODIFIED BY ipso.define/   
 
 
-    it 'calls activate only once', 
+    it 'calls activate (to replace fs functions) only once', 
 
         ipso (Define) -> 
 
@@ -45,6 +45,7 @@ describe 'define', ipso (should) ->
             Define 'zmodule': ->
 
             count.should.equal 1
+
 
 
     context 'modules that export a single function', -> 
