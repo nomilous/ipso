@@ -266,7 +266,39 @@ fs.readFileSync = (path, encoding) ->
 
             when 'STUBBED.js'
 
-                return "module.exports = #{override[mod]['STUBBED.js'].toString()}"
+                if typeof override[mod]['STUBBED.js'] is 'function'
+
+                    return """
+
+                    // console.log('loading stubbed module "#{mod}"');
+                    
+                    ipso = require('ipso');
+
+                    /* scope contains get() for access to pre-defined mock objects */
+
+                    get = function(tag) {
+                        try { 
+                            return ipso.does.getSync(tag).object
+                        } catch (error) {
+                            console.log('ipso: missing mock "%s"', tag);
+                        }
+                    }; 
+
+                    module.exports = #{
+
+                        override[mod]['STUBBED.js'].toString()
+
+                    }
+                    """
+
+                else 
+
+                    console.log """
+                    ipso.def(list) requires list of functions to be exported as modules,
+                    does not (yet?) support define for modules that export objects
+                    """.red
+
+
         
 
     readFileSync path, encoding
@@ -291,7 +323,7 @@ fs.lstatSync = (path) ->
     lstatSync path
 
 
-ipso.def = (list) -> 
+ipso.define = (list) -> 
 
     for moduleName of list
 
@@ -304,7 +336,7 @@ ipso.def = (list) ->
                 dependencies: {}
 
             'STUBBED.js':
-                list[moduleName].toString()
+                list[moduleName]
 
 
 ipso.does = does
