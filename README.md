@@ -291,7 +291,7 @@ it 'can create multiple expectation stubs', ipso (done, Periscope, events, shoul
 
 ```
 
-It supports tagged objects for multiple subsequent injections.
+It supports taging objects for multiple subsequent injections by tag.
 
 ```coffee
 
@@ -312,6 +312,68 @@ context 'creates tagged objects for injection into multiple nested tests', ->
 
 
 ### Complex Usage
+
+It can **create** entire module stubs
+
+```coffee
+{ipso, mock, define} = require 'ipso'
+
+before ipso -> 
+
+    #
+    # create a mock to be returned by the module function
+    #
+
+    mock( 'nonExistant' ).with
+
+        function1: ->
+        property1: 'value1'
+
+    define
+
+        # 
+        # define the module
+        # 
+        # * get() is defined on the scope of the 
+        #   exporter that creates the stub module,
+        # 
+        # * it returns the specified mock
+        #
+
+        'non-existant': -> return get 'nonExistant'
+
+
+it "has created ability to require 'non-existant' in module being tested", ipso (nonExistant) -> 
+
+    nonExistant.does function2: ->
+    non = require 'non-existant'
+
+
+    console.log non()
+
+    #
+    # => { function1: [Function],
+    #      property1: 'value1',
+    #      function2: [Function] }
+    #
+
+```
+
+* Use case
+
+  * Testing [component](http://component.io/) based clientside code without running a browser.
+
+* **IMPORTANT / WARNING**
+  
+  * It currently only supports stubbing modules that export a single function.
+  * It tricks `require` into loading the module by tailoring the behaviours 
+    of fs.readFileSync, statSync and lstatSync (a not very eloquent method...)
+  * It cannot be reversed (yet), so the stub remains for the duration of the
+    process that created it.
+
+
+
+
 
 It can create active mocks for fullblown mocking and stubbing
 

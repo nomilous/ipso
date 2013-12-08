@@ -294,8 +294,8 @@ fs.readFileSync = (path, encoding) ->
                 else 
 
                     console.log """
-                    ipso.def(list) requires list of functions to be exported as modules,
-                    does not (yet?) support define for modules that export objects
+                    ipso.define(list) requires list of functions to be exported as modules,
+                    does not (yet?) support define() for modules that export objects
                     """.red
 
 
