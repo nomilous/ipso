@@ -8,6 +8,29 @@ describe 'define', ipso (should) ->
 
         ipso (Define) -> Define.should.eql define
 
+    context 'replaces fs readFileSync, lstatSync and statSync', ->
+
+        it 'to trick require into loading non existant modules', 
+
+            ipso (Define, fs) -> 
+
+                Define 'nodule': -> 
+
+                fs.readFileSync.toString().should.match /MODIFIED BY ipso.define/
+                fs.lstatSync.toString().should.match /MODIFIED BY ipso.define/
+                fs.statSync.toString().should.match /MODIFIED BY ipso.define/   
+
+                require 'nodule'
+
+    it 'it does not replace fs functions unless necessary - ipso.define() was used', 
+
+            ipso (Define, fs) -> 
+
+                #Define 'nodule': -> 
+
+                fs.readFileSync.toString().should.not.match /MODIFIED BY ipso.define/
+                fs.lstatSync.toString().should.not.match /MODIFIED BY ipso.define/
+                fs.statSync.toString().should.not.match /MODIFIED BY ipso.define/   
 
 
     it 'calls activate only once', 
@@ -22,7 +45,6 @@ describe 'define', ipso (should) ->
             Define 'zmodule': ->
 
             count.should.equal 1
-
 
 
     context 'modules that export a single function', -> 
