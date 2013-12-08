@@ -30,9 +30,6 @@ it "has created ability to require 'non-existant' in module being tested", ipso 
     nonExistant.does function2: ->
     non = require 'non-existant'
 
-
-    console.log non()
-
     #
     # => { function1: [Function],
     #      property1: 'value1',
