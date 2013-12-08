@@ -274,7 +274,7 @@ fs.readFileSync = (path, encoding) ->
                     
                     ipso = require('ipso');
 
-                    /* scope contains get() for access to pre-defined mock objects */
+                    /* stubbed module scope contains get() for access to pre-defined mock objects */
 
                     get = function(tag) {
                         try { 
