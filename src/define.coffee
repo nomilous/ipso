@@ -99,6 +99,7 @@ module.exports.activate = ->
                         return """
 
                         ipso = require('ipso');
+                        mock = ipso.mock;
                         get  = function(tag) {
 
                             try { return ipso.does.getSync(tag).object }
@@ -125,7 +126,7 @@ module.exports.activate = ->
 
                         console.log """
                         ipso.define(list) requires list of functions to be exported as modules,
-                        does not (yet?) support define() for modules that export objects
+                        or used as module factories.
                         """.red
 
 

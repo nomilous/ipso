@@ -100,6 +100,25 @@ describe 'define', ipso (should) ->
                 m.should.equal 'value'
 
 
+        context 'defines mock() in the module scope', -> 
+
+            before ipso (Define) -> 
+
+                 Define missing3: -> 
+
+                    SubClass1: mock 'SubClass1'
+
+
+            it 'can inject the mocks that compose the new module', 
+
+                ipso (SubClass1) ->
+
+                    SubClass1.does function: ->
+                        
+                    r = require 'missing3'
+                    console.log r
+
+
 
     context 'modules that export a class', ->
 
