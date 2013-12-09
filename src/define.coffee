@@ -47,6 +47,18 @@ module.exports = (list) ->
             'STUBBED.js': 
                 list[moduleName]
 
+        #
+        # immediately do the first require to create the mock 
+        # subclasses ""as mocks""
+        # 
+        # this alleviates the problem of the first injection of 
+        # the mock being perfomed ahead of the require, leading 
+        # to the submodules being created as ""PENDING modules""
+        # instead of mocks (ie. define $save)
+        #
+
+        if type is 'literal' then require name
+
 
 
 override = {}      # override list

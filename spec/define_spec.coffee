@@ -116,8 +116,7 @@ describe 'define', ipso (should) ->
                     SubClass1.does function: ->
                         
                     r = require 'missing3'
-                    console.log r
-
+                    r.SubClass1.function()
 
 
     context 'modules that export a class', ->

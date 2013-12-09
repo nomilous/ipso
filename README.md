@@ -360,12 +360,23 @@ before ipso ->
         # define a module that exports a list of functions
         # ------------------------------------------------
         #
+        # * The function is run immediatly and the result is exported as 
+        #   the module definition
+        # 
+        # * mock() is defined in the module scope to enable creating mocks
+        #  that can be injected into subsequent tests
+        # 
+
+        missing: -> 
+
+            SubClass1: mock 'Subclass1'
+            SubClass2: mock 'Subclass2'
 
 
 
 it "has created ability to require 'non-existant' in module being tested", 
   
-    ipso (nonExistant) -> 
+    ipso (nonExistant, SubClass1) -> 
 
         nonExistant.does function2: ->
         non = require 'non-existant'
@@ -378,6 +389,8 @@ it "has created ability to require 'non-existant' in module being tested",
         #      function2: [Function] }
         #
 
+        require('missing').SubClass1.should.equal SubClass1
+
 ```
 
 * Use case
@@ -387,7 +400,7 @@ it "has created ability to require 'non-existant' in module being tested",
 * **IMPORTANT / WARNING**
   
   * It is a clunky interface and may change drastically.
-  * It currently only supports stubbing modules that export a single function.
+  * It currently only supports stubbing modules that export a single function or list of objects
   * It tricks `require` into loading the module by tailoring the behaviours 
     of fs.readFileSync, statSync and lstatSync (a not very eloquent method...)
   * It cannot be reversed (yet), so the stub remains for the duration of the

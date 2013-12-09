@@ -24,18 +24,28 @@ before ipso ->
 
         '$non-existant': -> return get 'nonExistant'
 
+        missing: -> 
 
-it "has created ability to require 'non-existant' in module being tested", ipso (nonExistant) -> 
+            SubClass: mock 'SubClass'
 
-    nonExistant.does function2: ->
-    non = require 'non-existant'
 
-    # console.log non()
+it "has created ability to require 'non-existant' in module being tested", 
 
-    #
-    # => { function1: [Function],
-    #      property1: 'value1',
-    #      function2: [Function] }
-    #
-    
-    non().function2()
+    ipso (nonExistant, SubClass, should) -> 
+
+        nonExistant.does function2: ->
+        non = require 'non-existant'
+
+        # console.log require 'missing'
+
+        # console.log non()
+
+        #
+        # => { function1: [Function],
+        #      property1: 'value1',
+        #      function2: [Function] }
+        #
+        
+        non().function2()
+
+        require('missing').SubClass.should.equal SubClass
