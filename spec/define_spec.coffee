@@ -64,7 +64,7 @@ describe 'define', ipso (should) ->
                 non.function2().should.equal 'RESULT2'
 
 
-        it 'has get() in scope to (at require time) return previously defined mock object',
+        it 'has get() in scope (at require time) to return previously defined mock object',
 
             ipso (Define) -> 
 
@@ -81,7 +81,17 @@ describe 'define', ipso (should) ->
 
 
 
-    context 'modules that export an object', ->  
+    context 'modules that export a list of functions', -> 
+
+        it 'can be defined',
+
+            ipso (Define) -> 
+
+                Define missing: -> 
+                m = require 'missing'
+
+
+
     context 'modules that export a class', ->
 
 
