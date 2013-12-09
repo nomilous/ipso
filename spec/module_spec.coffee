@@ -22,13 +22,15 @@ before ipso ->
         # * it returns the specified mock
         #
 
-        'non-existant': -> return get 'nonExistant'
+        '$non-existant': -> return get 'nonExistant'
 
 
 it "has created ability to require 'non-existant' in module being tested", ipso (nonExistant) -> 
 
     nonExistant.does function2: ->
     non = require 'non-existant'
+
+    # console.log non()
 
     #
     # => { function1: [Function],

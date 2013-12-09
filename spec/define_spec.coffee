@@ -54,7 +54,7 @@ describe 'define', ipso (should) ->
 
             ipso (Define) -> 
 
-                Define 'non-existant': -> 
+                Define '$non-existant': -> 
 
                     function1: -> 'RESULT1'
                     function2: -> 'RESULT2'
@@ -74,15 +74,14 @@ describe 'define', ipso (should) ->
 
                 Define
 
-                    'object': -> get 'mock_object'
+                    '$object': -> get 'mock_object'
 
                 obj = require('object')()
                 obj.expectedFunction().should.equal 'RESULT'
 
 
 
-
-    context 'modules that export an object', ->
+    context 'modules that export an object', ->  
     context 'modules that export a class', ->
 
 

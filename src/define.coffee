@@ -4,15 +4,16 @@
 # HAC
 # ===
 # 
-#  ipso.define 'module-name': ->
-#  -----------------------------
+# ipso.define(list)
+# -----------------
 # 
-#  creates capacity to return mock module using require
+# creates capacity to return mock module using require
 # 
-#  Achieved by tailoring the behaviours of fs{readFileSync, statSync, lstatSync}
-#  such that when they are called from require('module-name') (module.js) they
-#  return faked responses that create the appearence of the module being installed.
-#
+# Achieved by tailoring the behaviours of fs{readFileSync, statSync, lstatSync}
+# such that when they are called from require('module-name') (module.js) they
+# return faked responses that create the appearence of the module being installed.
+# 
+# 
 
 fs    = require 'fs'
 {sep} = require 'path'
@@ -23,15 +24,27 @@ module.exports = (list) ->
 
     for moduleName of list
 
-        override[moduleName] =
+        if moduleName.match /^\$/
+
+            type = 'function'
+            name = moduleName[1..]
+
+        else 
+
+            type = 'literal'
+            name = moduleName
+
+        override[name] =
+
+            type: type
 
             'package.json':
-                name: moduleName
+                name: name
                 version: '0.0.0'
                 main: 'STUBBED.js'
                 dependencies: {}
 
-            'STUBBED.js':
+            'STUBBED.js': 
                 list[moduleName]
 
 
@@ -83,18 +96,12 @@ module.exports.activate = ->
 
                         return """
 
-                        // console.log('loading stubbed module "#{mod}"');
-                        
                         ipso = require('ipso');
+                        get  = function(tag) {
 
-                        /* stubbed module scope contains get() for access to pre-defined mock objects */
+                            try { return ipso.does.getSync(tag).object }
+                            catch (error) { console.log('ipso: missing mock "%s"', tag); }
 
-                        get = function(tag) {
-                            try { 
-                                return ipso.does.getSync(tag).object
-                            } catch (error) {
-                                console.log('ipso: missing mock "%s"', tag);
-                            }
                         }; 
 
                         module.exports = #{

@@ -332,30 +332,51 @@ before ipso ->
     define
 
         # 
-        # define the module
+        # define a module that exports a single function
+        # ----------------------------------------------
         # 
-        # * get() is defined on the scope of the 
-        #   exporter that creates the stub module,
-        # 
-        # * it returns the specified mock
+        # * prepend '$' onto the name to activate single 
+        #   function export
         #
 
-        'non-existant': -> return get 'nonExistant'
+        '$non-existant': -> 
+
+            #
+            # * This function becomes the exported function of the module.
+            # 
+            # * It will be return by `require 'non-existant'`
+            # 
+            # * It exists on the scope of the module and therefore has no
+            #   access to this test scope.
+            # 
+            # * get() is defined in the module scope to enable reference
+            #   to mocks and tags defined in this test scope.
+            #
+
+            return get 'nonExistant'
 
 
-it "has created ability to require 'non-existant' in module being tested", ipso (nonExistant) -> 
+        #
+        # define a module that exports a list of functions
+        # ------------------------------------------------
+        #
 
-    nonExistant.does function2: ->
-    non = require 'non-existant'
 
 
-    console.log non()
+it "has created ability to require 'non-existant' in module being tested", 
+  
+    ipso (nonExistant) -> 
 
-    #
-    # => { function1: [Function],
-    #      property1: 'value1',
-    #      function2: [Function] }
-    #
+        nonExistant.does function2: ->
+        non = require 'non-existant'
+
+        console.log non()
+
+        #
+        # => { function1: [Function],
+        #      property1: 'value1',
+        #      function2: [Function] }
+        #
 
 ```
 
