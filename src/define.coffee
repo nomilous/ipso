@@ -79,6 +79,8 @@ module.exports.activate = ->
 
         if override.hasOwnProperty(mod) # and ignore.indexOf( mod ) < 0
 
+            type = override[mod].type
+
             switch file
 
                 when 'package.json'
@@ -106,7 +108,15 @@ module.exports.activate = ->
 
                         module.exports = #{
 
-                            override[mod]['STUBBED.js'].toString()
+                            switch type
+
+                                when 'function' 
+
+                                    override[mod]['STUBBED.js'].toString()
+                                
+                                when 'literal' 
+
+                                    "(#{override[mod]['STUBBED.js'].toString()}).call(this);"
 
                         }
                         """

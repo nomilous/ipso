@@ -81,14 +81,23 @@ describe 'define', ipso (should) ->
 
 
 
-    context 'modules that export a list of functions', -> 
+    context 'modules that export a list of functions', ->
 
         it 'can be defined',
 
             ipso (Define) -> 
 
-                Define missing: -> 
-                m = require 'missing'
+                Define missing1: -> 
+                m = require 'missing1'
+
+
+        it 'runs the function to create the module definition',
+
+            ipso (Define) -> 
+
+                Define missing2: -> 'value'
+                m = require 'missing2'
+                m.should.equal 'value'
 
 
 
