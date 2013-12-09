@@ -187,6 +187,32 @@ ipso.mock = (name) ->
     return does.spectateSync name: name, tagged: true, object
 
 
+ipso.Mock = (name) -> 
+
+    #
+    # !!EXPERIMENT!!  
+    # 
+    # Mock() (with capital M) returns a class whose constructor
+    # whose constructor populates from the spectated object 
+    # functions and porperties.
+    # 
+    # It proxies with() as classmethod to further populate
+    # the functions / properties of the pending class.
+    #
+    # Calls to with() still return the class for define(SubClassList)
+    # 
+
+    mockObject = ipso.mock name
+
+    return klass = class
+        @with = -> 
+            mockObject.with.apply @, arguments
+            return klass
+        constructor: -> 
+            functions = does.getSync(name).object
+            @[fn] = functions[fn] for fn of functions
+
+
 
 ipso.tag = deferred (action, list) ->
 

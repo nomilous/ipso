@@ -112,6 +112,7 @@ module.exports.activate = ->
 
                         ipso = require('ipso');
                         mock = ipso.mock;
+                        Mock = ipso.Mock;
                         get  = function(tag) {
 
                             try { return ipso.does.getSync(tag).object }
