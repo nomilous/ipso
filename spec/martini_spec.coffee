@@ -23,15 +23,17 @@ it 'has the vodka and the olive', ipso (VodkaMartini, Got, Not) ->
         constructor: -> @vodka = true
         shake: ->
 
+            Got @vodka
+            Got @olive
+
+            Not @gin
+            Got @gin  # BUG, this should cause fail
+
 
     Martini  = require 'martini'
     instance = new Martini
 
-    Got instance.vodka
-    Got instance.olive
-    Not instance.gin
 
     instance.shake()
-
     try instance.stir()
 
