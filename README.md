@@ -313,6 +313,79 @@ context 'creates tagged objects for injection into multiple nested tests', ->
 
 ### Complex Usage
 
+
+It can create active mocks for fullblown mocking and stubbing
+
+```coffee
+
+beforeEach ipso (done, http) -> 
+
+    http.does
+        createServer: (handler) =>  
+            process.nextTick ->
+
+                #
+                # mock an actual "hit"
+                #
+
+                handler mock('req'), mock('mock response').does
+
+                    writeHead: -> 
+                    write: ->
+                    end: ->
+            
+            return ipso.mock( 'mock server' ).does
+
+                listen: (@port, args...) => 
+                address: -> 'mock address object'
+
+                #
+                # note: '=>' pathway from hook's root scope means @port
+                # refers to the `this` of the hook's root scope - which 
+                # is shared with the tests themselves, so @port becomes 
+                # available in all tests that are preceeded by this     hook
+                # 
+
+it 'creates a server, starts listening and responds when hit', ipso (facto, http) ->
+
+    server = http.createServer (req, res) -> 
+
+        res.writeHead 200
+        res.end()
+        facto()
+
+    server.listen 3000
+    @port.should.equal 3000
+
+```
+```json
+
+      actual expected
+      
+       1 | {
+       2 |   "http": {
+       3 |     "functions": {
+       4 |       "Object.createServer()": "was called"
+       5 |     }
+       6 |   },
+       7 |   "mock server": {
+       8 |     "functions": {
+       9 |       "Object.listen()": "was called",
+      10 |       "Object.address()": "was called"
+      11 |     }
+      12 |   },
+      13 |   "mock response": {
+      14 |     "functions": {
+      15 |       "Object.writeHead()": "was called",
+      16 |       "Object.write()": "was NOT called",  <--------------------
+      17 |       "Object.end()": "was called"
+      18 |     }
+      19 |   }
+      20 | }
+
+```
+
+
 It can **create** entire module stubs
 
 ```coffee
@@ -432,79 +505,7 @@ it "can require 'missing' and create expectations on the Class / instance",
     process that created it.
 
 
-
-
-
-It can create active mocks for fullblown mocking and stubbing
-
-```coffee
-
-beforeEach ipso (done, http) -> 
-
-    http.does
-        createServer: (handler) =>  
-            process.nextTick ->
-
-                #
-                # mock an actual "hit"
-                #
-
-                handler mock('req'), mock('mock response').does
-
-                    writeHead: -> 
-                    write: ->
-                    end: ->
-            
-            return ipso.mock( 'mock server' ).does
-
-                listen: (@port, args...) => 
-                address: -> 'mock address object'
-
-                #
-                # note: '=>' pathway from hook's root scope means @port
-                # refers to the `this` of the hook's root scope - which 
-                # is shared with the tests themselves, so @port becomes 
-                # available in all tests that are preceeded by this     hook
-                # 
-
-it 'creates a server, starts listening and responds when hit', ipso (facto, http) ->
-
-    server = http.createServer (req, res) -> 
-
-        res.writeHead 200
-        res.end()
-        facto()
-
-    server.listen 3000
-    @port.should.equal 3000
-
-```
-```json
-
-      actual expected
-      
-       1 | {
-       2 |   "http": {
-       3 |     "functions": {
-       4 |       "Object.createServer()": "was called"
-       5 |     }
-       6 |   },
-       7 |   "mock server": {
-       8 |     "functions": {
-       9 |       "Object.listen()": "was called",
-      10 |       "Object.address()": "was called"
-      11 |     }
-      12 |   },
-      13 |   "mock response": {
-      14 |     "functions": {
-      15 |       "Object.writeHead()": "was called",
-      16 |       "Object.write()": "was NOT called",  <--------------------
-      17 |       "Object.end()": "was called"
-      18 |     }
-      19 |   }
-      20 | }
-
-```
+it has been shaken, not stirred
 
 
 ```coffee
