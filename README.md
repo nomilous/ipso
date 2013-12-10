@@ -365,7 +365,7 @@ before ipso ->
         # 
         # * Mock() (capital 'M') creates mock classes
         # 
-        # * .with() can be used to defined base function and 
+        # * .with() can be used to define a baseset function and 
         #   property stubs.
         # 
         # * The mock entity can be injected by tag/name for 
