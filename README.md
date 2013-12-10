@@ -316,7 +316,7 @@ context 'creates tagged objects for injection into multiple nested tests', ->
 It can **create** entire module stubs
 
 ```coffee
-{ipso, mock, define} = require 'ipso'
+{ipso, mock, Mock, define} = require 'ipso'
 
 before ipso -> 
 
@@ -357,20 +357,26 @@ before ipso ->
 
 
         #
-        # define a module that exports a list of functions
-        # ------------------------------------------------
+        # define a module that exports two class definitions
+        # --------------------------------------------------
         #
-        # * The function is run immediatly and the result is exported as 
-        #   the module definition
+        # * The function is run immediatly and the result is 
+        #   exported as the module definition.
         # 
-        # * mock() is defined in the module scope to enable creating mocks
-        #  that can be injected into subsequent tests
+        # * Mock() (capital 'M') creates mock classes
+        # 
+        # * .with() can be used to defined base function and 
+        #   property stubs.
+        # 
+        # * The mock entity can be injected by tag/name for 
+        #   per test configuration of function expectations
+        #   using .does()
         # 
 
         missing: -> 
 
-            SubClass1: mock 'Subclass1'
-            SubClass2: mock 'Subclass2'
+            ClassName: Mock 'ClassName'
+            Another:   Mock('Another').with(...)
 
 
 
@@ -389,7 +395,27 @@ it "has created ability to require 'non-existant' in module being tested",
         #      function2: [Function] }
         #
 
-        require('missing').SubClass1.should.equal SubClass1
+
+it "can require 'missing' and create expectations on the Class / instance", 
+
+    ipso (ClassName, should) ->
+
+        ClassName.does 
+
+            constructor: (arg) -> arg.should.equal 'ARG'
+            someFunction: -> 
+
+
+
+
+        #
+        # this would generally be elsewhere (in the module being tested)
+        #
+
+        missing  = require 'missing'
+        instance = new missing.ClassName 'ARG'
+        instance.someFunction()
+
 
 ```
 

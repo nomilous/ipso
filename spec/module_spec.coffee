@@ -1,4 +1,4 @@
-{ipso, mock, define} = require 'ipso'
+{ipso, mock, Mock, define} = require 'ipso'
 
 before ipso -> 
 
@@ -24,14 +24,21 @@ before ipso ->
 
         '$non-existant': -> return get 'nonExistant'
 
+        #
+        # define node_module called 'missing' with 
+        # 2 exported classes
+        #
+
         missing: -> 
 
-            SubClass: mock 'SubClass'
+            ClassName: Mock 'ClassName'
+            Another:   Mock 'Another'
+
 
 
 it "has created ability to require 'non-existant' in module being tested", 
 
-    ipso (nonExistant, SubClass, should) -> 
+    ipso (nonExistant, should) -> 
 
         nonExistant.does function2: ->
         non = require 'non-existant'
@@ -48,4 +55,25 @@ it "has created ability to require 'non-existant' in module being tested",
         
         non().function2()
 
-        require('missing').SubClass.should.equal SubClass
+
+
+it "can require 'missing' and create expectations on the Class / instance", 
+
+    ipso (ClassName, should) ->
+
+        ClassName.does 
+
+            constructor: (arg) -> arg.should.equal 'ARG'
+            someFunction: -> 
+
+
+
+
+        #
+        # this would generally be elsewhere (in the module being tested)
+        #
+
+        missing  = require 'missing'
+        instance = new missing.ClassName 'ARG'
+        instance.someFunction()
+

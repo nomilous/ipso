@@ -199,7 +199,8 @@ ipso.Mock = (name) ->
 
     #
     # * create the mock for injection into subsequent hooks and
-    #   tests where .does() can be called to create 
+    #   tests where .does() can be called upon to create future 
+    #   instanceMethod expectations.
     #
 
     mockObject = ipso.mock name
