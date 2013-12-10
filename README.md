@@ -535,21 +535,21 @@ it 'has the vodka and the olive', ipso (VodkaMartini, Got, Not) ->
         constructor: -> @vodka = true
         shake: ->
 
-    Martini = require 'martini'
-    martini = new Martini
+    Martini  = require 'martini'
+    instance = new Martini
 
-    Got martini.vodka
-    Got martini.olive
-    Not martini.gin
+    Got instance.vodka
+    Got instance.olive
+    Not instance.gin
 
-    martini.shake()
-    
-    try martini.stir()
+    instance.shake()
+
+    try instance.stir()
 
 
 
     #
-    # ps. there is great value in using **only** local scope in test... (!, later)
+    # ps. there is great value in using **only** local scope in tests... (!, later)
     # 
 
 ```
