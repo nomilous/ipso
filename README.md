@@ -400,7 +400,6 @@ it "has created ability to require 'non-existant' in module being tested",
 * **IMPORTANT / WARNING**
   
   * It is a clunky interface and may change drastically.
-  * It currently only supports stubbing modules that export a single function or list of objects
   * It tricks `require` into loading the module by tailoring the behaviours 
     of fs.readFileSync, statSync and lstatSync (a not very eloquent method...)
   * It cannot be reversed (yet), so the stub remains for the duration of the

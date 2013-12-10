@@ -190,27 +190,65 @@ ipso.mock = (name) ->
 ipso.Mock = (name) -> 
 
     #
-    # !!EXPERIMENT!!  
+    # Mock() (with capital M) mocks a class definition.
     # 
-    # Mock() (with capital M) returns a class whose constructor
-    # whose constructor populates from the spectated object 
-    # functions and porperties.
+    # !!EXPERIMENT!!, pending a properly implemented method 
+    #                 that stubs the prototype
     # 
-    # It proxies with() as classmethod to further populate
-    # the functions / properties of the pending class.
+    # 
+
     #
-    # Calls to with() still return the class for define(SubClassList)
-    # 
+    # * create the mock for injection into subsequent hooks and
+    #   tests where .does() can be called to create 
+    #
 
     mockObject = ipso.mock name
 
     return klass = class
+
+        #
+        # * with() as class method to configure the base set 
+        #   of function and property stubs for each future
+        #   instance of the class
+        #
+
         @with = -> 
+
             mockObject.with.apply @, arguments
             return klass
+
+        #
+        # assemble instance from current stub set
+        # ---------------------------------------
+        # 
+        # * will contain stubs (properties and functions) as set 
+        #   up in the mock().with()
+        # 
+        # * will also includes further ammendments created with 
+        #   .does() in subsequent hooks (or in the test itself)
+        # 
+
         constructor: -> 
-            functions = does.getSync(name).object
-            @[fn] = functions[fn] for fn of functions
+
+            stubs = does.getSync(name).object
+
+            #
+            # * run the special case constructor spy if present
+            #
+
+            if typeof stubs.$constructor is 'function'
+
+                stubs.$constructor.apply @, arguments
+
+            #
+            # * create the object properties and function from 
+            #   the current contents of the mock stub set.
+            #
+
+            for stub of stubs
+
+                continue if stub is '$constructor'
+                @[stub] = stubs[stub]
 
 
 
