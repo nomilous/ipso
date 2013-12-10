@@ -510,6 +510,8 @@ it has been shaken, not stirred
 
 ```coffee
 
+{ipso, tag, define, Mock} = require '../lib/ipso'
+
 before ipso (should) -> 
 
     tag
@@ -517,15 +519,37 @@ before ipso (should) ->
         Got: should.exist
         Not: should.not.exist
 
+    define 
 
-it 'has the vodka and the olive', ipso (martini, Got, Not) -> 
-    
+        martini: -> Mock 'VodkaMartini'
+
+
+it 'has the vodka and the olive', ipso (VodkaMartini, Got, Not) -> 
+
+    VodkaMartini.with 
+
+        olive: true
+
+    .does
+
+        constructor: -> @vodka = true
+        shake: ->
+
+    Martini = require 'martini'
+    martini = new Martini
+
     Got martini.vodka
     Got martini.olive
     Not martini.gin
 
+    martini.shake()
+    
+    try martini.stir()
+
+
+
     #
-    # * there is great value in using **only** local scope in test... (!, later)
+    # ps. there is great value in using **only** local scope in test... (!, later)
     # 
 
 ```
