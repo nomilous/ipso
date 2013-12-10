@@ -108,6 +108,24 @@ module.exports.activate = ->
 
                     if typeof override[mod]['STUBBED.js'] is 'function'
 
+                        if override[mod].scriptPath?
+
+                            #
+                            # Same module has already been required and 
+                            # a different path was resolved, 
+                            # 
+                            # Proxy require to the original path to preserve 
+                            # require cache.
+                            #
+
+                            return """
+                            module.exports = require('#{override[mod].scriptPath}');
+                            """
+
+                        else
+
+                            override[mod].scriptPath = scriptPath
+
                         return """
 
                         ipso = require('ipso');
