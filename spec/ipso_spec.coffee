@@ -261,4 +261,8 @@ describe 'ipso', ->
 
 
 
+    context 'components', -> 
+
+        
+
 

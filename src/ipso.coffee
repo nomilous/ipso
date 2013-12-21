@@ -2,10 +2,11 @@
 {AssertionError} = require 'assert'
 facto   = require 'facto'
 Loader  = require './loader'
-colors  = require 'colors'
 Does    = require 'does'
 does    = Does does: mode: 'spec'
 should  = require 'should'
+{readdirSync, readFileSync} = require 'fs'
+{join}        = require 'path'
 
 config = 
 
@@ -273,6 +274,59 @@ ipso.tag = deferred (action, list) ->
 
 ipso.define = require './define'
 
+
+ipso.components = -> 
+
+    #
+    # loads components for serverside use
+    # -----------------------------------
+    # 
+    # * assumes (for now) that cwd is the directory containing the components subdirectory
+    #
+
+    compomnentsRoot = join process.cwd(), 'components'
+
+    try 
+
+        #
+        # * assemble list of modules to be defined
+        #
+
+        list = {}
+
+        for componentDir in readdirSync compomnentsRoot
+
+            componentFile = join compomnentsRoot, componentDir, 'component.json'
+            
+            try 
+
+                component = JSON.parse readFileSync componentFile
+
+                list[ component.name ] = -> 'pending'
+
+                    #
+                    # * TODO: proxy require into component
+                    #
+
+                #
+                # * TODO: enable require 'username/componentname' to handle name collisions
+                #
+
+            catch error
+
+                console.log "ipso: error loading component: #{componentFile}"
+
+    catch err
+
+        switch err.errno
+
+            when 3  then console.log "ipso: could not access directory: #{compomnentsRoot}"
+            when 34 then console.log "ipso: expected directory: #{compomnentsRoot}"
+            else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
+
+
+    ipso.define list
+    return ipso
 
 ipso.does = does
 
