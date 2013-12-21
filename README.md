@@ -428,6 +428,18 @@ before ipso ->
 
             return get 'nonExistant'
 
+            #
+            # NOTE
+            # 
+            #   '$non-existant': -> 
+            # 
+            #   is identical to 
+            # 
+            #   'non-existant': -> -> 
+            # 
+            #   but hopefully less confuzing :)
+            #
+
 
         #
         # define a module that exports two class definitions

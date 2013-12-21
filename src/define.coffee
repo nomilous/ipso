@@ -20,17 +20,14 @@ fs    = require 'fs'
 
 module.exports = (list) -> 
 
-    module.exports.activate() unless activated
+    module.exports.activate()
 
     for moduleName of list
 
         if moduleName.match /^\$/
-
             type = 'function'
             name = moduleName[1..]
-
         else 
-
             type = 'literal'
             name = moduleName
 
