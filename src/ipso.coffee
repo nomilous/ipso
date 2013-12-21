@@ -303,6 +303,7 @@ ipso.components = ->
 
                 #
                 # * TODO: enable require 'username/componentname' to handle name collisions
+                #                (this could prove to be very !!TRICKY!!)
                 #
 
                 component = JSON.parse readFileSync componentFile
@@ -321,7 +322,6 @@ ipso.components = ->
             when 3  then console.log "ipso: could not access directory: #{compomnentsRoot}"
             when 34 then console.log "ipso: expected directory: #{compomnentsRoot}"
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
-
 
     ipso.define list, aliases
     return ipso
