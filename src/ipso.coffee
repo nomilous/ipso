@@ -289,10 +289,11 @@ ipso.components = ->
     try 
 
         #
-        # * assemble list of modules to be defined
+        # * assemble list of modules to be defined, and their component alias path
         #
 
-        list = {}
+        list    = {}
+        aliases = {}
 
         for componentDir in readdirSync compomnentsRoot
 
@@ -300,17 +301,14 @@ ipso.components = ->
             
             try 
 
-                component = JSON.parse readFileSync componentFile
-
-                list[ component.name ] = -> 'pending'
-
-                    #
-                    # * TODO: proxy require into component
-                    #
-
                 #
                 # * TODO: enable require 'username/componentname' to handle name collisions
                 #
+
+                component = JSON.parse readFileSync componentFile
+
+                list[ component.name ] = -> 
+                aliases[ component.name ] = join compomnentsRoot, componentDir, component.main
 
             catch error
 
@@ -325,7 +323,7 @@ ipso.components = ->
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
 
 
-    ipso.define list
+    ipso.define list, aliases
     return ipso
 
 ipso.does = does

@@ -18,18 +18,23 @@
 fs    = require 'fs'
 {sep} = require 'path'
 
-module.exports = (list) -> 
+module.exports = (list, aliases) -> 
 
     module.exports.activate()
 
-    for moduleName of list
+    type = 'literal'
+    if aliases? then type = 'aliased'
 
-        type = 'literal'
-        name = moduleName
+    for moduleName of list
+        
+        name  = moduleName
+        alias = try aliases[moduleName]
 
         override[name] =
 
             type: type
+
+            aliasPath: alias
 
             'package.json':
                 name: name
@@ -102,6 +107,12 @@ Object.defineProperty module.exports, 'activate', enumarable: 'false', get: ->
                     when 'STUBBED.js'
 
                         if typeof override[mod]['STUBBED.js'] is 'function'
+
+                            if override[mod].type is 'aliased'
+
+                                return """
+                                module.exports = require('#{override[mod].aliasPath}');
+                                """
 
                             if override[mod].scriptPath?
 
