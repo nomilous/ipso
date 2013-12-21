@@ -66,7 +66,7 @@ describe 'define', ipso (should) ->
 
             ipso (Define) -> 
 
-                Define '$non-existant': -> 
+                Define 'non-existant': -> ->
 
                     function1: -> 'RESULT1'
                     function2: -> 'RESULT2'

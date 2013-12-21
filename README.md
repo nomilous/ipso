@@ -404,43 +404,6 @@ before ipso ->
 
     define
 
-        # 
-        # define a module that exports a single function
-        # ----------------------------------------------
-        # 
-        # * prepend '$' onto the name to activate single 
-        #   function export
-        #
-
-        '$non-existant': -> 
-
-            #
-            # * This function becomes the exported function of the module.
-            # 
-            # * It will be return by `require 'non-existant'`
-            # 
-            # * It exists on the scope of the module and therefore has no
-            #   access to this test scope.
-            # 
-            # * get() is defined in the module scope to enable reference
-            #   to mocks and tags defined in this test scope.
-            #
-
-            return get 'nonExistant'
-
-            #
-            # NOTE
-            # 
-            #   '$non-existant': -> 
-            # 
-            #   is identical to 
-            # 
-            #   'non-existant': -> -> 
-            # 
-            #   but hopefully less confuzing :)
-            #
-
-
         #
         # define a module that exports two class definitions
         # --------------------------------------------------
@@ -462,6 +425,27 @@ before ipso ->
 
             ClassName: Mock 'ClassName'
             Another:   Mock('Another').with(...)
+
+        # 
+        # define a module that exports a single function
+        # ----------------------------------------------
+        # 
+
+        'non-existant': -> ->
+
+            #
+            # * The second function becomes the exported function of the module.
+            # 
+            # * It will be retured by `require 'non-existant'`
+            # 
+            # * It exists on the scope of the module and therefore has no
+            #   access to this test scope.
+            # 
+            # * get() is defined in the module scope to enable reference
+            #   to mocks and tags defined in this test scope.
+            #
+
+            return get 'nonExistant'
 
 
 

@@ -24,12 +24,8 @@ module.exports = (list) ->
 
     for moduleName of list
 
-        if moduleName.match /^\$/
-            type = 'function'
-            name = moduleName[1..]
-        else 
-            type = 'literal'
-            name = moduleName
+        type = 'literal'
+        name = moduleName
 
         override[name] =
 
@@ -141,10 +137,6 @@ Object.defineProperty module.exports, 'activate', enumarable: 'false', get: ->
 
                                 switch type
 
-                                    when 'function' 
-
-                                        override[mod]['STUBBED.js'].toString()
-                                    
                                     when 'literal' 
 
                                         "(#{override[mod]['STUBBED.js'].toString()}).call(this);"
