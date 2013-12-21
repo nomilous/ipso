@@ -402,19 +402,26 @@ before ipso ->
         function1: ->
         property1: 'value1'
 
+
+    #
+    # define(listOfFunctions)
+    # -----------------------
+    # 
+    # * Keys from the list become module names
+    # * Each function is run by the module stubber
+    # * The returned object is exported as the module
+    #
+
     define
 
         #
         # define a module that exports two class definitions
         # --------------------------------------------------
-        #
-        # * The function is run immediatly and the result is 
-        #   exported as the module definition.
         # 
         # * Mock() (capital 'M') creates mock classes
         # 
-        # * .with() can be used to define a baseset function and 
-        #   property stubs.
+        # * .with() can be used to define a baseset of functions 
+        #   and property stubs.
         # 
         # * The mock entity can be injected by tag/name for 
         #   per test configuration of function expectations
@@ -437,9 +444,6 @@ before ipso ->
             # * The second function becomes the exported function of the module.
             # 
             # * It will be retured by `require 'non-existant'`
-            # 
-            # * It exists on the scope of the module and therefore has no
-            #   access to this test scope.
             # 
             # * get() is defined in the module scope to enable reference
             #   to mocks and tags defined in this test scope.
