@@ -65,125 +65,127 @@ override = {}      # override list
 lstatOverride = {} # paths that 'fake exist'
 activated = false
 
-module.exports.activate = ->
+Object.defineProperty module.exports, 'activate', enumarable: 'false', get: -> 
 
-    activated = true
+    if activated then return -> 
+    return ->
 
-    readFileSync = fs.readFileSync
-    fs.readFileSync = (path, encoding) ->
+        activated = true
+        readFileSync = fs.readFileSync
+        fs.readFileSync = (path, encoding) ->
 
-        ### MODIFIED BY ipso.define ###
+            ### MODIFIED BY ipso.define ###
 
-        [mod, file] = path.split( sep )[-2..]
-        parts       = path.split( sep )[0..-3]
+            [mod, file] = path.split( sep )[-2..]
+            parts       = path.split( sep )[0..-3]
 
-        modulesPath = parts.join sep
-        modulePath  = parts.concat([mod]).join sep
-        scriptPath  = parts.concat([mod, 'STUBBED.js']).join sep
+            modulesPath = parts.join sep
+            modulePath  = parts.concat([mod]).join sep
+            scriptPath  = parts.concat([mod, 'STUBBED.js']).join sep
 
-        #
-        # dodge modules with names that are properties of Object
-        #
+            #
+            # dodge modules with names that are properties of Object
+            #
 
-        # ignore = [
-        #     'should'
-        # ]
+            # ignore = [
+            #     'should'
+            # ]
 
-        if override.hasOwnProperty(mod) # and ignore.indexOf( mod ) < 0
+            if override.hasOwnProperty(mod) # and ignore.indexOf( mod ) < 0
 
-            type = override[mod].type
+                type = override[mod].type
 
-            switch file
+                switch file
 
-                when 'package.json'
+                    when 'package.json'
 
-                    lstatOverride[modulesPath] = 1
-                    lstatOverride[modulePath] = 1
-                    lstatOverride[scriptPath] = 1
+                        lstatOverride[modulesPath] = 1
+                        lstatOverride[modulePath] = 1
+                        lstatOverride[scriptPath] = 1
 
-                    return JSON.stringify override[mod]['package.json']
+                        return JSON.stringify override[mod]['package.json']
 
 
-                when 'STUBBED.js'
+                    when 'STUBBED.js'
 
-                    if typeof override[mod]['STUBBED.js'] is 'function'
+                        if typeof override[mod]['STUBBED.js'] is 'function'
 
-                        if override[mod].scriptPath?
+                            if override[mod].scriptPath?
 
-                            #
-                            # Same module has already been required and 
-                            # a different path was resolved, 
-                            # 
-                            # Proxy require to the original path to preserve 
-                            # require cache.
-                            #
+                                #
+                                # Same module has already been required and 
+                                # a different path was resolved, 
+                                # 
+                                # Proxy require to the original path to preserve 
+                                # require cache.
+                                #
+
+                                return """
+                                module.exports = require('#{override[mod].scriptPath}');
+                                """
+
+                            else
+
+                                override[mod].scriptPath = scriptPath
 
                             return """
-                            module.exports = require('#{override[mod].scriptPath}');
+
+                            ipso = require('ipso'); // testing catch 22
+                            mock = ipso.mock;
+                            Mock = ipso.Mock;
+                            get  = function(tag) {
+
+                                try { return ipso.does.getSync(tag).object }
+                                catch (error) { console.log('ipso: missing mock "%s"', tag); }
+
+                            }; 
+
+                            module.exports = #{
+
+                                switch type
+
+                                    when 'function' 
+
+                                        override[mod]['STUBBED.js'].toString()
+                                    
+                                    when 'literal' 
+
+                                        "(#{override[mod]['STUBBED.js'].toString()}).call(this);"
+
+                            }
                             """
 
-                        else
+                        else 
 
-                            override[mod].scriptPath = scriptPath
-
-                        return """
-
-                        ipso = require('ipso');
-                        mock = ipso.mock;
-                        Mock = ipso.Mock;
-                        get  = function(tag) {
-
-                            try { return ipso.does.getSync(tag).object }
-                            catch (error) { console.log('ipso: missing mock "%s"', tag); }
-
-                        }; 
-
-                        module.exports = #{
-
-                            switch type
-
-                                when 'function' 
-
-                                    override[mod]['STUBBED.js'].toString()
-                                
-                                when 'literal' 
-
-                                    "(#{override[mod]['STUBBED.js'].toString()}).call(this);"
-
-                        }
-                        """
-
-                    else 
-
-                        console.log """
-                        ipso.define(list) requires list of functions to be exported as modules,
-                        or used as module factories.
-                        """.red
+                            console.log """
+                            ipso.define(list) requires list of functions to be exported as modules,
+                            or used as module factories.
+                            """.red
 
 
-            
+                
 
-        readFileSync path, encoding
+            readFileSync path, encoding
 
-    statSync = fs.statSync
-    fs.statSync = (path) -> 
+        statSync = fs.statSync
+        fs.statSync = (path) -> 
 
-        ### MODIFIED BY ipso.define ###
+            ### MODIFIED BY ipso.define ###
 
-        if path.match /STUBBED.js/ then return {
-            isDirectory: -> false
-        }
+            if path.match /STUBBED.js/ then return {
+                isDirectory: -> false
+            }
 
-        statSync path
+            statSync path
 
 
-    lstatSync = fs.lstatSync
-    fs.lstatSync = (path) -> 
+        lstatSync = fs.lstatSync
+        fs.lstatSync = (path) -> 
 
-        ### MODIFIED BY ipso.define ###
+            ### MODIFIED BY ipso.define ###
 
-        if lstatOverride[path]? then return {
-            isSymbolicLink: -> false
-        }
+            if lstatOverride[path]? then return {
+                isSymbolicLink: -> false
+            }
 
-        lstatSync path
+            lstatSync path

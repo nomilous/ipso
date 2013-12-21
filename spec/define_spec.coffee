@@ -1,5 +1,17 @@
 {ipso, mock, define} = require '../lib/ipso'
 
+#
+# catch 22
+# --------
+# 
+define ipso: -> require __dirname + '../../ipso'
+# 
+# * ipso needs to be required at 'ipso' in the module stubber in lib/define
+#   but the module system does not allow modules as dependancies of themselves,
+#   so, this stubs itself, so that require 'ipso' works there.
+# 
+# * but, it's messy... (currently see no alternative)
+#
 
 describe 'define', ipso (should) -> 
 
@@ -22,7 +34,7 @@ describe 'define', ipso (should) ->
 
                 require 'nodule'
 
-    it 'it does not replace fs functions unless necessary - ipso.define() was used', 
+    xit 'it does not replace fs functions unless necessary - ipso.define() was used', 
 
             ipso (Define, fs) -> 
 
@@ -33,7 +45,7 @@ describe 'define', ipso (should) ->
                 fs.statSync.toString().should.not.match /MODIFIED BY ipso.define/   
 
 
-    it 'calls activate (to replace fs functions) only once', 
+    xit 'calls activate (to replace fs functions) only once', 
 
         ipso (Define) -> 
 
@@ -64,7 +76,7 @@ describe 'define', ipso (should) ->
                 non.function2().should.equal 'RESULT2'
 
 
-        it 'has get() in scope (at require time) to return previously defined mock object',
+        xit 'has get() in scope (at require time) to return previously defined mock object',
 
             ipso (Define) -> 
 
@@ -74,9 +86,12 @@ describe 'define', ipso (should) ->
 
                 Define
 
-                    '$object': -> get 'mock_object'
+                    'object': -> get 'mock_object'
+
+
 
                 obj = require('object')()
+                console.log obj
                 obj.expectedFunction().should.equal 'RESULT'
 
 
@@ -100,7 +115,7 @@ describe 'define', ipso (should) ->
                 m.should.equal 'value'
 
 
-        context 'defines mock() in the module scope', -> 
+        xcontext 'defines mock() in the module scope', -> 
 
             before ipso (Define) -> 
 
