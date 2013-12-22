@@ -1,5 +1,5 @@
-{readdirSync, readFileSync} = require 'fs'
-{join} = require 'path'
+fs   = require 'fs'
+path = require 'path'
 
 #
 # TODO:
@@ -52,7 +52,9 @@ module.exports = (ipso) -> (opts) ->
     # * assumes (for now) that cwd is the directory containing the components subdirectory
     #
 
-    compomnentsRoot = join process.cwd(), 'components'
+    ipso.does.mode 'bridge'
+
+    compomnentsRoot = path.join process.cwd(), 'components'
 
     try 
 
@@ -63,9 +65,9 @@ module.exports = (ipso) -> (opts) ->
         list    = {}
         aliases = {}
 
-        for componentDir in readdirSync compomnentsRoot
+        for componentDir in fs.readdirSync compomnentsRoot
 
-            componentFile = join compomnentsRoot, componentDir, 'component.json'
+            componentFile = path.join compomnentsRoot, componentDir, 'component.json'
             
             try 
 
@@ -74,10 +76,10 @@ module.exports = (ipso) -> (opts) ->
                 #                (this could prove to be very !!TRICKY!!)
                 #
 
-                component = JSON.parse readFileSync componentFile
+                component = JSON.parse fs.readFileSync componentFile
 
                 list[ component.name ] = -> 
-                aliases[ component.name ] = join compomnentsRoot, componentDir, component.main
+                aliases[ component.name ] = path.join compomnentsRoot, componentDir, component.main
 
             catch error
 
