@@ -18,12 +18,12 @@
 fs    = require 'fs'
 {sep} = require 'path'
 
-module.exports = (list, aliases) -> 
+module.exports = (list, opts = {}) -> 
 
     module.exports.activate()
 
     type = 'literal'
-    if aliases? then type = 'aliased'
+    if opts.aliases? then type = 'aliased'
 
     for moduleName of list
         

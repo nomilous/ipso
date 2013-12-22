@@ -17,7 +17,7 @@ describe 'Components', ->
 
         tag 
 
-            does: ipso.does 
+            does: require('does')._test()
 
 
     it 'sets does mode to bridge', 
@@ -27,4 +27,32 @@ describe 'Components', ->
             does.does mode: (mode) -> mode.should.equal 'bridge'
             fs.does readdirSync: -> []
             ipso.components()
+
+
+    xit 'uses component.inject.alias to predefine injection tag', 
+
+        ipso (does, fs) -> 
+
+            #
+            # mock an installed compoent
+            #
+
+            fs.does readdirSync: -> ['username-mock-component']
+            fs.does readFileSync: (filename) -> 
+
+                if filename.match /username-mock-component\/component.json$/
+
+                    return JSON.stringify
+
+                        name: 'mock-component'
+                        main: 'index.js'
+                        inject: alias: 'tagname'
+
+
+            ipso.components()
+            console.log does
+
+            #
+            # damn this stuff is hard to test
+            #
 

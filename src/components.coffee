@@ -17,6 +17,8 @@ path = require 'path'
 # 
 #       * AWESOME that it's possible tho... :)
 # 
+#       * see inject.alias below
+# 
 # * handle whatever challenges are presented re injection tag 
 # 
 # * consider that the require bridge and possibly even the injection functionality
@@ -56,14 +58,15 @@ module.exports = (ipso) -> (opts) ->
 
     compomnentsRoot = path.join process.cwd(), 'components'
 
+    #
+    # * assemble list of modules to be defined, and their component alias path
+    #
+
+    list    = {}
+    aliases = {}
+    injects = {}
+
     try 
-
-        #
-        # * assemble list of modules to be defined, and their component alias path
-        #
-
-        list    = {}
-        aliases = {}
 
         for componentDir in fs.readdirSync compomnentsRoot
 
@@ -81,6 +84,23 @@ module.exports = (ipso) -> (opts) ->
                 list[ component.name ] = -> 
                 aliases[ component.name ] = path.join compomnentsRoot, componentDir, component.main
 
+                #
+                # inject.alias
+                # ------------
+                # 
+                # * extended component config can define inject.alias
+                # * it creates an injection tag reference for cases where module names 
+                #   are not injection friendly
+                #
+
+                if component.inject? and component.inject.alias?
+
+                    #
+                    # * TODO: warn on / handle injection alias name collision
+                    #
+
+                    injects[ component.inject.alias ] = component.name
+
             catch error
 
                 console.log "ipso: error loading component: #{componentFile}"
@@ -93,6 +113,18 @@ module.exports = (ipso) -> (opts) ->
             when 34 then console.log "ipso: expected directory: #{compomnentsRoot}"
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
 
-    ipso.define list, aliases
+    ipso.define list, aliases: aliases
+
+    #
+    # * ipso.tag where defined
+    #
+
+    tags = {}
+    for tag of injects
+        moduleName = injects[tag]
+        tags[tag] = require aliases[ moduleName ]
+
+    ipso.tag tags
+
     return ipso
 
