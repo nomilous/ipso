@@ -5,7 +5,7 @@
 `npm install ipso` 0.0.21 [license](./license)
 
 * Injection Decorator, for mocking and stubbing, with [Mocha](https://github.com/visionmedia/mocha)
-* Now also a [modulename aliasing bridge](README.components.md), for using [components](https://github.com/component/component), serverside
+* Now also a [modulename aliasing bridge](component_example/README.md), for using [components](https://github.com/component/component), serverside
 
 
 Almost all examples in [coffee-script](http://coffeescript.org/).
