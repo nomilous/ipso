@@ -84,7 +84,7 @@ module.exports = (ipso) -> (opts) ->
                 component = JSON.parse fs.readFileSync componentFile
 
                 list[ component.name ] = -> 
-                aliases[ component.name ] = path.join compomnentsRoot, componentDir, component.main
+                aliases[ component.name ] = path.join compomnentsRoot, componentDir, component.main || 'index.js'
 
                 #
                 # inject.alias
