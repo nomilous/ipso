@@ -28,7 +28,9 @@ module.exports = (list, opts = {}) ->
     for moduleName of list
         
         name  = moduleName
-        alias = try aliases[moduleName]
+        alias = try opts.aliases[moduleName]
+
+        # console.log aliasing: [name, alias]
 
         override[name] =
 
@@ -109,6 +111,11 @@ Object.defineProperty module.exports, 'activate', enumarable: 'false', get: ->
                         if typeof override[mod]['STUBBED.js'] is 'function'
 
                             if override[mod].type is 'aliased'
+
+                                # console.log 
+                                #     aliased: mod
+                                #     path: override[mod].aliasPath
+
 
                                 return """
                                 module.exports = require('#{override[mod].aliasPath}');

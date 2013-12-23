@@ -74,6 +74,8 @@ module.exports = (ipso) -> (opts) ->
             
             try 
 
+                # console.log order: componentDir
+
                 #
                 # * TODO: enable require 'username/componentname' to handle name collisions
                 #                (this could prove to be very !!TRICKY!!)
@@ -112,6 +114,9 @@ module.exports = (ipso) -> (opts) ->
             when 3  then console.log "ipso: could not access directory: #{compomnentsRoot}"
             when 34 then console.log "ipso: expected directory: #{compomnentsRoot}"
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
+
+
+    # console.log ALIASES: aliases
 
     ipso.define list, aliases: aliases
 
