@@ -45,7 +45,7 @@ path = require 'path'
 #             vs. requirejs debate 
 # 
 
-module.exports = (ipso) -> (opts) -> 
+module.exports = (ipso) -> (args...) -> 
 
     #
     # loads components for serverside use
@@ -53,6 +53,8 @@ module.exports = (ipso) -> (opts) ->
     # 
     # * assumes (for now) that cwd is the directory containing the components subdirectory
     #
+
+    lastarg = arg for arg in args
 
     ipso.does.mode 'bridge'
 
@@ -130,6 +132,10 @@ module.exports = (ipso) -> (opts) ->
         tags[tag] = require aliases[ moduleName ]
 
     ipso.tag tags
+
+    
+
+    lastarg() if typeof lastarg is 'function'
 
     return ipso
 

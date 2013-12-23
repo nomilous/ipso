@@ -29,6 +29,13 @@ describe 'Components', ->
             ipso.components()
 
 
+    it 'calls the function at lastarg', 
+
+        ipso (facto) -> 
+
+            ipso.components {}, -> facto() 
+
+
     xit 'uses component.inject.alias to predefine injection tag', 
 
         ipso (does, fs) -> 
