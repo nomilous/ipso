@@ -270,6 +270,26 @@ ipso.tag = deferred (action, list) ->
     ).then action.resolve, action.reject, action.notify
 
 
+# 
+# call original function from within a stub
+# -----------------------------------------
+# 
+# {ipso, original} = require 'ipso'
+# 
+#  fs.does readFileSync: (filename) -> 
+#              
+#      if filename == 'something' 
+# 
+#          # this is the readFile action being modified for testing
+#          return "mock file contents"
+#         
+#      # otherwise, read the actual file via original function
+#      return original arguments
+# 
+
+Object.defineProperty ipso, 'original', get: -> does.original
+
+
 ipso.does = does
 ipso.define = require './define'
 ipso.components = require('./components') ipso

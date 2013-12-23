@@ -167,6 +167,31 @@ You may have noticed that `MyServer` was also injected in the previous example.
 * These **Local Module Injections** can also be stubbed.
 
 
+It can call the original function from within the stub.
+
+```coffee
+
+{ipso, original} = require 'ipso'
+
+it 'can fake the existance of a file', ipso (fs) -> 
+
+    fs.does
+        readFileSync: (filename) -> 
+
+            return 'mock file contents' if filename is 'something'
+
+            #
+            # otherwise call onward to original with arguments
+            # ------------------------------------------------
+            # 
+            # * original() references the currently running stub's original
+            # * it therefore only functions as expected from inside running stub
+            # 
+
+            return original arguments
+
+```
+
 It can create multiple function expectation stubs ( **and spies** ).
 
 ```coffee

@@ -1,4 +1,4 @@
-{ipso, tag} = require 'ipso'
+{ipso, tag, originl} = require '../lib/ipso'
 
 describe 'Components', -> 
 
@@ -48,11 +48,16 @@ describe 'Components', ->
                         main: 'index.js'
                         inject: alias: 'tagname'
 
+                # console.log filename: filename
+
+                return original arguments
+
 
             ipso.components()
             console.log does
 
             #
             # damn this stuff is hard to test
-            #
+            # damn this stuff is still hard to test
+            # 
 
