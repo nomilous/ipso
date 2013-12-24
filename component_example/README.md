@@ -41,7 +41,7 @@ require('ipso').components (emitter) ->
 ```
 
 * There may be issues with component name collision
-* Components with dots and dashes in their names cannot be injected this simply
+* **Components with dots and dashes in their names cannot be injected this simply**
 * TODO: Solution is not yet clear
 
 ### **PENDING** - injection example using `component.inject.alias`
@@ -84,7 +84,7 @@ require('ipso').components
 
     Config:
 
-        repo: 'company/config'
+        repo: 'company/knowledge-base'
         version: '0.1.2'
         remotes: [
             'https://user:pass@primary'
@@ -100,18 +100,60 @@ require('ipso').components
         # remote default to github public components
         #
 
-    Atp:
+    Apt:
 
         repo: 'nomilous/ubuntu-apt' # does not exist (yet)
 
 
-    (Config, Users, Apt) ->
+    (os, Config, Users, Apt) ->
 
-        Users.ensure config.users.present, config.users.absent
+        Config.refresh( hostname: os.hostname(), version: Config.cachedVersion )
 
-        Apt.ensureSource( config.apt.source ).then -> 
+        .then -> 
 
-        # etcetera...
+            Users.ensure( Config.users.present, Config.users.absent )
+
+        .then -> 
+
+            Apt.ensureSource( Config.apt.source )
+
+        .then -> 
+
+            #
+            # et...
+            #
+
+
+        .then -> 
+
+            #
+            # ...cetera
+            #
+
+        .then( 
+
+            success = -> 
+
+                Config.report 
+
+                    hostname: os.hostname()
+                    status: 'ok'
+
+            failure = (err) -> 
+
+                Config.report 
+
+                    hostname: os.hostname()
+                    status: 'error'
+                    error: err.stack
+
+            # 
+            # notify = (intermediate_step_result) -> Config.report ...
+            # 
+            # * not certain that the promise notify handle works at chain's tail
+            #
+
+        )
 
 ```
 
