@@ -24,9 +24,9 @@ emitter.emit 'eventname', 'DATA'
 * TODO: What happens when a component has the same name as a native (or installed) node module.
 
 
-### inject example
+### injection example
 
-```
+```coffee
 
 require('ipso').components (emitter) -> 
 
@@ -44,3 +44,28 @@ require('ipso').components (emitter) ->
 * Components with dots and dashes in their names cannot be injected this simply
 * TODO: Solution is not yet clear
 
+### **PENDING** injection example using `component.inject.alias`
+
+`component install nomilous/linux-if-stats`
+
+When the `component.json` file contains the **custom** property
+
+```json
+...
+"inject": {
+    "alias": "ifStats"
+},
+...
+```
+
+Then the component becomes injectable by that name
+
+```coffee
+
+require('ipso').components (ifStats) -> 
+
+    ifStats.start().then -> 
+
+        console.log ifStats.current()
+
+```
