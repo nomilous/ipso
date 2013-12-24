@@ -51,11 +51,11 @@ require('ipso').components (emitter) ->
 When the `component.json` file contains the **custom** property
 
 ```json
-...
-"inject": {
-    "alias": "ifStats"
-},
-...
+{
+    "inject": {
+        "alias": "ifStats"
+    },
+}
 ```
 
 Then the component becomes injectable by that name
