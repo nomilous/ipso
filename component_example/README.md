@@ -34,17 +34,34 @@ emitter.emit 'eventname', 'DATA'
 
 ### injection example
 
+```js
+require('ipso').components( 
+
+    function(emitter) {
+
+        e = new emitter
+        e.on('eventname', function(payload) {
+            console.log({received: payload});
+        });
+        e.emit('eventname', 'DATA');
+
+    }
+);
+
+```
+
 ```coffee
+require('ipso').components 
+    
+    (emitter) -> 
 
-require('ipso').components (emitter) -> 
+        #
+        # components (and node_modules) are injected per the function argument names
+        #
 
-    #
-    # components (and node_modules) are injected per the function argument names
-    #
-
-    e = new emitter
-    e.on   'eventname', (payload) -> console.log received: payload
-    e.emit 'eventname', 'DATA'
+        e = new emitter
+        e.on   'eventname', (payload) -> console.log received: payload
+        e.emit 'eventname', 'DATA'
 
 ```
 
