@@ -8,6 +8,7 @@
 define 'engine.io': -> 
 components()
 define ifStats: -> require 'linux-if-stats'
+define ipso: -> require '../lib/ipso'
 
 
 
