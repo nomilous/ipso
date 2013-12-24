@@ -69,3 +69,53 @@ require('ipso').components (ifStats) ->
         console.log ifStats.current()
 
 ```
+
+Further Ideas
+-------------
+
+### **MAYBE** - just-in-time async injection
+
+* Something like the following (still mulling)
+* Installs the necessary components on first run
+
+```coffee
+
+require('ipso').components
+
+    Config:
+
+        repo: 'company/config'
+        version: '0.1.2'
+        remotes: [
+            'http://user:pass@primary'
+            'http://user:pass@fallback'
+        ]
+
+    Users:
+
+        repo: 'nomilous/linux-users' # does not exist (yet)
+        version: '0.1.2'
+
+        #
+        # remote default to github public components
+        #
+
+    Atp:
+
+        repo: 'nomilous/ubuntu-apt' # does not exist (yet)
+
+
+    (Config, Users, Apt) ->
+
+        Users.ensure config.present, config.absent
+
+        Apt.ensureSource( config.apt.source ).then -> 
+
+        # etcetera...
+
+```
+
+* possibly pointless, most of the above can be achieved with a component.json
+* the just-in-time-ness is has risks
+* the keyed list might be a nice solution to name collision tho
+
