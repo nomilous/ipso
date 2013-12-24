@@ -24,6 +24,11 @@ emitter.emit 'eventname', 'DATA'
 * TODO: What happens when a component has the same name as a native (or installed) node module.
 
 
+
+
+
+
+
 ### injection example
 
 ```coffee
@@ -43,6 +48,12 @@ require('ipso').components (emitter) ->
 * There may be issues with component name collision
 * **Components with dots and dashes in their names cannot be injected this simply**
 * TODO: Solution is not yet clear
+
+
+
+
+
+
 
 ### **PENDING** - injection example using `component.inject.alias`
 
@@ -66,12 +77,22 @@ require('ipso').components (ifStats) ->
 
     ifStats.start().then -> 
 
-        console.log ifStats.current()
+        console.log
+        
+            tx: ifStats.current().eth0.txBytes
+            rx: ifStats.current().eth0.rxBytes
 
 ```
 
+
+
+
+
 Further Ideas
 -------------
+
+
+
 
 ### **MAYBE** - just-in-time async injection
 
