@@ -1,4 +1,7 @@
+**due homage:** [component](https://github.com/component/component)
+
 ```
+# sudo npm install component -g
 cd component_example
 component install component/emitter
 ```
@@ -78,7 +81,7 @@ require('ipso').components (ifStats) ->
     ifStats.start().then -> 
 
         console.log
-        
+
             tx: ifStats.current().eth0.txBytes
             rx: ifStats.current().eth0.rxBytes
 
