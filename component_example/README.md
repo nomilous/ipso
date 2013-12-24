@@ -87,8 +87,8 @@ require('ipso').components
         repo: 'company/config'
         version: '0.1.2'
         remotes: [
-            'http://user:pass@primary'
-            'http://user:pass@fallback'
+            'https://user:pass@primary'
+            'https://user:pass@fallback'
         ]
 
     Users:
