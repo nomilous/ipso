@@ -56,6 +56,8 @@ module.exports = ipso = (actualTestFunction) ->
         # ### Injecting into hook or it()
         #
 
+        console.log TODO: 'fix mode going back to spec' # below
+
         does.activate context: @, mode: 'spec', spec: @test, resolver: done
 
 

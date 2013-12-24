@@ -33,7 +33,18 @@ describe 'Components', ->
 
         ipso (facto) -> 
 
-            ipso.components {}, -> facto() 
+            ipso.components {}, -> facto()
+
+
+    it.only 'injects components into the function at last arg', 
+
+        ipso (facto) -> 
+
+            ipso.components (componentname) -> 
+
+                componentname().should.equal 'test component'
+                facto()
+
 
 
     xit 'uses component.inject.alias to predefine injection tag', 

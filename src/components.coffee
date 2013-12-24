@@ -133,9 +133,7 @@ module.exports = (ipso) -> (args...) ->
 
     ipso.tag tags
 
-    
-
-    lastarg() if typeof lastarg is 'function'
+    ipso(lastarg)() if typeof lastarg is 'function' 
 
     return ipso
 

@@ -1,5 +1,5 @@
 ```
 component install component/emitter
-coffee example.coffee
+coffee basic_example.coffee
 
 ```
