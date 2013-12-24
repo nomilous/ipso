@@ -4,7 +4,7 @@
 # quick hack round some known issues
 #
 
-{tag, define, components} = require 'ipso'
+{tag, define, components} = require '../lib/ipso'
 define 'engine.io': -> 
 components()
 define ifStats: -> require 'linux-if-stats'
