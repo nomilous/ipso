@@ -44,7 +44,7 @@ require('ipso').components (emitter) ->
 * Components with dots and dashes in their names cannot be injected this simply
 * TODO: Solution is not yet clear
 
-### **PENDING** injection example using `component.inject.alias`
+### **PENDING** - injection example using `component.inject.alias`
 
 `component install nomilous/linux-if-stats`
 
