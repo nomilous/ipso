@@ -107,7 +107,7 @@ require('ipso').components
 
     (Config, Users, Apt) ->
 
-        Users.ensure config.present, config.absent
+        Users.ensure config.users.present, config.users.absent
 
         Apt.ensureSource( config.apt.source ).then -> 
 
@@ -118,4 +118,9 @@ require('ipso').components
 * possibly pointless, most of the above can be achieved with a component.json
 * the just-in-time-ness is has risks
 * the keyed list might be a nice solution to name collision tho
+
+
+### See Also
+
+* [vital](https://github.com/nomilous/vital) 
 
