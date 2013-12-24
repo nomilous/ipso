@@ -1,20 +1,4 @@
-
-
-#
-# quick hack round some known issues
-#
-
-{tag, define, components} = require '../lib/ipso'
-define 'engine.io': -> 
-components()
-define ifStats: -> require 'linux-if-stats'
-define ipso: -> require '../lib/ipso'
-
-
-
-
-
-require('../lib/ipso').components (vertex, ifStats) -> 
+require('../lib/ipso').components (Vertex, ifStats) -> 
 
     #
     # TODO
@@ -27,7 +11,7 @@ require('../lib/ipso').components (vertex, ifStats) ->
 
     ifStats.start()
 
-    vertex.create 
+    Vertex.create 
 
         www:
 

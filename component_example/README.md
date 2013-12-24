@@ -77,8 +77,11 @@ require('ipso').components
 
 ### **PENDING** - injection example using `component.inject.alias`
 
-`component install nomilous/linux-if-stats`
-`component install nomilous/vertex@develop`
+```
+component install nomilous/linux-if-stats -f
+component install nomilous/vertex@develop -f
+coffee inject_alias_example.coffee
+```
 
 When the `component.json` file contains the **custom** property
 
