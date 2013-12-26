@@ -3,24 +3,19 @@ require('../lib/ipso').components (Vertex, ifStats) ->
     #
     # TODO
     # 
-    # * consider vertex.create.www()
-    # * consider www.routes instead of www.root as root of tree
-    # * rename ifStats.current to something less obtuse
-    # * consider ifStats.current as property to avail from uptree without the resursor walk
-    # 
+    # * remove .does per mode
+    #
 
     ifStats.start()
 
-    Vertex.create 
+    Vertex.create.www
 
-        www:
+        routes:
 
-            listen: port: 3000
-            allowRoot: true
-            root: 
-                network:
-                    interfaces: ifStats
+            #
+            # curl localhost:3000/ifStats/latest
+            # curl localhost:3000/ifStats/config
+            #
 
-                    #
-                    # curl localhost:3000/network/interfaces/current
-                    #
+            ifStats: ifStats
+

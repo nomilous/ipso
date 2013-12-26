@@ -4,20 +4,13 @@ path = require 'path'
 #
 # TODO:
 # 
+# * enable warning on name stomping existing node module
+# 
 # * set does mode to something other than spec to disable and remove .does mocker
 # 
 #       * other things may need tailoring too, can't recall
 #
 # * opts can define alternative components location
-# 
-# * hitchike injection tag / alias config via component.json
-# 
-#       * perhaps a bit presumptious to hitchhike additional configuration 
-#         keys onto component.json
-# 
-#       * AWESOME that it's possible tho... :)
-# 
-#       * see inject.alias below
 # 
 # * handle whatever challenges are presented re injection tag 
 # 
@@ -66,7 +59,6 @@ module.exports = (ipso) -> (args...) ->
 
     list    = {}
     aliases = {}
-    injects = {}
 
     try 
 
@@ -75,8 +67,6 @@ module.exports = (ipso) -> (args...) ->
             componentFile = path.join compomnentsRoot, componentDir, 'component.json'
             
             try 
-
-                # console.log order: componentDir
 
                 #
                 # * TODO: enable require 'username/componentname' to handle name collisions
@@ -93,17 +83,14 @@ module.exports = (ipso) -> (args...) ->
                 # ------------
                 # 
                 # * extended component config can define inject.alias
-                # * it creates an injection tag reference for cases where module names 
-                #   are not injection friendly
-                #
+                # * it creates an additional ""name"" that can be used with require to access the component
+                # 
 
                 if component.inject? and component.inject.alias?
 
-                    #
-                    # * TODO: warn on / handle injection alias name collision
-                    #
+                    list[ component.inject.alias ] = -> 
+                    aliases[ component.inject.alias ] = path.join compomnentsRoot, componentDir, component.main || 'index.js'
 
-                    injects[ component.inject.alias ] = component.name
 
             catch error
 
@@ -118,22 +105,10 @@ module.exports = (ipso) -> (args...) ->
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
 
 
-    # console.log ALIASES: aliases
 
     ipso.define list, aliases: aliases
 
-    #
-    # * ipso.tag where defined
-    #
-
-    tags = {}
-    for tag of injects
-        moduleName = injects[tag]
-        tags[tag] = require aliases[ moduleName ]
-
-    ipso.tag tags
-
-    ipso(lastarg)() if typeof lastarg is 'function' 
+    ipso(lastarg)() if typeof lastarg is 'function'
 
     return ipso
 
