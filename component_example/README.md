@@ -69,7 +69,6 @@ require('ipso').inject (emitter) ->
 ### injection example using `component.inject.alias`
 
 ```
-component install nomilous/linux-if-stats -f
 component install nomilous/vertex@develop -f
 
 coffee inject_alias_example.coffee
@@ -89,15 +88,10 @@ Then the component becomes injectable (or requirable) by that name
 
 ```coffee
 
-require('ipso').inject (Vertex, ifStats) -> 
+require('ipso').inject (Vertex) -> 
 
-    ifStats.start()
+    Vertex.create.www routes: path: {}
 
-    Vertex.create.www 
-
-        routes: 
-
-            ifStats: ifStats
 
 ```
 
