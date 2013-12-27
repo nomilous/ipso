@@ -52,7 +52,14 @@ describe 'Components', ->
             done()
 
 
-    it 'injects components into the function with names from component.inject.alias'
+    it 'injects components into the function with names from component.inject.alias', (done) -> 
+
+        inject (ComponentName) -> 
+
+            ComponentName().should.equal 'FOR TESTING'
+            done()
+
+
 
 
     it 'uses component.inject.alias to define an additional require alias'
