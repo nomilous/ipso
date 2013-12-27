@@ -1,9 +1,11 @@
-require('../lib/ipso').components (Vertex, ifStats) -> 
+require('../lib/ipso').inject (Vertex, ifStats) -> 
 
     #
     # TODO
     # 
     # * remove .does per mode
+    # * arg1 done or facto creates async without timeout
+    # * MAYBE if the function returns a promise, throw on the reject
     #
 
     ifStats.start()

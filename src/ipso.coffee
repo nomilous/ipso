@@ -295,7 +295,7 @@ Object.defineProperty ipso, 'original', get: -> does.original
 ipso.does = does
 ipso.define = require './define'
 ipso.components = require('./components') ipso
-
+ipso.inject = ipso.components
 
 
 module.exports.once = (fn) -> do (done = false) -> ->

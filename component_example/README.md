@@ -35,33 +35,28 @@ emitter.emit 'eventname', 'DATA'
 ### injection example
 
 ```js
-require('ipso').components( 
+require('ipso').inject( function(emitter) {
 
-    function(emitter) {
+    e = new emitter
+    e.on('eventname', function(payload) {
+        console.log({received: payload});
+    });
+    e.emit('eventname', 'DATA');
 
-        e = new emitter
-        e.on('eventname', function(payload) {
-            console.log({received: payload});
-        });
-        e.emit('eventname', 'DATA');
-
-    }
-);
+});
 
 ```
 
 ```coffee
-require('ipso').components 
-    
-    (emitter) -> 
+require('ipso').inject (emitter) -> 
 
-        #
-        # components (and node_modules) are injected per the function argument names
-        #
+    #
+    # components (and node_modules) are injected per the function argument names
+    #
 
-        e = new emitter
-        e.on   'eventname', (payload) -> console.log received: payload
-        e.emit 'eventname', 'DATA'
+    e = new emitter
+    e.on   'eventname', (payload) -> console.log received: payload
+    e.emit 'eventname', 'DATA'
 
 ```
 
@@ -71,15 +66,12 @@ require('ipso').components
 
 
 
-
-
-
-
-### **PENDING** - injection example using `component.inject.alias`
+### injection example using `component.inject.alias`
 
 ```
 component install nomilous/linux-if-stats -f
 component install nomilous/vertex@develop -f
+
 coffee inject_alias_example.coffee
 ```
 
@@ -88,26 +80,26 @@ When the `component.json` file contains the **custom** property
 ```json
 {
     "inject": {
-        "alias": "ifStats"
+        "alias": "Vertex"
     },
 }
 ```
 
-Then the component becomes injectable by that name
+Then the component becomes injectable (or requirable) by that name
 
 ```coffee
 
-require('ipso').components (ifStats) -> 
+require('ipso').inject (Vertex, ifStats) -> 
 
-    ifStats.start().then -> 
+    ifStats.start()
 
-        console.log
+    Vertex.create.www 
 
-            tx: ifStats.current().eth0.txBytes
-            rx: ifStats.current().eth0.rxBytes
+        routes: 
+
+            ifStats: ifStats
 
 ```
-
 
 
 
