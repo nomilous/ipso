@@ -123,7 +123,25 @@ module.exports.create = (config) ->
                     if path[0] is '.' then path = normalize local.dir + sep + path
                     return action.resolve require path
 
-                return action.resolve require name unless local.upperCase name
+                if not local.upperCase name
+
+                    #
+                    # does not allow require 'lowerCase' to fail
+                    #
+
+                    return action.resolve require name
+
+                else
+
+                    #
+                    # * allows require 'UpperCase' to fail
+                    # * falls back to searching ./lib and ./app for 'upper_case.js|coffee'
+                    #
+
+                    try 
+                        mod = require name
+                        return action.resolve mod
+
                 return action.resolve require path if path = local.find name
                 console.log 'ipso: ' + "warning: missing module #{name}".yellow
                 return action.resolve {
@@ -161,7 +179,6 @@ module.exports.create = (config) ->
                 #
                 # * allows require 'UpperCase' to fail
                 # * falls back to searching ./lib and ./app for 'upper_case.js|coffee'
-                #           
                 #
 
                 try return require name

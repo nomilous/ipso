@@ -1,18 +1,13 @@
-fs   = require 'fs'
-path = require 'path'
+fs     = require 'fs'
+path   = require 'path'
+{util} = require 'also'
 
 #
 # TODO:
 # 
 # * enable warning on name stomping existing node module
-# 
-# * set does mode to something other than spec to disable and remove .does mocker
-# 
-#       * other things may need tailoring too, can't recall
 #
 # * opts can define alternative components location
-# 
-# * handle whatever challenges are presented re injection tag 
 # 
 # * consider that the require bridge and possibly even the injection functionality
 #   may belong upstream, inside component's compendium of goodness
@@ -38,18 +33,41 @@ path = require 'path'
 #             vs. requirejs debate 
 # 
 
+
 module.exports = (ipso) -> (args...) -> 
 
     #
-    # loads components for serverside use
-    # -----------------------------------
+    # function at last argument is injection target
+    # ---------------------------------------------
     # 
-    # * assumes (for now) that cwd is the directory containing the components subdirectory
+    # * If it is present, it will be called immediately.
+    # * The argument signature is used to determine which node_modules, 
+    #   components or local ./lib or ./app modules should be injected
+    #
+    
+    fn = arg for arg in args
+
+
+    #
+    # mode is set to 'bridge' in does
+    # -------------------------------
+    # 
+    # * does in an injection filter
+    # * each component or module being injected is passed through the filter
+    # * in `spec` mode it attaches .does() to each for mocking.
+    # * in `bridge` mode it does nothing ##undecided
     #
 
-    lastarg = arg for arg in args
+    ipso.does.config mode: 'bridge'
 
-    ipso.does.mode 'bridge'
+
+    #
+    # load components for require-ability
+    # -----------------------------------
+    # 
+    # * hardcoded below are certain pending configurables
+    # * there will be name collisions, nothing has been done about it here
+    # 
 
     compomnentsRoot = path.join process.cwd(), 'components'
 
@@ -68,14 +86,9 @@ module.exports = (ipso) -> (args...) ->
             
             try 
 
-                #
-                # * TODO: enable require 'username/componentname' to handle name collisions
-                #                (this could prove to be very !!TRICKY!!)
-                #
-
                 component = JSON.parse fs.readFileSync componentFile
 
-                list[ component.name ] = -> 
+                list[ component.name ] = ->
                 aliases[ component.name ] = path.join compomnentsRoot, componentDir, component.main || 'index.js'
 
                 #
@@ -105,10 +118,21 @@ module.exports = (ipso) -> (args...) ->
             else         console.log "ipso: unexpected error reading directory: #{compomnentsRoot}" 
 
 
+    #
+    # * create module name aliases for require
+    #
 
     ipso.define list, aliases: aliases
 
-    ipso(lastarg)() if typeof lastarg is 'function'
+
+    #
+    # * ipso injects into fn(*) if present
+    #
+
+    if typeof fn is 'function'
+
+        decoratedFn = ipso fn
+        decoratedFn resolver = ->
 
     return ipso
 

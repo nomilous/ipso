@@ -1,4 +1,7 @@
-require('../lib/ipso').inject (Vertex, ifStats) -> 
+require('../lib/ipso').inject (done, Vertex, ifStats) -> 
+
+    try console.log d: done
+    try console.log v: Vertex
 
     #
     # TODO

@@ -44,7 +44,7 @@ module.exports = ipso = (actualTestFunction) ->
                 console.log 'ipso cannot inject done into describe() or context()'.red
                 return
 
-            does.activate context: @, mode: 'spec', spec: null, resolver: null
+            does.activate context: @, mode: does.mode, spec: null, resolver: null
             argsToInjectIntoTest.push Module for Module in loadModulesSync( fnArgsArray, does )
             actualTestFunction.apply @, argsToInjectIntoTest
             return
@@ -56,9 +56,8 @@ module.exports = ipso = (actualTestFunction) ->
         # ### Injecting into hook or it()
         #
 
-        console.log TODO: 'fix mode going back to spec' # below
+        does.activate context: @, mode: does.mode, spec: @test, resolver: done
 
-        does.activate context: @, mode: 'spec', spec: @test, resolver: done
 
 
         #
