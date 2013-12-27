@@ -1,5 +1,11 @@
+{components, inject} = require 'ipso'
 
 describe 'Components', -> 
+
+    before -> 
+
+        @does = require('does')._test()
+
 
     it """
 
@@ -15,13 +21,35 @@ describe 'Components', ->
     """, ->
 
 
-    it 'sets mode to bridge in does'
+    it 'sets mode to bridge in does', -> 
+
+        components()
+        @does.mode.should.equal 'bridge'
 
 
-    it 'calls the function at lastarg'
+    it 'enables require by component name', -> 
+
+        components()
+        componentname = require 'componentname'
+        componentname().should.equal 'FOR TESTING'
 
 
-    it 'injects components into the function according to name'
+    it 'is also accessable at inject()', -> 
+
+        components.should.equal inject
+
+
+    it 'calls the function at lastarg', (done) -> 
+
+        inject {}, -> done()
+
+
+    it 'injects components into the function according to name', (done) -> 
+
+        inject {}, {}, (componentname) -> 
+
+            componentname().should.equal 'FOR TESTING'
+            done()
 
 
     it 'injects components into the function with names from component.inject.alias'
