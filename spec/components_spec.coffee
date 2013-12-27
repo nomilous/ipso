@@ -1,4 +1,5 @@
 {components, inject} = require 'ipso'
+should = require 'should'
 
 describe 'Components', -> 
 
@@ -59,9 +60,18 @@ describe 'Components', ->
             ComponentName().should.equal 'FOR TESTING'
             done()
 
+    it 'component.inject.alias can also be used at require', -> 
+
+        c = require 'ComponentName'
+        c().should.equal 'FOR TESTING'
 
 
+    it 'does not add stubbing and expectataion functionality', (done) -> 
 
-    it 'uses component.inject.alias to define an additional require alias'
+        inject (ComponentName) -> 
 
-    
+            d = ComponentName.does
+            should.not.exist d
+            done()
+
+

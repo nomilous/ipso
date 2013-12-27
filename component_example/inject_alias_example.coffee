@@ -1,17 +1,14 @@
 require('../lib/ipso').inject (done, Vertex, ifStats) -> 
 
-    try console.log d: done
-    try console.log v: Vertex
 
     #
     # TODO
     # 
-    # * remove .does per mode
     # * arg1 done or facto creates async without timeout
     # * MAYBE if the function returns a promise, throw on the reject
     #
 
-    ifStats.start()
+    # ifStats.start()
 
     Vertex.create.www
 
@@ -24,3 +21,5 @@ require('../lib/ipso').inject (done, Vertex, ifStats) ->
 
             ifStats: ifStats
 
+
+    done()

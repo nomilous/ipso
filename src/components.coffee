@@ -132,7 +132,7 @@ module.exports = (ipso) -> (args...) ->
     if typeof fn is 'function'
 
         decoratedFn = ipso fn
-        decoratedFn resolver = ->
+        decoratedFn resolver = -> console.log called: 'resolver'
 
     return ipso
 
