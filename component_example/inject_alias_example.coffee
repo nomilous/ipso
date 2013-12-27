@@ -1,16 +1,8 @@
-require('../lib/ipso').inject (done, Vertex, ifStats) -> 
+require('../lib/ipso').inject (facto, Vertex, ifStats) -> 
 
+    ifStats.start()
 
-    #
-    # TODO
-    # 
-    # * arg1 done or facto creates async without timeout
-    # * MAYBE if the function returns a promise, throw on the reject
-    #
-
-    # ifStats.start()
-
-    Vertex.create.www
+    .then -> Vertex.create.www
 
         routes:
 
@@ -21,5 +13,5 @@ require('../lib/ipso').inject (done, Vertex, ifStats) ->
 
             ifStats: ifStats
 
+    .then -> 
 
-    done()
