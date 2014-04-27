@@ -1,6 +1,6 @@
 {deferred, parallel, pipeline}  = require 'also'
 {normalize, sep, dirname} = require 'path'
-{underscore} = require 'inflection'
+{underscore, dasherize} = require 'inflection'
 {readdirSync,lstatSync} = require 'fs'
 {save} = require './saver'
 require 'colors'
@@ -126,10 +126,11 @@ module.exports.create = (config) ->
                 if not local.upperCase name
 
                     #
-                    # does not allow require 'lowerCase' to fail
+                    # 'lowerCaseName' loads lower-case-name
                     #
 
-                    return action.resolve require name
+                    dashed = dasherize underscore name
+                    return action.resolve require dashed
 
                 else
 
@@ -169,10 +170,11 @@ module.exports.create = (config) ->
             if not local.upperCase name
 
                 #
-                # does not allow require 'lowerCase' to fail
+                # 'lowerCaseName' loads lower-case-name
                 #
 
-                return require name
+                dashed = dasherize underscore name
+                return require dashed
 
             else
 

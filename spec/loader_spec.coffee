@@ -52,6 +52,21 @@ describe 'Loader', ->
                     http.should.equal require 'http'
                     done()
 
+
+
+        it 'loads node modules dasherized from lower camel case', ipso (done) -> 
+
+            instance = Loader.create dir: 'DIR', modules: {}
+            instance.loadModules ['testModule'], does = 
+
+                get: (args...) -> args.pop()() # no tagged objects, empty callback
+                spectate: (opts, http) -> 
+
+                    http.should.equal require 'http'
+                    done()
+
+     
+
         it 'loads specified modules by tag', ipso (done) -> 
 
             instance = Loader.create dir: __dirname, modules: Saver: require: '../lib/saver'
@@ -116,8 +131,5 @@ describe 'Loader', ->
             it 'has os', -> 
 
                 os.should.equal require 'os'
-
-
-
 
 
