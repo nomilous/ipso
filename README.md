@@ -71,7 +71,7 @@ It can inject dasherized modules using mixed case.
 
 ```coffee
 
-it 'does something', ipso (dashedName) ->
+it 'does something', ipso (done, dashedName) ->
 
     dashedName.should.equal require 'dashed-name'
 
