@@ -6,7 +6,7 @@
 
 **experimental/unstable** api changes will still occur (**without** deprecation warnings)
 
-`npm install ipso` 0.0.21 [license](./license)
+`npm install ipso` 0.0.22 [license](./license)
 
 * Injection Decorator, for mocking and stubbing, with [Mocha](https://github.com/visionmedia/mocha)
 * Now also a [modulename aliasing bridge](component_example), for using [components](https://github.com/component/component), serverside
@@ -68,6 +68,16 @@ It can inject node modules into tests.
 it 'does something', ipso (done, http) -> 
 
     http.should.equal require 'http'
+
+```
+
+It can inject dasherized modules using mixed case.
+
+```coffee
+
+it 'does something', ipso (done, dashedName) ->
+
+    dashedName.should.equal require 'dashed-name'
 
 ```
 
