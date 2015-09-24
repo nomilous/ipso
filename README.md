@@ -1,3 +1,7 @@
+**all development efforts suspended**
+
+[objective_dev](https://github.com/nomilous/objective_dev) achieves the goals set out here.
+
 **due homage:** [RSpec](http://rspec.info/)
 
 **experimental/unstable** api changes will still occur (**without** deprecation warnings)
